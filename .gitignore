@@ -6,4 +6,3 @@ data/db/
 .DS_Store
 coverage/
 .claude/
-eval/results.json
