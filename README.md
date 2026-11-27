@@ -22,6 +22,20 @@ Hackathon Regional 2026 · Sede Sucre · Problemática 2.
 | Enlaces y guía rápida | [entrega/00_LEEME_enlaces.html](entrega/00_LEEME_enlaces.html) |
 | Código | Botón verde **Code → Download ZIP** |
 
+### English version
+
+**Team Pichones:** Ballivián Goytia Augusto · Cepeda Muruchi Matius Franco · Picha Basilio Bryan Rodrigo
+
+| Deliverable | Download |
+|---|---|
+| Project document | [02_HistoryBol_document_EN.pdf](https://github.com/aballiviang20-cmd/guardianes-ciudad-blanca/raw/main/entrega/english/02_HistoryBol_document_EN.pdf) |
+| Production guide | [03_HistoryBol_production_guide_EN.pdf](https://github.com/aballiviang20-cmd/guardianes-ciudad-blanca/raw/main/entrega/english/03_HistoryBol_production_guide_EN.pdf) |
+| Call document (AI declaration and rubric evidence) | [04_HistoryBol_call_document_EN.pdf](https://github.com/aballiviang20-cmd/guardianes-ciudad-blanca/raw/main/entrega/english/04_HistoryBol_call_document_EN.pdf) |
+| Links and quick start | [entrega/english/00_README_links.html](entrega/english/00_README_links.html) |
+| Video (Spanish, subtitled) | [01_HistoryBol_video.mp4](https://github.com/aballiviang20-cmd/guardianes-ciudad-blanca/raw/main/entrega/01_HistoryBol_video.mp4) |
+
+**Quick start:** Node.js 22+ · `npm run install:all` · `npm run seed` · `npm start` → http://localhost:8787 (student app with ES/EN switch), `/docente` (teacher panel: Review → Approve all), `/conoce` (presentation).
+
 > El desarrollo terminó con el commit de las 14:26 (code freeze 14:30). La carpeta `entrega/` solo agrega documentos y el video; no cambia el código.
 
 ## Publicarla e instalarla en celulares, tablets y PC
