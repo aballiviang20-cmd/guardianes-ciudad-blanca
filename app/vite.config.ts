@@ -9,8 +9,8 @@ export default defineConfig({
       registerType: "autoUpdate",
       includeAssets: ["icon.svg"],
       manifest: {
-        name: "Guardianes de la Ciudad Blanca",
-        short_name: "Guardianes",
+        name: "Patrilingo · Patrimonio de Sucre",
+        short_name: "Patrilingo",
         description: "Conoce, colecciona y protege el patrimonio de Sucre.",
         theme_color: "#C0532D",
         background_color: "#FBF8F3",

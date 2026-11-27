@@ -1473,7 +1473,7 @@ function TeacherShell({ pin, onLogout }: { pin: string; onLogout: () => void }) 
         <div className="tp-brand">
           <CharFace c="orki" face="alegre" size={44} anim="idle" />
           <div>
-            <b>Guardianes</b>
+            <b>Patrilingo</b>
             <small>Panel docente</small>
           </div>
         </div>

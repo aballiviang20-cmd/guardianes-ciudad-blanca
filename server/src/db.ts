@@ -48,6 +48,17 @@ db.exec(`
   );
   CREATE INDEX IF NOT EXISTS idx_events_course ON events(course);
 
+  -- Cuentas de alumnos creadas desde la app (contraseña con scrypt + sal).
+  CREATE TABLE IF NOT EXISTS students (
+    username   TEXT PRIMARY KEY,
+    name       TEXT NOT NULL,
+    course     TEXT NOT NULL,
+    level      TEXT,
+    salt       TEXT NOT NULL,
+    hash       TEXT NOT NULL,
+    created_at TEXT NOT NULL
+  );
+
   -- Actividades que el docente asigna a un curso (lugar + dificultad + fecha).
   CREATE TABLE IF NOT EXISTS activities (
     id          TEXT PRIMARY KEY,

@@ -1,6 +1,7 @@
 import crypto from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
+import { db } from "./db";
 import { DATA_DIR } from "./paths";
 
 /**
@@ -30,8 +31,25 @@ export function hashPassword(password: string, salt = crypto.randomBytes(16).toS
 }
 
 function loadUsers(): User[] {
-  if (!fs.existsSync(USERS_FILE)) return [];
-  return (JSON.parse(fs.readFileSync(USERS_FILE, "utf8")) as { users: User[] }).users;
+  const base = fs.existsSync(USERS_FILE) ? (JSON.parse(fs.readFileSync(USERS_FILE, "utf8")) as { users: User[] }).users : [];
+  const created = db.prepare("SELECT username, name, course, level, salt, hash FROM students").all() as { username: string; name: string; course: string; level: string | null; salt: string; hash: string }[];
+  return [...base, ...created.map((s) => ({ ...s, role: "alumno" as const, level: (s.level === "4to" || s.level === "6to" ? s.level : undefined) as User["level"] }))];
+}
+
+/** Crea una cuenta de alumno. Usuario: 3-24 letras/números/punto; contraseña de al menos 6 caracteres. */
+export function register(input: { username: string; password: string; name: string; course: string; level?: string }) {
+  const username = input.username.trim().toLowerCase();
+  if (!/^[a-z0-9._]{3,24}$/.test(username)) throw new Error("El usuario debe tener de 3 a 24 letras, números o puntos (sin espacios)");
+  if (input.password.length < 6) throw new Error("La contraseña debe tener al menos 6 caracteres");
+  const name = input.name.trim().slice(0, 16);
+  if (name.length < 2) throw new Error("Escribe tu apodo");
+  const course = input.course.trim().toUpperCase().slice(0, 12);
+  if (course.length < 2) throw new Error("Escribe el código de tu curso");
+  if (loadUsers().some((u) => u.username.toLowerCase() === username)) throw new Error("Ese usuario ya existe, elige otro");
+  const level = input.level === "4to" || input.level === "6to" ? input.level : null;
+  const { salt, hash } = hashPassword(input.password);
+  db.prepare("INSERT INTO students (username, name, course, level, salt, hash, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)").run(username, name, course, level, salt, hash, new Date().toISOString());
+  return login(username, input.password)!;
 }
 
 export function publicUser(u: User): PublicUser {

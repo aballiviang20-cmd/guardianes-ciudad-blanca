@@ -14,7 +14,7 @@ import { Button } from "../components/ui";
 type Scene = { kind: string; text: string };
 
 const ALUMNO: Scene[] = [
-  { kind: "intro", text: "¡Hola! Soy Orki, el dinosaurio de Cal Orck'o. En dos minutos te enseño a usar Guardianes de la Ciudad Blanca." },
+  { kind: "intro", text: "¡Hola! Soy Orki, el dinosaurio de Cal Orck'o. En dos minutos te enseño a usar Patrilingo, el patrimonio de tu ciudad jugando." },
   { kind: "login", text: "Entra con tu apodo y el código de tu curso, o con la cuenta que te dio tu profe. Nunca te pedimos tu nombre real." },
   { kind: "cast", text: "Elige tu guardián: Mateo, Wara, Sofía, Juanita, Bruno, Tata Julián, la llama Kusi o yo. Y puedes vestirlo con ropa tarabuqueña o de cueca." },
   { kind: "path", text: "Tu ruta en el tiempo empieza en mil quinientos treinta y ocho con San Lázaro, y llega a mil novecientos noventa y uno, cuando Sucre fue Patrimonio de la Humanidad." },
@@ -58,7 +58,7 @@ function SceneArt({ kind, teacher }: { kind: string; teacher: boolean }) {
           <motion.div {...pop(0.1)}>
             <CharPose c="orki" pose="salta" size={210} anim="jump" pulse={1} />
           </motion.div>
-          <motion.h3 {...up(0.4)}>{teacher ? "Panel docente" : "Guardianes de la Ciudad Blanca"}</motion.h3>
+          <motion.h3 {...up(0.4)}>{teacher ? "Patrilingo para docentes" : "Patrilingo"}</motion.h3>
           <motion.p {...up(0.6)}>{teacher ? "Prepare su clase en 3 minutos" : "Conoce · Colecciona · Protege"}</motion.p>
         </div>
       );
@@ -461,7 +461,7 @@ export function LandingPage() {
       <header className="ld-nav">
         <Link to="/conoce" className="ld-logo">
           <CharFace c="orki" face="alegre" size={40} anim="idle" />
-          <b>guardianes</b>
+          <b>patrilingo</b>
         </Link>
         <nav>
           <a href="#como">Cómo funciona</a>
@@ -578,7 +578,7 @@ export function LandingPage() {
       <footer className="ld-foot">
         <CharPose c="orki" pose="bolivia" size={110} anim="wave" />
         <div>
-          <b>Guardianes de la Ciudad Blanca</b>
+          <b>Patrilingo · Guardianes de la Ciudad Blanca</b>
           <p>Hecho en Sucre para la Hackathon Regional 2026 · Patrimonio y educación.</p>
           <a href="https://github.com/aballiviang20-cmd/guardianes-ciudad-blanca" target="_blank" rel="noreferrer">
             Código abierto en GitHub

@@ -5,7 +5,7 @@ import { randomUUID } from "node:crypto";
 import cors from "cors";
 import express, { type NextFunction, type Request, type Response } from "express";
 import { db, now } from "./db";
-import { login, verifyToken } from "./auth";
+import { login, register, verifyToken } from "./auth";
 import { addSource, fichasSummary, getFichas, loadFichas, loadMonuments, retrieve } from "./fichas";
 import { league, xpForEvent } from "./league";
 import { draft, GenerationError, itemsOfBatch, judgeBatch, rowToItem, verifyBatch, type ItemRow } from "./pipeline";
@@ -47,6 +47,15 @@ app.post("/api/auth/login", (req, res) => {
     return;
   }
   res.json(r);
+});
+
+app.post("/api/auth/register", (req, res) => {
+  try {
+    const { username, password, name, course, level } = req.body ?? {};
+    res.json(register({ username: String(username ?? ""), password: String(password ?? ""), name: String(name ?? ""), course: String(course ?? ""), level: level ? String(level) : undefined }));
+  } catch (e) {
+    res.status(400).json({ error: e instanceof Error ? e.message : "No se pudo crear la cuenta" });
+  }
 });
 
 app.get("/api/auth/me", (req, res) => {

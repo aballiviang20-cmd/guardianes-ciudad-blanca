@@ -590,3 +590,36 @@
 .gen-adapt { display: grid; grid-template-columns: 1.2fr 1fr; gap: 14px; }
 .gen-adapt > div > small { display: block; font-family: var(--f-ui); font-weight: 800; color: var(--suave); margin-bottom: 4px; }
 @media (max-width: 760px) { .gen-adapt { grid-template-columns: 1fr; } }
+
+/* ===================== Entrada del alumno (estilo Duolingo) ===================== */
+.wl { display: flex; flex-direction: column; min-height: 100vh; background: #fff; }
+.wl-hero { position: relative; height: 210px; overflow: hidden; transition: height 0.35s ease; flex: none; }
+.wl-hero.big { height: 300px; }
+.wl-hero > img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.wl-hero::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 40px; background: linear-gradient(transparent, #fff); }
+.wl-hero .welcome-parade { bottom: -6px; z-index: 1; }
+.wl-hero .lang-toggle { position: absolute; top: 12px; right: 12px; z-index: 2; }
+.wl-body { flex: 1; padding: 6px 22px 28px; display: flex; flex-direction: column; }
+.wl-step { display: flex; flex-direction: column; align-items: stretch; gap: 12px; text-align: center; position: relative; }
+.wl-logo { display: flex; align-items: center; justify-content: center; gap: 6px; margin-top: 4px; }
+.wl-logo b { font-family: var(--f-ui); font-weight: 900; font-size: 40px; color: var(--verde-ok); letter-spacing: -1px; }
+.wl-logo .sprite-shadow { display: none; }
+.wl-step h1 { font-family: var(--f-ui); font-weight: 800; font-size: 22px; line-height: 1.25; color: var(--tinta); margin: 0 auto 6px; max-width: 320px; }
+.wl-step h2 { font-family: var(--f-ui); font-weight: 900; font-size: 26px; color: var(--tinta); margin-top: 2px; }
+.wl-actions { display: flex; flex-direction: column; gap: 12px; }
+.wl-form { display: flex; flex-direction: column; gap: 12px; }
+.wl-field { position: relative; display: flex; flex-direction: column; border: 2px solid var(--linea-dark); border-radius: 18px; background: #f7f4ef; overflow: hidden; }
+.wl-field input { border: 0; border-radius: 0; background: transparent; padding: 15px 16px; font-size: 17px; font-family: var(--f-body); font-weight: 700; color: var(--tinta); outline: none; }
+.wl-field input + input { border-top: 2px solid var(--linea-dark); }
+.wl-field input:focus { background: #fff; }
+.wl-eye { position: absolute; right: 8px; bottom: 9px; border: 0; background: none; font-size: 20px; cursor: pointer; }
+.wl-err { color: var(--rojo-dark); font-weight: 800; background: #fdeeee; border-radius: 12px; padding: 8px 12px; }
+.wl-hint { color: var(--suave); font-weight: 700; font-size: 14px; }
+.wl-back { position: absolute; left: -6px; top: 0; border: 0; background: none; font-size: 26px; color: var(--suave); cursor: pointer; padding: 2px 8px; }
+.wl-levels { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.wl-levels button { display: flex; flex-direction: column; align-items: center; padding: 10px 6px; border-radius: 16px; border: 2px solid var(--linea-dark); background: #fff; box-shadow: 0 3px 0 var(--linea-dark); cursor: pointer; font-family: var(--f-ui); }
+.wl-levels b { font-size: 20px; color: var(--tinta); }
+.wl-levels small { font-size: 12px; color: var(--suave); font-weight: 700; }
+.wl-levels button.on { border-color: var(--cielo); background: #eaf3fc; box-shadow: 0 3px 0 var(--cielo); }
+.wl-sticky { position: sticky; bottom: 0; padding: 12px 0 4px; background: linear-gradient(transparent, #fff 30%); }
+.wl .link-btn { display: block; margin: 0 auto; text-decoration: none; }
