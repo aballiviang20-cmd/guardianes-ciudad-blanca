@@ -385,7 +385,7 @@ input:focus, textarea:focus, select:focus { border-color: var(--cielo); }
 .tabs button, .tab-link { position: relative; border: 0; background: none; padding: 10px 14px; border-radius: 12px; font-weight: 900; color: var(--suave); text-decoration: none; font-size: 15px; }
 .tabs button.on { color: #fff; }
 .tabs button span { position: relative; z-index: 1; }
-.tab-pill { position: absolute; inset: 0; border-radius: 12px; background: var(--terra); z-index: 0; }
+.tabs button .tab-pill { position: absolute; inset: 0; border-radius: 12px; background: var(--terra); z-index: 0; }
 .card { background: var(--papel); border: 2px solid var(--linea); border-radius: var(--radius); padding: 16px; display: flex; flex-direction: column; gap: 10px; }
 .card h3 { font-weight: 900; }
 .gen { display: grid; gap: 16px; }
