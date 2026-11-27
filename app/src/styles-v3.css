@@ -40,7 +40,7 @@
 /* ===================== Bienvenida: elegir personaje ===================== */
 .welcome-cast { position: absolute; left: 0; right: 0; bottom: -40px; display: flex; justify-content: center; align-items: flex-end; pointer-events: none; }
 .welcome-step { display: flex; flex-direction: column; gap: 14px; }
-.char-picker { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.char-picker { display: grid; grid-template-columns: repeat(auto-fill, minmax(128px, 1fr)); gap: 10px; }
 .char-card { --accent: var(--terra); display: flex; flex-direction: column; align-items: center; gap: 2px; border: 2px solid var(--linea-dark); background: var(--papel); border-radius: 20px; padding: 10px 8px; box-shadow: 0 4px 0 var(--linea-dark); font-family: var(--f-body); color: var(--tinta); }
 .char-card b { font-family: var(--f-ui); font-size: 18px; }
 .char-card small { color: var(--suave); font-weight: 700; font-size: 12px; }
@@ -56,7 +56,7 @@
 .profile-stats span { display: inline-flex; gap: 4px; align-items: center; }
 .profile-stats span:last-child { color: var(--oro-dark); }
 .section-title { font-size: 20px; margin: 6px 0 10px; }
-.char-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 18px; }
+.char-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin-bottom: 18px; }
 .char-mini { --accent: var(--terra); display: flex; flex-direction: column; align-items: center; gap: 2px; border: 2px solid var(--linea-dark); background: var(--papel); border-radius: 18px; padding: 8px 4px; box-shadow: 0 3px 0 var(--linea-dark); font-family: var(--f-ui); color: var(--tinta); }
 .char-mini.on { border-color: var(--accent); box-shadow: 0 3px 0 var(--accent); }
 .outfit-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; }

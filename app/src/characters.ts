@@ -1,5 +1,5 @@
 /** Personajes del equipo (ilustraciones propias recortadas de sus hojas de personaje). */
-export type CharId = "orki" | "mateo" | "wara" | "vale";
+export type CharId = "orki" | "mateo" | "wara" | "vale" | "kusi";
 export type Face = "alegre" | "sorprendido" | "enojado" | "triste" | "pensativo" | "chistoso";
 export type Pose = "frente" | "mueve" | "sucre" | "bolivia" | "salta";
 export type Outfit = "casual" | "tarabuco" | "cueca" | "bolivar";
@@ -17,6 +17,7 @@ export const CHARACTERS: Record<CharId, Character> = {
   mateo: { id: "mateo", name: "Mateo", tagline: { es: "Skater y curioso", en: "Curious skater" }, color: "#2D6CA8", outfits: ["casual", "tarabuco", "cueca"] },
   wara: { id: "wara", name: "Wara", tagline: { es: "Nada la sorprende… casi", en: "Hard to impress… almost" }, color: "#6B3FA0", outfits: ["casual", "tarabuco", "cueca"] },
   vale: { id: "vale", name: "Vale", tagline: { es: "Siempre a la moda", en: "Always in style" }, color: "#C0532D", outfits: ["casual", "tarabuco", "cueca"] },
+  kusi: { id: "kusi", name: "Kusi", tagline: { es: "Llama con aguayo, pura alegría", en: "Llama with an aguayo, pure joy" }, color: "#B0479A", outfits: ["casual", "tarabuco", "cueca"] },
 };
 
 export const OUTFITS: Record<Outfit, { es: string; en: string; xp: number }> = {

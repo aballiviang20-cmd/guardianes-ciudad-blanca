@@ -25,9 +25,9 @@ export function Welcome() {
       <div className="welcome-hero">
         <Scene id="sucre" />
         <div className="welcome-cast">
-          {(["mateo", "orki", "wara"] as CharId[]).map((c, i) => (
+          {(["mateo", "orki", "kusi", "wara"] as CharId[]).map((c, i) => (
             <motion.div key={c} initial={{ y: 90, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ ...bouncy, delay: 0.4 + i * 0.12 }}>
-              <CharPose c={c} pose={c === "orki" ? "bolivia" : "salta"} size={c === "orki" ? 130 : 110} anim={c === "orki" ? "wave" : "idle"} />
+              <CharPose c={c} pose={c === "orki" ? "bolivia" : c === "kusi" ? "mueve" : "salta"} size={c === "orki" ? 124 : c === "kusi" ? 96 : 104} anim={c === "orki" ? "wave" : "idle"} />
             </motion.div>
           ))}
         </div>

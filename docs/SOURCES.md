@@ -25,6 +25,7 @@ UNESCO 2003 quedan como referencia para el roadmap (protección ante desastres, 
 | Recurso | Autor | Licencia |
 |---|---|---|
 | Personajes Orki, Mateo, Wara y Vale | Equipo, generados con ChatGPT | Uso del equipo (declarado en AI_DECLARATION.md) |
+| Llama Kusi y fondos de los 4 lugares | Generados con ChatGPT a pedido del equipo | Uso del equipo (declarado en AI_DECLARATION.md) |
 | Escenas de monumentos e íconos (SVG) | Equipo | MIT |
 | Sonidos (charango, quena, bombo) | Sintetizados en código (WebAudio), melodía original | MIT |
 | Tipografías Baloo 2, Fraunces, Nunito | Fontsource / Google Fonts | SIL Open Font License |

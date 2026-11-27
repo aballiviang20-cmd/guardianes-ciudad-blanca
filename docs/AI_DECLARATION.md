@@ -6,7 +6,7 @@
 
 ## Ilustraciones
 - **Personajes (Orki, Mateo, Wara, Vale)**: hojas de personaje generadas por el equipo con **ChatGPT (generación de imágenes)** y dirigidas por el equipo (estilo, vestimentas bolivianas, banderas). Recortadas con un script propio (`sharp`), sin modificar el dibujo.
-- **Fondos** de `data/fondos/` (si los hay): generados por el equipo con ChatGPT.
+- **Fondos** de `data/fondos/` (San Lázaro, Catedral, Casa de la Libertad, Sucre) y la **llama Kusi**: generados con **ChatGPT** usando como referencia de estilo la hoja de personaje del equipo; los prompts los escribió Claude Code operando el ChatGPT del equipo en su navegador, a pedido del equipo. Revisados por el equipo (fidelidad de los monumentos y banderas).
 - Escenas SVG de respaldo e íconos: hechos en código por el equipo con ayuda de Claude Code.
 
 ## Diseñado y decidido por el equipo
