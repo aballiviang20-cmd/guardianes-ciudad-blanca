@@ -1,0 +1,17 @@
+{
+  "name": "guardianes-ciudad-blanca",
+  "private": true,
+  "description": "Guardianes de la Ciudad Blanca: app educativa de patrimonio de Sucre (Hackathon Regional 2026, sede Sucre, problemática 2).",
+  "scripts": {
+    "install:all": "npm install && npm install --prefix server && npm install --prefix app",
+    "dev": "concurrently -n server,app -c green,magenta \"npm run dev --prefix server\" \"npm run dev --prefix app\"",
+    "build": "npm run build --prefix app",
+    "start": "npm run build && npm start --prefix server",
+    "test": "npm test --prefix server",
+    "seed": "npm run seed --prefix server",
+    "eval": "npm run eval --prefix server"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.0"
+  }
+}

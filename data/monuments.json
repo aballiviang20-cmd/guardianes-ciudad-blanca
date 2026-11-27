@@ -1,0 +1,26 @@
+[
+  {
+    "id": "casa-libertad",
+    "order": 1,
+    "name": { "es": "Casa de la Libertad", "en": "House of Freedom" },
+    "color": "#C0532D"
+  },
+  {
+    "id": "catedral",
+    "order": 2,
+    "name": { "es": "Catedral Metropolitana", "en": "Metropolitan Cathedral" },
+    "color": "#1F5C46"
+  },
+  {
+    "id": "san-felipe-neri",
+    "order": 3,
+    "name": { "es": "San Felipe Neri", "en": "San Felipe Neri" },
+    "color": "#2D6CA8"
+  },
+  {
+    "id": "recoleta",
+    "order": 4,
+    "name": { "es": "La Recoleta", "en": "La Recoleta" },
+    "color": "#8A5A2B"
+  }
+]
