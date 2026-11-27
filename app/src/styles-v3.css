@@ -56,7 +56,7 @@
 .profile-stats span { display: inline-flex; gap: 4px; align-items: center; }
 .profile-stats span:last-child { color: var(--oro-dark); }
 .section-title { font-size: 20px; margin: 6px 0 10px; }
-.char-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin-bottom: 18px; }
+.char-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 18px; }
 .char-mini { --accent: var(--terra); display: flex; flex-direction: column; align-items: center; gap: 2px; border: 2px solid var(--linea-dark); background: var(--papel); border-radius: 18px; padding: 8px 4px; box-shadow: 0 3px 0 var(--linea-dark); font-family: var(--f-ui); color: var(--tinta); }
 .char-mini.on { border-color: var(--accent); box-shadow: 0 3px 0 var(--accent); }
 .outfit-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; }
@@ -128,3 +128,11 @@
 .stop.left .stop-avatar { right: 96px; }
 .stop.right .stop-avatar { left: 96px; }
 .stop.left .stop-year { left: 104px; }
+
+/* ===================== Desfile de la portada ===================== */
+.welcome-parade { position: absolute; left: 0; right: 0; bottom: -34px; overflow: hidden; pointer-events: none; height: 130px; }
+.parade-track { display: flex; width: max-content; align-items: flex-end; }
+.parade-item { display: block; margin-right: -6px; transform-origin: 50% 100%; animation: walkbob 0.9s ease-in-out infinite; animation-delay: var(--d); }
+@keyframes walkbob { 0%, 100% { transform: translateY(0) rotate(-3deg); } 25% { transform: translateY(-7px) rotate(0deg); } 50% { transform: translateY(0) rotate(3deg); } 75% { transform: translateY(-7px) rotate(0deg); } }
+@media (prefers-reduced-motion: reduce) { .parade-item { animation: none; } }
+.comic-name { white-space: nowrap; }

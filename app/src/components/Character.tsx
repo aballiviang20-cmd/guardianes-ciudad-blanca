@@ -1,7 +1,7 @@
 import { AnimatePresence, motion } from "motion/react";
 import { faceImg, outfitImg, poseImg, type CharId, type Face, type Outfit, type Pose } from "../characters";
 
-export type Anim = "idle" | "jump" | "sad" | "wave" | "pop" | "none";
+export type Anim = "idle" | "jump" | "sad" | "wave" | "pop" | "walk" | "talk" | "none";
 
 /**
  * Animación con física de dibujo animado sobre las ilustraciones:
@@ -22,6 +22,16 @@ function variants(anim: Anim) {
       return { animate: { rotate: [0, -6, 5, -4, 0], y: [0, -3, 0] }, transition: { duration: 1.4, repeat: Infinity, repeatDelay: 0.6 } };
     case "pop":
       return { initial: { scale: 0, rotate: -12 }, animate: { scale: 1, rotate: 0 }, transition: { type: "spring" as const, stiffness: 380, damping: 13 } };
+    case "walk":
+      // paso a paso: rebote corto y balanceo, como un ciclo de caminata de dibujo animado
+      return { animate: { y: [0, -7, 0, -7, 0], rotate: [-3, 0, 3, 0, -3], scaleY: [1, 1.03, 0.97, 1.03, 1] }, transition: { duration: 0.9, repeat: Infinity, ease: "easeInOut" as const } };
+    case "talk":
+      // habla: entra con rebote y luego "mueve la cabeza" mientras corre el texto
+      return {
+        initial: { scale: 0.4, rotate: -10, opacity: 0 },
+        animate: { scale: [0.4, 1.08, 1, 1.03, 1, 1.03, 1], rotate: [-10, 3, 0, -2, 1, -1, 0], opacity: 1 },
+        transition: { duration: 1.6, times: [0, 0.18, 0.3, 0.5, 0.68, 0.84, 1], ease: "easeOut" as const },
+      };
     case "idle":
       return { animate: { scaleY: [1, 1.03, 1], y: [0, -2, 0] }, transition: { duration: 2.4, repeat: Infinity, ease: "easeInOut" as const } };
     default:

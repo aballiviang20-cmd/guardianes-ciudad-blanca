@@ -9,6 +9,8 @@ import { useT } from "../i18n";
 import { sfx } from "../sfx";
 import { useStore } from "../store";
 
+const PARADE: CharId[] = ["mateo", "sofia", "orki", "juanita", "wara", "kusi", "bruno", "julian"];
+
 export function Welcome() {
   const { t, lang } = useT();
   const setProfile = useStore((s) => s.setProfile);
@@ -24,12 +26,15 @@ export function Welcome() {
     <div className="phone welcome">
       <div className="welcome-hero">
         <Scene id="sucre" />
-        <div className="welcome-cast">
-          {(["mateo", "orki", "kusi", "wara"] as CharId[]).map((c, i) => (
-            <motion.div key={c} initial={{ y: 90, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ ...bouncy, delay: 0.4 + i * 0.12 }}>
-              <CharPose c={c} pose={c === "orki" ? "bolivia" : c === "kusi" ? "mueve" : "salta"} size={c === "orki" ? 124 : c === "kusi" ? 96 : 104} anim={c === "orki" ? "wave" : "idle"} />
-            </motion.div>
-          ))}
+        {/* Desfile: todos los guardianes caminan por la plaza en bucle (la lista va dos veces para que no haya corte). */}
+        <div className="welcome-parade" aria-hidden>
+          <motion.div className="parade-track" initial={{ x: "-50%" }} animate={{ x: "0%" }} transition={{ duration: 26, repeat: Infinity, ease: "linear" }}>
+            {[...PARADE, ...PARADE].map((c, i) => (
+              <span key={i} className="parade-item" style={{ ["--d" as string]: `${(i % PARADE.length) * 0.13}s` }}>
+                <CharPose c={c} pose="mueve" size={c === "orki" || c === "kusi" ? 92 : 104} anim="none" />
+              </span>
+            ))}
+          </motion.div>
         </div>
         <button className="lang-toggle small" onClick={() => setLang(lang === "es" ? "en" : "es")}>
           <span className={lang === "es" ? "on" : ""}>

@@ -103,7 +103,7 @@ export function ComicReader({ id, cuento, lang, onClose, onFinish, finishLabel }
             animate={{ x: 0, opacity: 1 }}
             transition={{ type: "spring", stiffness: 220, damping: 18, delay: 0.05 }}
           >
-            {p.pose ? <CharPose c={p.who} pose={p.pose} size={190} anim={p.pose === "salta" ? "jump" : "idle"} /> : <CharFace c={p.who} face={p.face ?? "alegre"} size={150} anim="pop" />}
+            {p.pose ? <CharPose c={p.who} pose={p.pose} size={190} anim={p.pose === "salta" ? "jump" : "idle"} /> : <CharFace c={p.who} face={p.face ?? "alegre"} size={150} anim="talk" />}
             <span className="comic-name">{char.name}</span>
           </motion.div>
           <motion.div
