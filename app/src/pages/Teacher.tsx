@@ -2,7 +2,7 @@ import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { teacherApi } from "../api";
-import { Mascot } from "../components/Mascot";
+import { CharFace, CharPose } from "../components/Character";
 import { MonumentIcon } from "../components/MonumentIcon";
 import { Button } from "../components/ui";
 import type { LeagueCourse } from "../types";
@@ -280,7 +280,7 @@ function Review({ pin }: { pin: string }) {
     <div className="items">
       {items.length === 0 && (
         <div className="empty-state">
-          <Mascot mood="happy" size={90} />
+          <CharFace c="orki" face="alegre" size={90} anim="pop" />
           <p>No hay nada pendiente. Todo lo publicado pasó por revisión humana.</p>
         </div>
       )}
@@ -413,7 +413,7 @@ export function TeacherPage() {
   if (!ok) {
     return (
       <div className="teacher-login">
-        <Mascot mood="wave" size={110} />
+        <CharPose c="orki" pose="bolivia" size={150} anim="wave" />
         <h1>Panel docente</h1>
         <form
           onSubmit={(e) => {

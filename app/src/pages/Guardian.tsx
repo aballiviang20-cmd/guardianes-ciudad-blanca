@@ -2,7 +2,7 @@ import { AnimatePresence, motion } from "motion/react";
 import { useState } from "react";
 import { flushQueue } from "../api";
 import { Burst } from "../components/Burst";
-import { Mascot } from "../components/Mascot";
+import { CharPose } from "../components/Character";
 import { MonumentIcon } from "../components/MonumentIcon";
 import { StudentShell } from "../components/Shell";
 import { Button, Icon } from "../components/ui";
@@ -18,6 +18,7 @@ export function GuardianPage() {
   const { t, lang } = useT();
   const content = useContent();
   const addReport = useStore((s) => s.addReport);
+  const avatarC = useStore((s) => s.avatar.c);
   const [monumentId, setMonumentId] = useState<string | null>(null);
   const [damage, setDamage] = useState<(typeof DAMAGES)[number] | null>(null);
   const [text, setText] = useState("");
@@ -42,7 +43,7 @@ export function GuardianPage() {
             </motion.span>
             <h1 className="serif">{t.sentTitle}</h1>
             <p className="xp-chip">{t.sentBody}</p>
-            <Mascot mood="happy" size={96} pulse={1} />
+            <CharPose c={avatarC} pose="sucre" size={150} anim="jump" pulse={1} />
             <Button
               variant="secondary"
               onClick={() => {
