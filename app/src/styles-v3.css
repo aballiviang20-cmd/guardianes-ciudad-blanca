@@ -354,3 +354,14 @@
   .tp-nav button span { display: none; }
   .tp-nav button.on span { display: inline; }
 }
+
+.tp-mini-stats { display: flex; flex-direction: column; gap: 4px; color: var(--suave); font-size: 13.5px; font-weight: 700; }
+.tp-fails { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 12px; }
+.tp-fails p { font-weight: 700; font-size: 15px; line-height: 1.3; }
+.tp-fail-row { display: grid; grid-template-columns: 1fr 70px; align-items: center; gap: 10px; margin-top: 4px; }
+.tp-fail-row small { text-align: right; color: var(--rojo-dark); font-weight: 800; }
+.tp-bar.danger span { background: linear-gradient(90deg, #f08a5d, var(--rojo)); }
+.tp-stack { display: flex; height: 18px; border-radius: 999px; overflow: hidden; background: #f1ebe1; }
+.tp-stack span { display: block; height: 100%; }
+.tp-legend { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 8px 16px; font-weight: 700; }
+.tp-legend i { display: inline-block; width: 12px; height: 12px; border-radius: 4px; margin-right: 4px; vertical-align: -1px; }

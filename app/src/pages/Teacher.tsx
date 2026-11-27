@@ -525,39 +525,105 @@ function Reports({ pin }: { pin: string }) {
   );
 }
 
+const STATUS_LABEL: Record<string, { t: string; c: string }> = {
+  approved: { t: "Publicadas", c: "var(--verde-ok)" },
+  pending: { t: "Por revisar", c: "var(--oro)" },
+  rejected: { t: "Rechazadas", c: "var(--rojo)" },
+  verified: { t: "En verificación", c: "var(--cielo)" },
+  draft: { t: "Borradores", c: "var(--suave)" },
+};
+
 function Progress({ pin }: { pin: string }) {
   const [stats, setStats] = useState<{ byStatus: { status: string; reason: string | null; n: number }[]; mostFailed: { questionId: string; fails: number; prompt: string }[]; league: LeagueCourse[] } | null>(null);
   useEffect(() => {
     teacherApi(pin).get<NonNullable<typeof stats>>("/stats").then(setStats).catch(() => {});
   }, [pin]);
-  if (!stats) return null;
+  if (!stats) return <div className="tp-loading">Cargando…</div>;
+  const failed = stats.mostFailed.filter((f) => f.prompt && f.prompt !== "(eliminada)");
+  const maxFail = Math.max(1, ...failed.map((f) => f.fails));
+  const totals = new Map<string, number>();
+  for (const s of stats.byStatus) totals.set(s.status, (totals.get(s.status) ?? 0) + s.n);
+  const all = [...totals.values()].reduce((a, b) => a + b, 0) || 1;
+  const maxXp = Math.max(1, ...stats.league.map((c) => c.xp));
   return (
-    <div className="progress-grid">
-      <div className="card">
-        <h3>Liga de cursos</h3>
-        {stats.league.map((c) => (
-          <p key={c.course}>
-            <b>{c.course}</b>: {c.xp} XP · {c.members} alumnos · {c.lessons} retos · {c.reports} reportes
-          </p>
-        ))}
-      </div>
-      <div className="card">
-        <h3>Preguntas más falladas</h3>
-        {stats.mostFailed.length === 0 && <p>Sin datos aún.</p>}
-        {stats.mostFailed.map((f) => (
-          <p key={f.questionId}>
-            {f.fails} fallos · · {f.prompt}
-          </p>
-        ))}
-      </div>
-      <div className="card">
-        <h3>Contenido por estado</h3>
-        {stats.byStatus.map((s, i) => (
-          <p key={i}>
-            {s.status} {s.reason ? `(${REASONS[s.reason] ?? s.reason})` : ""}: <b>{s.n}</b>
-          </p>
-        ))}
-      </div>
+    <div className="tp-cols">
+      <section className="tp-panel">
+        <header>
+          <h3>Liga de cursos</h3>
+          <span className="tp-pill">{stats.league.length} cursos</span>
+        </header>
+        {stats.league.length === 0 ? (
+          <p className="tp-muted">Todavía no hay cursos jugando. Comparta los carteles QR con su curso.</p>
+        ) : (
+          <ol className="tp-league">
+            {stats.league.map((c, i) => (
+              <li key={c.course}>
+                <span className={`tp-rank r${i + 1}`}>{i + 1}</span>
+                <b>{c.course}</b>
+                <span className="tp-bar">
+                  <motion.span initial={{ width: 0 }} animate={{ width: `${(c.xp / maxXp) * 100}%` }} transition={{ duration: 0.8, delay: i * 0.08 }} />
+                </span>
+                <small>{c.xp} XP</small>
+              </li>
+            ))}
+          </ol>
+        )}
+        {stats.league.length > 0 && (
+          <div className="tp-mini-stats">
+            {stats.league.slice(0, 3).map((c) => (
+              <span key={c.course}>
+                <b>{c.course}</b> · {c.members} alumnos · {c.lessons} retos · {c.reports} reportes
+              </span>
+            ))}
+          </div>
+        )}
+      </section>
+
+      <section className="tp-panel">
+        <header>
+          <h3>Preguntas para reforzar en clase</h3>
+        </header>
+        {failed.length === 0 ? (
+          <div className="tp-empty">
+            <CharFace c="sofia" face="alegre" size={60} anim="idle" />
+            <p>Todavía no hay preguntas con muchos errores. ¡Buen trabajo del curso!</p>
+          </div>
+        ) : (
+          <ul className="tp-fails">
+            {failed.map((f, i) => (
+              <li key={f.questionId}>
+                <p>{f.prompt}</p>
+                <div className="tp-fail-row">
+                  <span className="tp-bar danger">
+                    <motion.span initial={{ width: 0 }} animate={{ width: `${(f.fails / maxFail) * 100}%` }} transition={{ duration: 0.7, delay: i * 0.08 }} />
+                  </span>
+                  <small>{f.fails} {f.fails === 1 ? "error" : "errores"}</small>
+                </div>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+
+      <section className="tp-panel">
+        <header>
+          <h3>Estado del contenido</h3>
+          <span className="tp-pill">{all} en total</span>
+        </header>
+        <div className="tp-stack">
+          {[...totals.entries()].map(([st, n]) => (
+            <motion.span key={st} title={STATUS_LABEL[st]?.t ?? st} style={{ background: STATUS_LABEL[st]?.c ?? "var(--suave)" }} initial={{ width: 0 }} animate={{ width: `${(n / all) * 100}%` }} transition={{ duration: 0.8 }} />
+          ))}
+        </div>
+        <ul className="tp-legend">
+          {[...totals.entries()].map(([st, n]) => (
+            <li key={st}>
+              <i style={{ background: STATUS_LABEL[st]?.c ?? "var(--suave)" }} /> {STATUS_LABEL[st]?.t ?? st} <b>{n}</b>
+            </li>
+          ))}
+        </ul>
+        <p className="tp-muted">Las rechazadas por la IA nunca llegan a los alumnos: quedan como evidencia de que el control funciona.</p>
+      </section>
     </div>
   );
 }
