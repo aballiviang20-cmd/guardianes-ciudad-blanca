@@ -21,6 +21,7 @@ y con hora real. Zona horaria: Bolivia (UTC-4).
 | 11:45 | Fondos de los 4 lugares y llama Kusi | Generados con ChatGPT a pedido del equipo |
 | 11:56 | Modo offline completo y avatar en la ruta | Claude Code |
 | 12:20 | Arte unificado en estilo vectorial 2D: Sofía (antes Vale), Orki, Kusi y nuevos Tata Julián, Juanita (cholita) y Bruno (deportista); fondos redibujados; desfile animado | El equipo eligió personajes y estilo; hojas con ChatGPT; recorte e integración con Claude Code |
+| 12:45 | Mateo y Wara redibujados con la misma calidad; diversidad de tonos de piel (Mateo, Wara, Juanita, Tata Julián); personajes animados todo el tiempo | Pedido del equipo; hojas con ChatGPT; integración con Claude Code |
 
 ## Historial de commits (generado desde git)
 - 10:16 · chore: estructura del proyecto, plan, declaración de IA y fichas de prueba
