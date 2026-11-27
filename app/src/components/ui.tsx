@@ -168,6 +168,12 @@ export const Icon = {
       <path d="M9 5l7 7-7 7" />
     </svg>
   ),
+  heart: (s = 22) => (
+    <svg width={s} height={s} viewBox="0 0 24 24" aria-hidden>
+      <path d="M12 21s-7.5-4.6-9.6-9.3C.9 8.2 3 4.5 6.6 4.5c2.1 0 3.6 1.2 5.4 3.2 1.8-2 3.3-3.2 5.4-3.2 3.6 0 5.7 3.7 4.2 7.2C19.5 16.4 12 21 12 21z" fill="currentColor" />
+      <path d="M7 7.5c-1.2.3-2 1.3-2 2.6" stroke="#fff" strokeWidth="1.6" strokeLinecap="round" fill="none" opacity=".6" />
+    </svg>
+  ),
   star: (s = 26) => (
     <svg width={s} height={s} viewBox="0 0 24 24" aria-hidden>
       <path d="M12 2.5l2.9 6 6.6.8-4.9 4.6 1.3 6.6L12 17.3l-5.9 3.2 1.3-6.6L2.5 9.3l6.6-.8z" fill="currentColor" />

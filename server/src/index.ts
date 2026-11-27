@@ -127,6 +127,26 @@ app.post("/api/events", (req, res) => {
   res.json({ received: events.length, accepted });
 });
 
+/** Fondos ilustrados (generados por el equipo con ChatGPT) en data/fondos/{id}.(webp|png|jpg). */
+const FONDOS_DIR = path.join(DATA_DIR, "fondos");
+app.use("/fondos", express.static(FONDOS_DIR, { maxAge: "1h" }));
+app.get("/api/fondos", (_req, res) => {
+  const out: Record<string, string> = {};
+  if (fs.existsSync(FONDOS_DIR)) {
+    for (const f of fs.readdirSync(FONDOS_DIR)) {
+      const m = f.match(/^([a-z0-9-]+)\.(webp|png|jpe?g)$/i);
+      if (m) out[m[1]] = `/fondos/${f}`;
+    }
+  }
+  res.json(out);
+});
+
+/** Cuentos tipo cómic (clase invertida): contenido curado por el equipo en data/cuentos.json. */
+app.get("/api/cuentos", (_req, res) => {
+  const file = path.join(DATA_DIR, "cuentos.json");
+  res.json(fs.existsSync(file) ? JSON.parse(fs.readFileSync(file, "utf8")) : {});
+});
+
 app.get("/api/league", (_req, res) => {
   res.json({ updatedAt: now(), courses: league() });
 });

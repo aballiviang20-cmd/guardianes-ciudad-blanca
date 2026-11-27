@@ -1,7 +1,8 @@
 import { AnimatePresence, motion } from "motion/react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Mascot } from "../components/Mascot";
+import { CharFace } from "../components/Character";
+import { useCuentos } from "../useCuentos";
 import { MonumentIcon } from "../components/MonumentIcon";
 import { Scene } from "../components/Scene";
 import { StudentShell } from "../components/Shell";
@@ -48,6 +49,8 @@ export function PathPage() {
   const { t, lang } = useT();
   const content = useContent();
   const progress = useStore((s) => s.progress);
+  const avatar = useStore((s) => s.avatar);
+  const cuentos = useCuentos();
   const [open, setOpen] = useState<MonumentContent | null>(null);
   const navigate = useNavigate();
   const monuments = content?.monuments ?? [];
@@ -68,7 +71,9 @@ export function PathPage() {
             ))}
           </div>
         </div>
-        <Mascot size={78} mood={doneCount > 0 ? "wave" : "idle"} />
+        <button className="avatar-btn" onClick={() => navigate("/perfil")} aria-label="Perfil">
+          <CharFace c={avatar.c} face={doneCount > 0 ? "alegre" : "pensativo"} size={72} anim="idle" />
+        </button>
       </section>
 
       {content && monuments.every((m) => !available(m)) && <p className="empty">{t.noContent}</p>}
@@ -117,6 +122,13 @@ export function PathPage() {
                 )}
                 {p?.golden && <span className="node-golden">{Icon.star(15)}</span>}
               </motion.button>
+              <div className="node-stars">
+                {[0, 1, 2].map((k) => (
+                  <span key={k} className={k < (p?.stars ?? 0) ? "on" : ""}>
+                    {Icon.star(16)}
+                  </span>
+                ))}
+              </div>
               <span className="node-label">{isAvailable ? m.name[lang] : t.soon}</span>
             </motion.div>
           );
@@ -150,15 +162,37 @@ export function PathPage() {
                     {Icon.check(14)} {open.questions.length} {t.questions}
                   </span>
                 </div>
+                <div className="steps">
+                  {cuentos?.[open.id] && (
+                    <button className={`step-card ${progress[open.id]?.cuento ? "done" : "next"}`} onClick={() => navigate(`/cuento/${open.id}`)}>
+                      <span className="step-n">{progress[open.id]?.cuento ? Icon.check(18) : "1"}</span>
+                      <span>
+                        <b>{lang === "es" ? "Cuento" : "Story"}</b>
+                        <small>{lang === "es" ? "Primero entérate de la historia" : "First, learn the story"}</small>
+                      </span>
+                    </button>
+                  )}
+                  {open.questions.length > 0 && (
+                    <button className={`step-card ${progress[open.id]?.lesson ? "done" : progress[open.id]?.cuento || !cuentos?.[open.id] ? "next" : ""}`} onClick={() => navigate(`/reto/${open.id}`)}>
+                      <span className="step-n">{progress[open.id]?.lesson ? Icon.check(18) : "2"}</span>
+                      <span>
+                        <b>{t.startChallenge}</b>
+                        <small>
+                          {open.questions.length} {t.questions} · 3 {lang === "es" ? "vidas" : "lives"}
+                        </small>
+                      </span>
+                      <span className="step-stars">
+                        {[0, 1, 2].map((k) => (
+                          <i key={k} className={k < (progress[open.id]?.stars ?? 0) ? "on" : ""}>{Icon.star(14)}</i>
+                        ))}
+                      </span>
+                    </button>
+                  )}
+                </div>
                 {open.stories.length > 0 && (
-                  <Button variant="secondary" block onClick={() => navigate(`/historias/${open.id}`)}>
-                    {t.viewStories}
-                  </Button>
-                )}
-                {open.questions.length > 0 && (
-                  <Button block onClick={() => navigate(`/reto/${open.id}`)}>
-                    {t.startChallenge}
-                  </Button>
+                  <button className="link center" onClick={() => navigate(`/historias/${open.id}`)}>
+                    {lang === "es" ? "Repaso rápido" : "Quick review"}
+                  </button>
                 )}
                 <Button variant="gold" block onClick={() => navigate(`/escanear/${open.id}`)}>
                   {Icon.camera()} {t.scan}

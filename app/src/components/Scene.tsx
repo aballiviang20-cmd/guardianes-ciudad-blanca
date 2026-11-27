@@ -1,5 +1,21 @@
 import { motion } from "motion/react";
-import { useId, type ReactNode } from "react";
+import { useEffect, useId, useState, type ReactNode } from "react";
+
+// Fondos ilustrados del equipo (data/fondos): si existe uno para el lugar, reemplaza al SVG.
+let fondosCache: Record<string, string> | null = null;
+let fondosReq: Promise<Record<string, string>> | null = null;
+function useFondo(id: string) {
+  const [map, setMap] = useState(fondosCache);
+  useEffect(() => {
+    if (fondosCache) return;
+    fondosReq ??= fetch("/api/fondos").then((r) => r.json()).catch(() => ({}));
+    void fondosReq.then((m) => {
+      fondosCache = m;
+      setMap(m);
+    });
+  }, []);
+  return map?.[id] ?? null;
+}
 
 /**
  * Ilustraciones propias de cada lugar, con los cerros Sicasica y Churuquella al fondo.
@@ -8,6 +24,14 @@ import { useId, type ReactNode } from "react";
 export function Scene({ id, animated = true, className = "" }: { id: string; animated?: boolean; className?: string }) {
   const uid = useId().replace(/:/g, "");
   const a = animated;
+  const fondo = useFondo(id);
+  if (fondo) {
+    return (
+      <div className={`scene scene-photo ${className}`}>
+        <motion.img src={fondo} alt="" draggable={false} animate={a ? { scale: [1.02, 1.08, 1.02], x: [0, -6, 0] } : undefined} transition={{ duration: 18, repeat: Infinity, ease: "easeInOut" }} />
+      </div>
+    );
+  }
   return (
     <svg viewBox="0 0 320 210" className={`scene ${className}`} preserveAspectRatio="xMidYMax slice" aria-hidden>
       <defs>

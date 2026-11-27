@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { flushQueue } from "../api";
 import { Burst, DrawCheck } from "../components/Burst";
-import { Mascot } from "../components/Mascot";
+import { CharFace } from "../components/Character";
 import { Button, Icon, ProgressBar } from "../components/ui";
 import { bouncy, snappy } from "../motion";
 import { pick, pickList, useT } from "../i18n";
@@ -94,6 +94,9 @@ export function LessonPage() {
   const [pulse, setPulse] = useState(0);
   const [reported, setReported] = useState(false);
   const [timeLeft, setTimeLeft] = useState(ORDER_SECONDS);
+  const [hearts, setHearts] = useState(3);
+  const [mistakes, setMistakes] = useState(0);
+  const [outOfLives, setOutOfLives] = useState(false);
 
   const q = questions[idx];
   const options = useMemo(() => (q ? pickList(q, "options", lang) : []), [q, lang]);
@@ -141,20 +144,37 @@ export function LessonPage() {
       sfx.correct();
     } else {
       setCombo(0);
+      setMistakes((x) => x + 1);
+      setHearts((h) => Math.max(0, h - 1));
       sfx.wrong();
     }
     track("answer", { questionId: q.id, correct: ok ? 1 : 0 });
   }
 
   function next() {
+    if (hearts <= 0) {
+      setOutOfLives(true);
+      return;
+    }
     if (idx < questions.length - 1) {
       setIdx(idx + 1);
       return;
     }
     if (!m) return;
-    completeLesson(m.id, correctCount, questions.length);
+    const stars = completeLesson(m.id, correctCount, questions.length, mistakes);
     void flushQueue();
-    navigate(`/resultado/${m.id}`, { state: { correct: correctCount, total: questions.length } });
+    navigate(`/resultado/${m.id}`, { state: { correct: correctCount, total: questions.length, stars } });
+  }
+
+  function restart() {
+    setIdx(0);
+    setHearts(3);
+    setMistakes(0);
+    setCorrectCount(0);
+    setCombo(0);
+    setOutOfLives(false);
+    setResult(null);
+    setSelected(null);
   }
 
   function reportError() {
@@ -185,6 +205,18 @@ export function LessonPage() {
             </motion.span>
           )}
         </AnimatePresence>
+        <div className="hearts" aria-label={`${hearts} vidas`}>
+          {[0, 1, 2].map((k) => (
+            <motion.span
+              key={k}
+              className={`heart ${k < hearts ? "on" : "off"}`}
+              animate={k === hearts ? { scale: [1, 1.5, 0.8, 1], rotate: [0, -15, 10, 0] } : { scale: 1 }}
+              transition={{ duration: 0.5 }}
+            >
+              {Icon.heart(22)}
+            </motion.span>
+          ))}
+        </div>
       </div>
 
       <AnimatePresence mode="wait">
@@ -200,7 +232,13 @@ export function LessonPage() {
             {q.type === "order" && Icon.clock(15)} {hint}
           </span>
           <div className="question-head">
-            <Mascot size={92} mood={result === true ? "happy" : result === false ? "sad" : "idle"} pulse={pulse} />
+            <CharFace
+              c="orki"
+              size={96}
+              face={result === true ? (combo >= 3 ? "chistoso" : "alegre") : result === false ? "triste" : q.type === "order" && timeLeft <= 8 ? "sorprendido" : "pensativo"}
+              anim={result === true ? "jump" : result === false ? "sad" : "idle"}
+              pulse={pulse}
+            />
             {!fill && (
               <motion.div className="speech" initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ ...bouncy, delay: 0.1 }}>
                 <h2>{prompt}</h2>
@@ -298,6 +336,24 @@ export function LessonPage() {
             <Button variant={result ? "success" : "danger"} block onClick={next}>
               {t.continue}
             </Button>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {outOfLives && (
+          <motion.div className="sheet-backdrop" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+            <motion.div className="no-lives" initial={{ y: 60, scale: 0.9 }} animate={{ y: 0, scale: 1 }} transition={bouncy}>
+              <CharFace c="orki" face="triste" size={130} anim="sad" />
+              <h2 className="serif">{lang === "es" ? "¡Te quedaste sin vidas!" : "Out of lives!"}</h2>
+              <p>{lang === "es" ? "Repasa el cuento y vuelve a intentarlo. ¡Tú puedes!" : "Review the story and try again. You can do it!"}</p>
+              <Button variant="secondary" block onClick={() => navigate(`/cuento/${m.id}`)}>
+                {lang === "es" ? "Ver el cuento otra vez" : "Read the story again"}
+              </Button>
+              <Button block onClick={restart}>
+                {lang === "es" ? "Intentar de nuevo" : "Try again"}
+              </Button>
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>

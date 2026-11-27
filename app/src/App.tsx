@@ -2,6 +2,9 @@ import { AnimatePresence, motion } from "motion/react";
 import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import { pageVariants } from "./motion";
 import { AlbumPage } from "./pages/Album";
+import { CuentoPage, PublicCuentoPage } from "./pages/CuentoPage";
+import { PostersPage } from "./pages/Posters";
+import { ProfilePage } from "./pages/Profile";
 import { EvidencePage } from "./pages/Evidence";
 import { GuardianPage } from "./pages/Guardian";
 import { LabelPage } from "./pages/Label";
@@ -27,12 +30,16 @@ export function App() {
           <Route path="/evidencia" element={<EvidencePage />} />
           <Route path="/evidencia/etiquetar" element={<LabelPage />} />
           <Route path="/entrenar" element={<TrainPage />} />
+          <Route path="/carteles" element={<PostersPage />} />
+          <Route path="/historia/:id" element={<PublicCuentoPage />} />
           {!profile ? (
             <Route path="*" element={<Welcome />} />
           ) : (
             <>
               <Route path="/" element={<PathPage />} />
               <Route path="/historias/:id" element={<StoriesPage />} />
+              <Route path="/cuento/:id" element={<CuentoPage />} />
+              <Route path="/perfil" element={<ProfilePage />} />
               <Route path="/reto/:id" element={<LessonPage />} />
               <Route path="/resultado/:id" element={<ResultPage />} />
               <Route path="/escanear/:id" element={<ScanPage />} />

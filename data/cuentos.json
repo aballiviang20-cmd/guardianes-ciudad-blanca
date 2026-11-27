@@ -1,0 +1,58 @@
+{
+  "_nota": "Cuentos tipo cómic (clase invertida). Cada dato sale de data/fichas. Revisar antes de la demo.",
+  "san-lazaro": {
+    "title_es": "El primer templo", "title_en": "The first church",
+    "panels": [
+      { "who": "orki", "pose": "mueve", "sfx": "¡FIUUU!", "text_es": "¡Súbanse! Hoy viajamos a 1538, cuando la ciudad de La Plata —tu Sucre— recién nacía.", "text_en": "Hop on! Today we travel to 1538, when the city of La Plata —your Sucre— was just born." },
+      { "who": "mateo", "face": "sorprendido", "text_es": "¿1538? ¡Eso es casi 500 años atrás!", "text_en": "1538? That's almost 500 years ago!" },
+      { "who": "orki", "face": "pensativo", "text_es": "Aquí se levantó el primer templo de la ciudad: San Lázaro. Una capilla pequeña de adobe, techo de paja y altar de barro.", "text_en": "The city's first church rose here: San Lázaro. A small adobe chapel with a straw roof and a clay altar." },
+      { "who": "wara", "face": "chistoso", "text_es": "O sea… la primera iglesia de Sucre era de barro y paja. Ni wifi tenía.", "text_en": "So… Sucre's first church was mud and straw. Not even wifi." },
+      { "who": "orki", "face": "alegre", "text_es": "¡Ja! ¿Y el nombre? La obra empezó un 17 de diciembre, el día en que se recordaba la Resurrección de Lázaro.", "text_en": "Ha! And the name? Work began on December 17, the day the Resurrection of Lazarus was remembered." },
+      { "who": "vale", "face": "sorprendido", "sfx": "¡DEBATE!", "text_es": "¿Y es cierto que ahí se reunían las autoridades?", "text_en": "Is it true the authorities met there?" },
+      { "who": "orki", "pose": "sucre", "text_es": "Sí. En 1544 debatieron ahí si obedecer al Rey o a Pizarro… ¡y La Plata eligió al Rey!", "text_en": "Yes. In 1544 they debated there whether to obey the King or Pizarro… and La Plata chose the King!" },
+      { "who": "mateo", "face": "pensativo", "text_es": "¿Y antes de la iglesia qué había en ese lugar?", "text_en": "And before the church, what was there?" },
+      { "who": "orki", "face": "pensativo", "text_es": "Probablemente una waca: un lugar sagrado, quizá de los yamparas. Los lugares de tu ciudad tienen capas de historia.", "text_en": "Probably a waka: a sacred place, perhaps Yampara. Your city's places have layers of history." },
+      { "who": "orki", "pose": "salta", "sfx": "¡A JUGAR!", "text_es": "En 1679 empezaron una iglesia nueva y más grande. ¿Listos para el reto?", "text_en": "In 1679 they started a new, bigger church. Ready for the challenge?" }
+    ]
+  },
+  "catedral": {
+    "title_es": "El gigante de la plaza", "title_en": "The giant on the square",
+    "panels": [
+      { "who": "orki", "pose": "mueve", "text_es": "Esta es la Catedral Metropolitana: el mayor monumento religioso de Charcas.", "text_en": "This is the Metropolitan Cathedral: the greatest religious monument of Charcas." },
+      { "who": "vale", "face": "alegre", "text_es": "¡La de la plaza! Siempre me saco fotos ahí.", "text_en": "The one on the square! I always take photos there." },
+      { "who": "orki", "face": "sorprendido", "sfx": "¡1712!", "text_es": "Su construcción recién terminó por completo en 1712.", "text_en": "Its construction was only fully finished in 1712." },
+      { "who": "wara", "face": "chistoso", "text_es": "Tardó más que mi tarea de mate.", "text_en": "It took longer than my math homework." },
+      { "who": "orki", "face": "pensativo", "text_es": "Nació renacentista y después la decoraron con detalles barrocos. Adentro tiene tres naves con bóvedas de nervaduras que recuerdan al gótico.", "text_en": "It was born Renaissance and later decorated with Baroque details. Inside, three naves with ribbed vaults recall the Gothic style." },
+      { "who": "mateo", "face": "sorprendido", "text_es": "¿Tres naves? ¿Como de Star Wars?", "text_en": "Three naves? Like Star Wars ships?" },
+      { "who": "orki", "face": "chistoso", "text_es": "Jaja, no. Una nave es cada pasillo largo de una iglesia.", "text_en": "Haha, no. A nave is each long aisle of a church." },
+      { "who": "orki", "pose": "salta", "text_es": "La puerta barroca que mira a la plaza la hizo el arquitecto González Merquete. ¡Búscala la próxima vez!", "text_en": "The Baroque doorway facing the square was made by architect González Merquete. Look for it next time!" }
+    ]
+  },
+  "casa-libertad": {
+    "title_es": "Donde nació Bolivia", "title_en": "Where Bolivia was born",
+    "panels": [
+      { "who": "orki", "pose": "bolivia", "sfx": "¡1825!", "text_es": "Llegamos a la Casa de la Libertad, frente a la Plaza 25 de Mayo.", "text_en": "We've reached the House of Freedom, facing Plaza 25 de Mayo." },
+      { "who": "mateo", "face": "pensativo", "text_es": "¿Y qué pasó aquí?", "text_en": "So what happened here?" },
+      { "who": "orki", "face": "alegre", "text_es": "Aquí se firmó el Acta de la Independencia de Bolivia, el 6 de agosto de 1825.", "text_en": "Bolivia's Declaration of Independence was signed here on August 6, 1825." },
+      { "who": "wara", "face": "sorprendido", "text_es": "Espera… ¿Bolivia nació en Sucre?", "text_en": "Wait… Bolivia was born in Sucre?" },
+      { "who": "orki", "face": "pensativo", "text_es": "Y antes hubo un grito: el 25 de mayo de 1809, Chuquisaca se levantó. En Bolivia se lo conoce como el Primer Grito Libertario.", "text_en": "And before that came a cry: on May 25, 1809, Chuquisaca rose up. Bolivia calls it the First Cry for Freedom." },
+      { "who": "vale", "face": "sorprendido", "text_es": "Y yo pasando por ahí todos los días sin saberlo…", "text_en": "And I walk past it every day without knowing…" },
+      { "who": "orki", "pose": "salta", "text_es": "Hoy es un museo que guarda documentos y objetos de la independencia. ¿Al reto?", "text_en": "Today it's a museum that keeps documents and objects from independence. Ready?" }
+    ]
+  },
+  "sucre": {
+    "title_es": "Tu ciudad, patrimonio del mundo", "title_en": "Your city, world heritage",
+    "panels": [
+      { "who": "orki", "pose": "sucre", "sfx": "¡1991!", "text_es": "Última parada: en 1991 Sucre fue declarada Patrimonio de la Humanidad.", "text_en": "Last stop: in 1991 Sucre was declared a World Heritage Site." },
+      { "who": "mateo", "face": "pensativo", "text_es": "¿Patrimonio? ¿Eso no son solo cosas viejas?", "text_en": "Heritage? Isn't that just old stuff?" },
+      { "who": "orki", "face": "alegre", "text_es": "No. Patrimonio tiene que ver con pertenencia: sentir que un lugar también es tuyo.", "text_en": "No. Heritage is about belonging: feeling that a place is also yours." },
+      { "who": "wara", "face": "pensativo", "text_es": "Mmm… o sea que la ciudad también dice quiénes somos.", "text_en": "Hmm… so the city also says who we are." },
+      { "who": "orki", "face": "chistoso", "text_es": "¡Exacto! El patrimonio está muy unido a la identidad.", "text_en": "Exactly! Heritage is closely tied to identity." },
+      { "who": "vale", "face": "sorprendido", "text_es": "¿Y cuántos patrimonios así tiene Bolivia?", "text_en": "And how many like that does Bolivia have?" },
+      { "who": "orki", "pose": "bolivia", "text_es": "Once. Tres son coloniales: Potosí, Sucre y las Misiones de Chiquitos.", "text_en": "Eleven. Three are colonial: Potosí, Sucre and the Chiquitos Missions." },
+      { "who": "mateo", "face": "alegre", "text_es": "¿Y por qué Sucre está tan bien cuidada?", "text_en": "And why is Sucre so well kept?" },
+      { "who": "orki", "face": "pensativo", "text_es": "Por su gente. Además, cientos de jóvenes aprendieron oficios para restaurar edificios.", "text_en": "Because of its people. Also, hundreds of young people learned trades to restore buildings." },
+      { "who": "orki", "pose": "salta", "sfx": "¡GUARDIÁN!", "text_es": "Ahora te toca a ti cuidarla. ¿Listo para el reto?", "text_en": "Now it's your turn to take care of it. Ready for the challenge?" }
+    ]
+  }
+}

@@ -1,8 +1,9 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import type { CharId, Outfit } from "./characters";
 import type { Lang, LessonsResponse } from "./types";
 
-export type Progress = { stories: boolean; lesson: boolean; best: number; golden: boolean };
+export type Progress = { stories: boolean; cuento?: boolean; lesson: boolean; best: number; golden: boolean; stars?: number };
 export type QueuedEvent = { eventId: string; alias: string; course: string; type: string; payload: Record<string, unknown>; ts: string };
 export type PendingReport = { id: string; course: string; monumentId?: string; itemId?: string; kind: "dano" | "error_contenido"; damageType?: string; text: string };
 
@@ -21,6 +22,7 @@ const uid = () => (crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Ma
 
 type State = {
   profile: { alias: string; course: string } | null;
+  avatar: { c: CharId; outfit: Outfit };
   lang: Lang;
   juvenil: boolean;
   muted: boolean;
@@ -31,6 +33,8 @@ type State = {
   reports: PendingReport[];
   content: LessonsResponse | null;
   setProfile: (alias: string, course: string) => void;
+  setAvatar: (c: CharId, outfit?: Outfit) => void;
+  completeCuento: (monumentId: string) => void;
   logout: () => void;
   setLang: (l: Lang) => void;
   toggleJuvenil: () => void;
@@ -38,7 +42,7 @@ type State = {
   setContent: (c: LessonsResponse) => void;
   track: (type: string, payload?: Record<string, unknown>) => void;
   completeStories: (monumentId: string) => void;
-  completeLesson: (monumentId: string, correct: number, total: number) => void;
+  completeLesson: (monumentId: string, correct: number, total: number, mistakes?: number) => number;
   unlockGolden: (monumentId: string) => void;
   addReport: (r: Omit<PendingReport, "id" | "course">) => void;
   dequeueEvents: (ids: string[]) => void;
@@ -51,6 +55,7 @@ export const useStore = create<State>()(
   persist(
     (set, get) => ({
       profile: null,
+      avatar: { c: "mateo", outfit: "casual" },
       lang: "es",
       juvenil: false,
       muted: false,
@@ -61,6 +66,12 @@ export const useStore = create<State>()(
       reports: [],
       content: null,
       setProfile: (alias, course) => set({ profile: { alias: alias.trim(), course: course.trim().toUpperCase() } }),
+      setAvatar: (c, outfit) => set({ avatar: { c, outfit: outfit ?? (get().avatar.c === c ? get().avatar.outfit : "casual") } }),
+      completeCuento: (id) => {
+        const prev = get().progress[id] ?? emptyProgress;
+        if (!prev.cuento) get().track("stories_completed", { monumentId: id, kind: "cuento" });
+        set({ progress: { ...get().progress, [id]: { ...prev, cuento: true, stories: true } } });
+      },
       logout: () => set({ profile: null, xp: 0, progress: {}, streak: { count: 0, lastDay: null } }),
       setLang: (lang) => set({ lang }),
       toggleJuvenil: () => set({ juvenil: !get().juvenil }),
@@ -77,13 +88,16 @@ export const useStore = create<State>()(
         if (!prev.stories) get().track("stories_completed", { monumentId: id });
         set({ progress: { ...get().progress, [id]: { ...prev, stories: true } } });
       },
-      completeLesson: (id, correct, total) => {
+      completeLesson: (id, correct, total, mistakes = 0) => {
         const prev = get().progress[id] ?? emptyProgress;
-        get().track("lesson_completed", { monumentId: id, correct, total });
+        // Estrellas: 3 sin errores, 2 con un error, 1 al completar.
+        const stars = mistakes === 0 ? 3 : mistakes === 1 ? 2 : 1;
+        get().track("lesson_completed", { monumentId: id, correct, total, stars });
         const s = get().streak;
         const streak =
           s.lastDay === today() ? s : { count: s.lastDay === yesterday() ? s.count + 1 : 1, lastDay: today() };
-        set({ streak, progress: { ...get().progress, [id]: { ...prev, lesson: true, best: Math.max(prev.best, correct) } } });
+        set({ streak, progress: { ...get().progress, [id]: { ...prev, lesson: true, best: Math.max(prev.best, correct), stars: Math.max(prev.stars ?? 0, stars) } } });
+        return stars;
       },
       unlockGolden: (id) => {
         const prev = get().progress[id] ?? emptyProgress;

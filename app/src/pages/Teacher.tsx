@@ -463,6 +463,9 @@ export function TeacherPage() {
           <Link to="/entrenar" className="tab-link">
             Cámara
           </Link>
+          <Link to="/carteles" className="tab-link">
+            Carteles QR
+          </Link>
         </nav>
       </header>
       <motion.div key={tab} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
