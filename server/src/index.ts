@@ -4,7 +4,7 @@ import { randomUUID } from "node:crypto";
 import cors from "cors";
 import express, { type NextFunction, type Request, type Response } from "express";
 import { db, now } from "./db";
-import { getFichas, loadFichas, loadMonuments, retrieve } from "./fichas";
+import { addSource, fichasSummary, getFichas, loadFichas, loadMonuments, retrieve } from "./fichas";
 import { league } from "./league";
 import { draft, GenerationError, itemsOfBatch, judgeBatch, rowToItem, verifyBatch, type ItemRow } from "./pipeline";
 import { redactPII } from "./pii";
@@ -182,6 +182,20 @@ teacher.use(requireTeacher);
 teacher.post("/fichas/reload", (_req, res) => {
   const { fichas } = loadFichas();
   res.json({ fichas: [...fichas.values()].map((f) => ({ id: f.monumentId, fragments: f.fragments.length, draft: f.draft })) });
+});
+
+// Lo que la IA conoce de cada lugar y subida de información nueva del docente
+teacher.get("/fichas", (_req, res) => {
+  res.json({ places: fichasSummary() });
+});
+
+teacher.post("/fichas/:id/fuente", (req, res) => {
+  try {
+    const { title, text } = req.body ?? {};
+    res.json(addSource(String(req.params.id), String(title ?? ""), String(text ?? "")));
+  } catch (e) {
+    res.status(400).json({ error: e instanceof Error ? e.message : "No se pudo guardar" });
+  }
 });
 
 teacher.post("/generate/retrieve", (req, res) => {
