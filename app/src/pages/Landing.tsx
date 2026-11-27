@@ -452,6 +452,152 @@ function TutorialPlayer({ title, scenes, teacher }: { title: string; scenes: Sce
   );
 }
 
+/* ---------- Motion graphics estilo Duolingo: franjas, filas alternadas y cierre con Orki guiñando ---------- */
+const BAND = ["1538 · San Lázaro", "1552 · Catedral", "1809 · Primer Grito", "1825 · Casa de la Libertad", "1991 · Patrimonio de la Humanidad", "Cal Orck'o", "Tarabuco", "Cueca chuquisaqueña"];
+
+function Marquee() {
+  return (
+    <div className="ld-band" aria-hidden>
+      <motion.div className="ld-band-track" animate={{ x: ["0%", "-50%"] }} transition={{ duration: 28, repeat: Infinity, ease: "linear" }}>
+        {[...BAND, ...BAND].map((t, i) => (
+          <span key={i}>
+            <i>★</i> {t}
+          </span>
+        ))}
+      </motion.div>
+    </div>
+  );
+}
+
+const ROWS: { word: string; title: string; text: string; color: string; art: "comic" | "levels" | "source" | "guardian" }[] = [
+  { word: "divertido.", title: "Historia en cómics", text: "Cada parada empieza con una historieta contada por los guardianes. Primero te ríes, después aprendes.", color: "#2e9e5b", art: "comic" },
+  { word: "a tu nivel.", title: "Fácil, medio o difícil", text: "4to y 6to de secundaria tienen su propio camino. Retos de 2 minutos con 3 vidas y explicación de cada respuesta.", color: "#3b82c4", art: "levels" },
+  { word: "verificado.", title: "Nada inventado", text: "La IA propone, el profe aprueba. Cada pregunta muestra la frase exacta de su fuente.", color: "#c0532d", art: "source" },
+  { word: "para cuidar.", title: "Misión guardián", text: "Reporta daños en los monumentos y gana la figurita dorada escaneando el QR en el lugar.", color: "#a8760c", art: "guardian" },
+];
+
+function RowArt({ art }: { art: (typeof ROWS)[number]["art"] }) {
+  const float = { animate: { y: [0, -10, 0] }, transition: { duration: 3.2, repeat: Infinity, ease: "easeInOut" as const } };
+  if (art === "comic")
+    return (
+      <div className="ldr-art ldr-comic">
+        <img src="/fondos/san-lazaro.webp" alt="" />
+        <motion.div className="ldr-char" {...float}>
+          <CharPose c="wara" pose="salta" size={170} anim="idle" />
+        </motion.div>
+        <motion.span className="ldr-bubble" initial={{ scale: 0, rotate: -8 }} whileInView={{ scale: 1, rotate: 0 }} viewport={{ once: false }} transition={{ type: "spring", stiffness: 260, damping: 12, delay: 0.3 }}>
+          ¡La primera iglesia era de barro y paja!
+        </motion.span>
+        <motion.span className="ldr-sfx" animate={{ scale: [1, 1.15, 1], rotate: [-6, 4, -6] }} transition={{ duration: 1.6, repeat: Infinity }}>
+          ¡1538!
+        </motion.span>
+      </div>
+    );
+  if (art === "levels")
+    return (
+      <div className="ldr-art levels">
+        {["Fácil", "Medio", "Difícil"].map((d, i) => (
+          <motion.span key={d} className={`lvl l${i}`} initial={{ x: 60, opacity: 0 }} whileInView={{ x: 0, opacity: 1 }} transition={{ delay: 0.15 * i, type: "spring", stiffness: 240, damping: 16 }} whileHover={{ scale: 1.06 }}>
+            {d}
+          </motion.span>
+        ))}
+        <div className="ldr-hearts">
+          {[0, 1, 2].map((i) => (
+            <motion.span key={i} animate={{ scale: [1, 1.25, 1] }} transition={{ duration: 1.2, repeat: Infinity, delay: i * 0.2 }}>
+              ❤
+            </motion.span>
+          ))}
+        </div>
+        <motion.div className="ldr-char small" {...float}>
+          <CharPose c="mateo" pose="salta" size={130} anim="idle" />
+        </motion.div>
+      </div>
+    );
+  if (art === "source")
+    return (
+      <div className="ldr-art source">
+        <div className="ldr-doc">
+          <small>Fuente · Casa de la Libertad</small>
+          <p>
+            Aquí se firmó el{" "}
+            <motion.mark initial={{ backgroundSize: "0% 100%" }} whileInView={{ backgroundSize: "100% 100%" }} transition={{ duration: 1.2, delay: 0.3 }}>
+              Acta de la Independencia, el 6 de agosto de 1825
+            </motion.mark>
+            .
+          </p>
+          <motion.span className="ldr-ok" initial={{ scale: 0 }} whileInView={{ scale: 1 }} transition={{ delay: 1.4, type: "spring", stiffness: 320, damping: 12 }}>
+            ✓ Cita verificada
+          </motion.span>
+        </div>
+        <motion.div className="ldr-char small" {...float}>
+          <CharPose c="juanita" pose="bolivia" size={140} anim="idle" />
+        </motion.div>
+      </div>
+    );
+  return (
+    <div className="ldr-art guardian">
+      <motion.div className="ldr-shield" animate={{ rotate: [0, -6, 6, 0], scale: [1, 1.05, 1] }} transition={{ duration: 2.4, repeat: Infinity }}>
+        🛡️
+      </motion.div>
+      <motion.div className="ldr-card-gold" animate={{ rotateY: [0, 12, -12, 0] }} transition={{ duration: 4, repeat: Infinity }}>
+        <img src="/fondos/catedral.webp" alt="" />
+        <b>Figurita dorada</b>
+      </motion.div>
+      <motion.div className="ldr-char small" {...float}>
+        <CharPose c="bruno" pose="sucre" size={150} anim="idle" />
+      </motion.div>
+    </div>
+  );
+}
+
+function FeatureRows() {
+  return (
+    <section className="ld-rows">
+      {ROWS.map((r, i) => (
+        <div key={r.word} className={`ld-row ${i % 2 ? "rev" : ""}`}>
+          <motion.div className="ld-row-txt" initial={{ opacity: 0, x: i % 2 ? 50 : -50 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true, amount: 0.4 }} transition={{ type: "spring", stiffness: 160, damping: 20 }}>
+            <h2 style={{ color: r.color }}>{r.word}</h2>
+            <b>{r.title}</b>
+            <p>{r.text}</p>
+          </motion.div>
+          <motion.div initial={{ opacity: 0, scale: 0.85, rotate: i % 2 ? 3 : -3 }} whileInView={{ opacity: 1, scale: 1, rotate: 0 }} viewport={{ once: true, amount: 0.3 }} transition={{ type: "spring", stiffness: 160, damping: 18 }}>
+            <RowArt art={r.art} />
+          </motion.div>
+        </div>
+      ))}
+    </section>
+  );
+}
+
+function FinalCta() {
+  return (
+    <section className="ld-final">
+      <motion.div className="ld-final-orki" initial={{ scale: 0.4, opacity: 0, rotate: -20 }} whileInView={{ scale: 1, opacity: 1, rotate: 0 }} viewport={{ once: true }} transition={{ type: "spring", stiffness: 200, damping: 12 }}>
+        <CharFace c="orki" face="chistoso" size={170} anim="idle" />
+      </motion.div>
+      <motion.h2 initial={{ y: 30, opacity: 0 }} whileInView={{ y: 0, opacity: 1 }} viewport={{ once: true }} transition={{ delay: 0.2 }}>
+        aprende con historybol.
+      </motion.h2>
+      <Link to="/">
+        <motion.span className="ld-final-btn" whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.96 }} animate={{ y: [0, -4, 0] }} transition={{ duration: 1.8, repeat: Infinity }}>
+          EMPEZAR AHORA
+        </motion.span>
+      </Link>
+      {[...Array(14)].map((_, k) => (
+        <motion.i
+          key={k}
+          className="ld-spark"
+          style={{ left: `${(k * 37) % 100}%`, top: `${(k * 53) % 100}%` }}
+          animate={{ y: [0, -14, 0], opacity: [0.2, 0.9, 0.2], rotate: [0, 90, 180] }}
+          transition={{ duration: 2.6 + (k % 4) * 0.5, repeat: Infinity, delay: k * 0.2 }}
+        >
+          ★
+        </motion.i>
+      ))}
+    </section>
+  );
+}
+
 const PARADE: CharId[] = ["mateo", "sofia", "orki", "juanita", "wara", "kusi", "bruno", "julian"];
 
 export function LandingPage() {
@@ -487,9 +633,13 @@ export function LandingPage() {
           </div>
         </div>
         <div className="ld-hero-txt">
-          <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-            La forma divertida de conocer y cuidar tu ciudad.
-          </motion.h1>
+          <h1>
+            {"La forma divertida de conocer y cuidar tu ciudad.".split(" ").map((w, k) => (
+              <motion.span key={k} className="ld-word" initial={{ opacity: 0, y: 24, rotate: -4 }} animate={{ opacity: 1, y: 0, rotate: 0 }} transition={{ delay: 0.15 + k * 0.07, type: "spring", stiffness: 260, damping: 18 }}>
+                {w}{" "}
+              </motion.span>
+            ))}
+          </h1>
           <p>Cómics, retos y figuritas sobre el patrimonio de Sucre, con contenido verificado por tu profe.</p>
           <div className="ld-ctas">
             <Link to="/">
@@ -503,6 +653,9 @@ export function LandingPage() {
           </div>
         </div>
       </section>
+
+      <Marquee />
+      <FeatureRows />
 
       <section className="ld-sec" id="como">
         <h2>Cómo funciona</h2>
@@ -574,6 +727,8 @@ export function LandingPage() {
           ))}
         </div>
       </section>
+
+      <FinalCta />
 
       <footer className="ld-foot">
         <CharPose c="orki" pose="bolivia" size={110} anim="wave" />
