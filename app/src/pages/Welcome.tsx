@@ -96,6 +96,9 @@ export function Welcome() {
               <button className="link-btn account-link" onClick={() => setStep(3)}>
                 {lang === "es" ? "🎓 Tengo cuenta de mi colegio" : "🎓 I have a school account"}
               </button>
+              <a className="link-btn account-link" href="/conoce">
+                {lang === "es" ? "▶ ¿Qué es Guardianes? Mira el tutorial" : "▶ What is this? Watch the tutorial"}
+              </a>
             </motion.div>
           ) : step === 3 ? (
             <motion.div key="s3" className="welcome-step" initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -30 }}>

@@ -41,7 +41,7 @@ const DOCENTE: Scene[] = [
 ];
 
 /** Duración de cada escena: según el largo del texto (si no hay voz) o hasta que la voz termina. */
-const sceneMs = (t: string) => Math.max(7000, t.length * 68);
+const sceneMs = (t: string) => Math.max(9000, t.length * 92);
 
 function pickVoice() {
   const vs = window.speechSynthesis?.getVoices() ?? [];

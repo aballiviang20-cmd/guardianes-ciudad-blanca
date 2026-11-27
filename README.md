@@ -9,6 +9,26 @@ Hackathon Regional 2026 · Sede Sucre · Problemática 2.
 | No se identifican ni valoran su legado | **Colecciona:** álbum de figuritas; la dorada se gana en el lugar |
 | No se involucran en su preservación | **Protege:** Misión guardián para reportar daños |
 
+## Usarla desde GitHub (sin instalar nada)
+
+[![Abrir en GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/aballiviang20-cmd/guardianes-ciudad-blanca)
+
+1. Toque el botón: GitHub crea el entorno, instala, compila, carga el contenido y abre la app en el puerto 8787.
+2. **Página pública con tutoriales:** `/conoce` (tipo Duolingo; tutoriales de 2 min narrados por Orki).
+3. **Docente:** `/docente` → usuario `profe.vargas` (ver contraseña en [docs/CUENTAS_DEMO.md](docs/CUENTAS_DEMO.md)) → *Revisar* → *Aprobar todas* para publicar el contenido base.
+4. **Alumnas de prueba:** en la bienvenida, «Tengo cuenta de mi colegio» → `camila.4to` (4to, empieza en Fácil) o `lucia.6to` (6to, empieza en Difícil).
+
+Funciona en celular, tablet y computadora (PWA instalable, offline una vez abierta).
+
+## Qué hay en la app
+
+| Para | Qué puede hacer |
+|---|---|
+| Estudiante | Ruta en el tiempo (1538 → 1991), cómic antes de cada reto, retos Fácil / Medio / Difícil con 3 vidas, estrellas, álbum y figurita dorada por QR, Misión guardián, liga de cursos, 8 personajes animados (parpadean, respiran, gesticulan) |
+| Docente | Tablero con próximo paso y actividad en vivo, **subir información** propia por lugar, **crear lección con IA** (con cita obligatoria y doble verificación), **revisar una por una** viendo el celular del alumno, **asignar actividades** a 4TO / 6TO con dificultad y fecha, progreso y reportes |
+
+Niveles: 4to de secundaria empieza en *Fácil* (verdadero/falso y elegir, explicaciones juveniles, relato más corto); 6to en *Difícil* (ordenar en el tiempo y elegir entre años). Cada estudiante puede cambiar la dificultad.
+
 ## Cómo correrlo
 
 Requisitos: Node 22.5 o superior (usa `node:sqlite`, sin dependencias nativas).

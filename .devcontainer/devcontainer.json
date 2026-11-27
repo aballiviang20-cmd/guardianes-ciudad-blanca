@@ -1,0 +1,8 @@
+{
+  "name": "Guardianes de la Ciudad Blanca",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:24",
+  "postCreateCommand": "npm run install:all && npm run build && npm run seed --prefix server",
+  "postAttachCommand": "npm start",
+  "forwardPorts": [8787],
+  "portsAttributes": { "8787": { "label": "Guardianes (app + panel docente)", "onAutoForward": "openBrowser" } }
+}
