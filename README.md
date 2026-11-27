@@ -35,7 +35,7 @@ Hackathon Regional 2026 · Sede Sucre · Problemática 2.
 
 | Entregable | Descarga |
 |---|---|
-| Video de presentación (1:58) | [01_HistoryBol_video.mp4](https://github.com/aballiviang20-cmd/guardianes-ciudad-blanca/raw/main/entrega/01_HistoryBol_video.mp4) |
+| Video de presentación con la voz del equipo (1:48) | [01_HistoryBol_video.mp4](https://github.com/aballiviang20-cmd/guardianes-ciudad-blanca/raw/main/entrega/01_HistoryBol_video.mp4) |
 | Documento del proyecto | [02_HistoryBol_documento.pdf](https://github.com/aballiviang20-cmd/guardianes-ciudad-blanca/raw/main/entrega/02_HistoryBol_documento.pdf) |
 | Guía de elaboración | [03_HistoryBol_guia_de_elaboracion.pdf](https://github.com/aballiviang20-cmd/guardianes-ciudad-blanca/raw/main/entrega/03_HistoryBol_guia_de_elaboracion.pdf) |
 | Documento de la convocatoria (declaración de IA y rúbrica) | [04_HistoryBol_documento_convocatoria.pdf](https://github.com/aballiviang20-cmd/guardianes-ciudad-blanca/raw/main/entrega/04_HistoryBol_documento_convocatoria.pdf) |
@@ -54,7 +54,7 @@ Hackathon Regional 2026 · Sede Sucre · Problemática 2.
 | Production guide | [03_HistoryBol_production_guide_EN.pdf](https://github.com/aballiviang20-cmd/guardianes-ciudad-blanca/raw/main/entrega/english/03_HistoryBol_production_guide_EN.pdf) |
 | Call document (AI declaration and rubric evidence) | [04_HistoryBol_call_document_EN.pdf](https://github.com/aballiviang20-cmd/guardianes-ciudad-blanca/raw/main/entrega/english/04_HistoryBol_call_document_EN.pdf) |
 | Links and quick start | [entrega/english/00_README_links.html](entrega/english/00_README_links.html) |
-| Video (Spanish, subtitled) | [01_HistoryBol_video.mp4](https://github.com/aballiviang20-cmd/guardianes-ciudad-blanca/raw/main/entrega/01_HistoryBol_video.mp4) |
+| Video (Spanish, team voice, subtitled, 1:48) | [01_HistoryBol_video.mp4](https://github.com/aballiviang20-cmd/guardianes-ciudad-blanca/raw/main/entrega/01_HistoryBol_video.mp4) |
 
 **Quick start:** Node.js 22+ · `npm run install:all` · `npm run seed` · `npm start` → http://localhost:8787 (student app with ES/EN switch), `/docente` (teacher panel: Review → Approve all), `/conoce` (presentation).
 
