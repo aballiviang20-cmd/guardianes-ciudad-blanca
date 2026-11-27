@@ -49,7 +49,7 @@ export function login(username: string, password: string): { token: string; user
   const want = Buffer.from(u.hash, "hex");
   if (got.length !== want.length || !crypto.timingSafeEqual(got, want)) return null;
   const exp = Date.now() + TTL_MS;
-  const body = `${u.username}.${u.role}.${exp}`;
+  const body = `${u.username}|${u.role}|${exp}`;
   const sig = crypto.createHmac("sha256", SECRET).update(body).digest("base64url");
   return { token: `${Buffer.from(body).toString("base64url")}.${sig}`, user: publicUser(u) };
 }
@@ -66,7 +66,7 @@ export function verifyToken(token: string | undefined): PublicUser | null {
   }
   const expect = crypto.createHmac("sha256", SECRET).update(body).digest("base64url");
   if (sig.length !== expect.length || !crypto.timingSafeEqual(Buffer.from(sig), Buffer.from(expect))) return null;
-  const [username, , expStr] = body.split(".");
+  const [username, , expStr] = body.split("|");
   if (Number(expStr) < Date.now()) return null;
   const u = loadUsers().find((x) => x.username === username);
   return u ? publicUser(u) : null;

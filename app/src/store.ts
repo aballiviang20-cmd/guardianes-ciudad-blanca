@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { safeChar, type CharId, type Outfit } from "./characters";
-import type { Lang, LessonsResponse } from "./types";
+import type { Lang, LessonsResponse , Difficulty } from "./types";
 
 export type Progress = { stories: boolean; cuento?: boolean; lesson: boolean; best: number; golden: boolean; stars?: number };
 export type QueuedEvent = { eventId: string; alias: string; course: string; type: string; payload: Record<string, unknown>; ts: string };
@@ -22,6 +22,10 @@ const uid = () => (crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Ma
 
 type State = {
   profile: { alias: string; course: string } | null;
+  account: { username: string; name: string; level: "4to" | "6to" | null } | null;
+  difficulty: Difficulty;
+  setAccount: (a: { username: string; name: string; level: "4to" | "6to" | null; course: string }) => void;
+  setDifficulty: (d: Difficulty) => void;
   avatar: { c: CharId; outfit: Outfit };
   lang: Lang;
   juvenil: boolean;
@@ -55,6 +59,17 @@ export const useStore = create<State>()(
   persist(
     (set, get) => ({
       profile: null,
+      account: null,
+      difficulty: "medio",
+      setAccount: (a) =>
+        set({
+          account: { username: a.username, name: a.name, level: a.level },
+          profile: { alias: a.name.slice(0, 16), course: a.course.slice(0, 12) },
+          // 4to empieza en fácil y con explicaciones juveniles; 6to en difícil
+          difficulty: a.level === "4to" ? "facil" : a.level === "6to" ? "dificil" : "medio",
+          juvenil: a.level === "4to",
+        }),
+      setDifficulty: (d) => set({ difficulty: d }),
       avatar: { c: "mateo", outfit: "casual" },
       lang: "es",
       juvenil: false,
@@ -72,7 +87,7 @@ export const useStore = create<State>()(
         if (!prev.cuento) get().track("stories_completed", { monumentId: id, kind: "cuento" });
         set({ progress: { ...get().progress, [id]: { ...prev, cuento: true, stories: true } } });
       },
-      logout: () => set({ profile: null, xp: 0, progress: {}, streak: { count: 0, lastDay: null } }),
+      logout: () => set({ profile: null, account: null, xp: 0, progress: {}, streak: { count: 0, lastDay: null } }),
       setLang: (lang) => set({ lang }),
       toggleJuvenil: () => set({ juvenil: !get().juvenil }),
       toggleMute: () => set({ muted: !get().muted }),

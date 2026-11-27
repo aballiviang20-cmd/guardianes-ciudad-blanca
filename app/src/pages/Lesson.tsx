@@ -1,6 +1,7 @@
 import { AnimatePresence, LayoutGroup, motion, Reorder } from "motion/react";
 import { useEffect, useMemo, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
+import type { Difficulty } from "../types";
 import { flushQueue } from "../api";
 import { Burst, DrawCheck } from "../components/Burst";
 import { CharFace } from "../components/Character";
@@ -84,7 +85,19 @@ export function LessonPage() {
   const addReport = useStore((s) => s.addReport);
   const completeLesson = useStore((s) => s.completeLesson);
 
-  const questions = useMemo(() => m?.questions ?? [], [m]);
+  const [params] = useSearchParams();
+  const storeDiff = useStore((s) => s.difficulty);
+  const dif = (["facil", "medio", "dificil"].includes(params.get("dif") ?? "") ? params.get("dif") : storeDiff) as Difficulty;
+  // Fácil: verdadero/falso y elegir (6). Medio: de todo, de menos a más (8). Difícil: elegir y ordenar, con años (8).
+  const questions = useMemo(() => {
+    const all = m?.questions ?? [];
+    const rank = { facil: 0, medio: 1, dificil: 2 } as const;
+    const d = (q: (typeof all)[number]) => q.difficulty ?? "medio";
+    const pick =
+      dif === "facil" ? all.filter((q) => d(q) !== "dificil") : dif === "dificil" ? all.filter((q) => d(q) !== "facil") : all;
+    const sorted = [...(pick.length >= 3 ? pick : all)].sort((a, b) => rank[d(a)] - rank[d(b)]);
+    return sorted.slice(0, dif === "facil" ? 6 : 8);
+  }, [m, dif]);
   const [idx, setIdx] = useState(0);
   const [selected, setSelected] = useState<number | null>(null);
   const [order, setOrder] = useState<string[]>([]);

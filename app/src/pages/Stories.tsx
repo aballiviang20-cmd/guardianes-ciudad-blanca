@@ -11,6 +11,7 @@ import { useMonument } from "../useContent";
 
 /** Historias tipo "stories": ilustración animada arriba, relato en serif abajo. Toque derecho avanza. */
 export function StoriesPage() {
+  const level = useStore((s) => s.account?.level ?? null);
   const { id } = useParams();
   const m = useMonument(id);
   const { t, lang } = useT();
@@ -19,7 +20,8 @@ export function StoriesPage() {
   const [i, setI] = useState(0);
   const [dir, setDir] = useState(1);
   if (!m) return null;
-  const stories = m.stories;
+  // 4to: relato más corto (2 historias); 6to y sin cuenta: todas
+  const stories = level === "4to" ? m.stories.slice(0, 2) : m.stories;
   const last = i >= stories.length - 1;
   const story = stories[i];
 

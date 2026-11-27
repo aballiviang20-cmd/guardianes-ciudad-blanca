@@ -13,7 +13,10 @@ export type Question = {
   juvenil_es: string;
   fragmentId?: string | null;
   cite?: string;
+  difficulty?: Difficulty;
 };
+
+export type Difficulty = "facil" | "medio" | "dificil";
 
 export type Story = {
   id: string;

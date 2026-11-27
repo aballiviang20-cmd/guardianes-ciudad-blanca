@@ -628,10 +628,167 @@ function Progress({ pin }: { pin: string }) {
   );
 }
 
+type Activity = { id: string; course: string; monument_id: string; difficulty: string; note: string | null; due: string | null; created_by: string; created_at: string; completed: number; students: number };
+const DIFF_ES: Record<string, string> = { facil: "Fácil", medio: "Medio", dificil: "Difícil" };
+
+function teacherUser(): { name: string; subject?: string; courses?: string[] } | null {
+  try {
+    return JSON.parse(sessionStorage.getItem("teacher-user") ?? "null");
+  } catch {
+    return null;
+  }
+}
+
+function Activities({ pin }: { pin: string }) {
+  const api = teacherApi(pin);
+  const me = teacherUser();
+  const courses = me?.courses?.length ? me.courses : ["4TO-A", "6TO-A"];
+  const [places, setPlaces] = useState<Place[]>([]);
+  const [list, setList] = useState<Activity[]>([]);
+  const [course, setCourse] = useState(courses[0]);
+  const [place, setPlace] = useState("");
+  const [diff, setDiff] = useState(courses[0].startsWith("4") ? "facil" : "dificil");
+  const [due, setDue] = useState(() => new Date(Date.now() + 7 * 86400000).toISOString().slice(0, 10));
+  const [note, setNote] = useState("");
+  const [msg, setMsg] = useState("");
+  const load = () => api.get<{ activities: Activity[] }>("/activities").then((r) => setList(r.activities)).catch(() => {});
+  useEffect(() => {
+    api.get<{ places: Place[] }>("/fichas").then((r) => setPlaces(r.places)).catch(() => {});
+    void load();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  async function create() {
+    setMsg("");
+    try {
+      await api.post("/activities", { course, monumentId: place, difficulty: diff, due, note });
+      setMsg(`Listo: ${course} ya ve la actividad en su ruta.`);
+      setNote("");
+      void load();
+    } catch (e) {
+      setMsg(e instanceof Error ? e.message : "Error");
+    }
+  }
+  return (
+    <div className="tp-cols">
+      <section className="tp-panel">
+        <header>
+          <h3>Nueva actividad</h3>
+          <span className="tp-pill">aparece al instante</span>
+        </header>
+        <div className="t-q">
+          <span className="t-num">1</span>
+          <b>¿Para qué curso?</b>
+        </div>
+        <div className="tp-seg">
+          {courses.map((c) => (
+            <button
+              key={c}
+              className={course === c ? "on" : ""}
+              onClick={() => {
+                setCourse(c);
+                setDiff(c.startsWith("4") ? "facil" : "dificil");
+              }}
+            >
+              {c}
+              <small>{c.startsWith("4") ? "4to de secundaria" : c.startsWith("6") ? "6to de secundaria" : ""}</small>
+            </button>
+          ))}
+        </div>
+        <div className="t-q">
+          <span className="t-num">2</span>
+          <b>¿Qué lugar?</b>
+        </div>
+        <div className="t-places">
+          {places.map((p) => (
+            <motion.button key={p.id} whileTap={{ scale: 0.95 }} className={`t-place ${place === p.id ? "on" : ""}`} style={{ ["--accent" as string]: p.color }} onClick={() => setPlace(p.id)}>
+              <MonumentIcon id={p.id} size={26} />
+              <span>{p.name}</span>
+            </motion.button>
+          ))}
+        </div>
+        <div className="t-q">
+          <span className="t-num">3</span>
+          <b>Dificultad y fecha</b>
+        </div>
+        <div className="diff-pick">
+          {["facil", "medio", "dificil"].map((d) => (
+            <button key={d} className={`diff-${d} ${diff === d ? "on" : ""}`} onClick={() => setDiff(d)}>
+              {diff === d && <motion.span layoutId="t-diff-pill" className="diff-pill" />}
+              <span>{DIFF_ES[d]}</span>
+            </button>
+          ))}
+        </div>
+        <p className="diff-hint">Sugerido: Fácil para 4to (verdadero/falso y elegir) · Difícil para 6to (ordenar fechas y elegir entre años).</p>
+        <div className="t-row">
+          <label className="tp-field">
+            Entregar hasta
+            <input type="date" value={due} onChange={(e) => setDue(e.target.value)} />
+          </label>
+          <label className="tp-field grow">
+            Mensaje para el curso (opcional)
+            <input value={note} onChange={(e) => setNote(e.target.value)} maxLength={200} placeholder="ej. Lean el cuento antes del reto" />
+          </label>
+        </div>
+        <Button block onClick={create} disabled={!place}>
+          Asignar actividad
+        </Button>
+        {msg && <p className="t-count ok">{msg}</p>}
+      </section>
+
+      <section className="tp-panel">
+        <header>
+          <h3>Actividades asignadas</h3>
+        </header>
+        {list.length === 0 ? (
+          <p className="tp-muted">Todavía no asignó actividades. Cree una a la izquierda.</p>
+        ) : (
+          <ul className="tp-acts">
+            {list.map((a) => {
+              const p = places.find((x) => x.id === a.monument_id);
+              const pct = a.students ? Math.round((a.completed / a.students) * 100) : 0;
+              return (
+                <motion.li key={a.id} layout initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}>
+                  <div className="tp-act-top">
+                    <span className="tp-place-ico" style={{ ["--accent" as string]: p?.color ?? "var(--terra)" }}>
+                      <MonumentIcon id={a.monument_id} size={20} />
+                    </span>
+                    <div>
+                      <b>
+                        {a.course} · {p?.name ?? a.monument_id}
+                      </b>
+                      <small>
+                        {DIFF_ES[a.difficulty]} {a.due ? `· hasta el ${a.due.slice(8, 10)}/${a.due.slice(5, 7)}` : ""}
+                      </small>
+                    </div>
+                    <button className="tp-link" onClick={() => api.post(`/activities/${a.id}/delete`).then(load)}>
+                      Quitar
+                    </button>
+                  </div>
+                  <div className="tp-fail-row">
+                    <span className="tp-bar">
+                      <motion.span initial={{ width: 0 }} animate={{ width: `${pct}%` }} transition={{ duration: 0.8 }} />
+                    </span>
+                    <small>
+                      {a.completed}/{a.students || "—"} listos
+                    </small>
+                  </div>
+                </motion.li>
+              );
+            })}
+          </ul>
+        )}
+      </section>
+    </div>
+  );
+}
+
 export function TeacherPage() {
   const [pin, setPin] = useState(() => sessionStorage.getItem("teacher-pin") ?? "");
   const [ok, setOk] = useState(false);
   const [err, setErr] = useState("");
+  const [user, setUser] = useState("");
+  const [pass, setPass] = useState("");
+  const [usePin, setUsePin] = useState(false);
 
   useEffect(() => {
     if (!pin) return;
@@ -647,26 +804,92 @@ export function TeacherPage() {
 
   if (!ok) {
     return (
-      <div className="teacher-login">
-        <CharPose c="orki" pose="bolivia" size={150} anim="wave" />
-        <h1>Panel docente</h1>
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            teacherApi(pin)
-              .get("/items?status=pending")
-              .then(() => {
-                sessionStorage.setItem("teacher-pin", pin);
-                setOk(true);
-              })
-              .catch(() => setErr("PIN incorrecto"));
-          }}
-        >
-          <input type="password" inputMode="numeric" value={pin} onChange={(e) => setPin(e.target.value)} placeholder="PIN" />
-          <Button type="submit">Entrar</Button>
-          {err && <p className="error">{err}</p>}
-        </form>
-        <Link to="/">← App del alumno</Link>
+      <div className="tl">
+        <div className="tl-art">
+          <motion.div initial={{ y: 30, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ type: "spring", stiffness: 200, damping: 18 }}>
+            <CharPose c="orki" pose="bolivia" size={190} anim="wave" />
+          </motion.div>
+          <h2>Prepare su clase de patrimonio en 3 minutos</h2>
+          <ul>
+            <li>
+              <b>1</b> Cargue información confiable
+            </li>
+            <li>
+              <b>2</b> La IA arma preguntas con su cita
+            </li>
+            <li>
+              <b>3</b> Usted revisa y asigna la actividad
+            </li>
+          </ul>
+        </div>
+        <motion.div className="tl-card" initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.1 }}>
+          <span className="tp-eyebrow">Panel docente</span>
+          <h1>Bienvenido, profe</h1>
+          <p className="tp-muted">Entre con el usuario y la contraseña de su colegio.</p>
+          {!usePin ? (
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                setErr("");
+                fetch("/api/auth/login", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ username: user, password: pass }) })
+                  .then(async (r) => {
+                    const d = await r.json();
+                    if (!r.ok) throw new Error(d.error || "Error");
+                    if (d.user.role !== "docente") throw new Error("Esta cuenta es de alumno: entre desde la app del alumno.");
+                    sessionStorage.setItem("teacher-pin", d.token);
+                    sessionStorage.setItem("teacher-user", JSON.stringify(d.user));
+                    setPin(d.token);
+                    setOk(true);
+                  })
+                  .catch((e2) => setErr(e2 instanceof Error ? e2.message : "Error"));
+              }}
+            >
+              <label>
+                Usuario
+                <input value={user} onChange={(e) => setUser(e.target.value)} autoComplete="username" placeholder="ej. profe.vargas" />
+              </label>
+              <label>
+                Contraseña
+                <input type="password" value={pass} onChange={(e) => setPass(e.target.value)} autoComplete="current-password" placeholder="••••••••" />
+              </label>
+              {err && <p className="error">{err}</p>}
+              <Button type="submit" block disabled={!user || !pass}>
+                Entrar
+              </Button>
+            </form>
+          ) : (
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                teacherApi(pin)
+                  .get("/items?status=pending")
+                  .then(() => {
+                    sessionStorage.setItem("teacher-pin", pin);
+                    sessionStorage.removeItem("teacher-user");
+                    setOk(true);
+                  })
+                  .catch(() => setErr("PIN incorrecto"));
+              }}
+            >
+              <label>
+                PIN de respaldo
+                <input type="password" inputMode="numeric" value={pin} onChange={(e) => setPin(e.target.value)} placeholder="PIN" />
+              </label>
+              {err && <p className="error">{err}</p>}
+              <Button type="submit" block>
+                Entrar
+              </Button>
+            </form>
+          )}
+          <div className="tl-links">
+            <button className="tp-link" onClick={() => setUsePin(!usePin)}>
+              {usePin ? "Entrar con usuario y contraseña" : "Entrar con PIN de respaldo"}
+            </button>
+            <Link className="tp-link" to="/">
+              ← App del alumno
+            </Link>
+          </div>
+        </motion.div>
       </div>
     );
   }
@@ -676,6 +899,7 @@ export function TeacherPage() {
       pin={pin}
       onLogout={() => {
         sessionStorage.removeItem("teacher-pin");
+        sessionStorage.removeItem("teacher-user");
         setPin("");
         setOk(false);
       }}
@@ -686,7 +910,7 @@ export function TeacherPage() {
 /* =====================================================================================
  * Panel docente: menú lateral + secciones. Todo con lenguaje simple y un paso claro a la vez.
  * ===================================================================================== */
-type TabKey = "home" | "up" | "gen" | "rev" | "prog" | "rep";
+type TabKey = "home" | "up" | "gen" | "rev" | "act" | "prog" | "rep";
 
 const ICONS: Record<string, React.ReactNode> = {
   home: (
@@ -717,6 +941,12 @@ const ICONS: Record<string, React.ReactNode> = {
   prog: (
     <>
       <path d="M4 20V11M10 20V5M16 20v-6M2.5 20.5h19" />
+    </>
+  ),
+  act: (
+    <>
+      <rect x="4" y="4" width="16" height="17" rx="3" />
+      <path d="M8 2.5v3M16 2.5v3M4 9.5h16M8.5 14.5l2.2 2.2 4.8-4.7" />
     </>
   ),
   rep: (
@@ -772,6 +1002,7 @@ const SECTIONS: { k: TabKey; label: string; title: string; sub: string }[] = [
   { k: "up", label: "Información", title: "Información para la IA", sub: "La IA solo escribe con lo que usted carga aquí. Pegue un texto confiable y listo." },
   { k: "gen", label: "Crear lección", title: "Crear lección con IA", sub: "Elija un lugar y la IA propone preguntas, cada una con la frase exacta de donde salió." },
   { k: "rev", label: "Revisar", title: "Revisar antes de publicar", sub: "Nada llega a sus alumnos sin su visto bueno. Revise una por una o apruebe todas." },
+  { k: "act", label: "Actividades", title: "Actividades para sus cursos", sub: "Elija curso, lugar y dificultad. Sus alumnos la ven al instante en su ruta, y aquí ve quién terminó." },
   { k: "prog", label: "Mi curso", title: "Progreso del curso", sub: "Liga de cursos y las preguntas que más fallan, para reforzarlas en clase." },
   { k: "rep", label: "Reportes", title: "Reportes de alumnos", sub: "Daños que vieron en un monumento o errores que encontraron en una pregunta." },
 ];
@@ -1213,6 +1444,17 @@ function TeacherShell({ pin, onLogout }: { pin: string; onLogout: () => void }) 
             <small>Panel docente</small>
           </div>
         </div>
+        {teacherUser() && (
+          <div className="tp-me">
+            <span className="tp-me-av">{teacherUser()!.name.replace("Prof. ", "").slice(0, 1)}</span>
+            <div>
+              <b>{teacherUser()!.name}</b>
+              <small>
+                {teacherUser()!.subject} · {teacherUser()!.courses?.join(", ")}
+              </small>
+            </div>
+          </div>
+        )}
         <nav className="tp-nav">
           {SECTIONS.map((s) => (
             <button key={s.k} className={tab === s.k ? "on" : ""} onClick={() => setTab(s.k)}>
@@ -1246,7 +1488,7 @@ function TeacherShell({ pin, onLogout }: { pin: string; onLogout: () => void }) 
       <main className="tp-main">
         <header className="tp-head">
           <div>
-            <span className="tp-hello">{tab === "home" ? `${hello}, profe` : "Panel docente"}</span>
+            <span className="tp-hello">{tab === "home" ? `${hello}, ${teacherUser()?.name ?? "profe"}` : "Panel docente"}</span>
             <h1>{sec.title}</h1>
             <p>{sec.sub}</p>
           </div>
@@ -1264,6 +1506,7 @@ function TeacherShell({ pin, onLogout }: { pin: string; onLogout: () => void }) 
           )}
           {tab === "gen" && <Generate key={genMonument} pin={pin} initialMonument={genMonument} onDone={() => setTab("rev")} />}
           {tab === "rev" && <ReviewDeck pin={pin} go={setTab} />}
+          {tab === "act" && <Activities pin={pin} />}
           {tab === "prog" && <Progress pin={pin} />}
           {tab === "rep" && <Reports pin={pin} />}
         </motion.div>

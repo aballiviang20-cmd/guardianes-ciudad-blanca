@@ -18,7 +18,28 @@ export function Welcome() {
   const setLang = useStore((s) => s.setLang);
   const [alias, setAlias] = useState("");
   const [course, setCourse] = useState("");
-  const [step, setStep] = useState<1 | 2>(1);
+  const [step, setStep] = useState<1 | 2 | 3>(1);
+  const setAccount = useStore((s) => s.setAccount);
+  const [user, setUser] = useState("");
+  const [pass, setPass] = useState("");
+  const [loginErr, setLoginErr] = useState("");
+  const [pending, setPending] = useState<{ username: string; name: string; level: "4to" | "6to" | null; course: string } | null>(null);
+  async function doLogin() {
+    setLoginErr("");
+    try {
+      const r = await fetch("/api/auth/login", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ username: user, password: pass }) });
+      const d = await r.json();
+      if (!r.ok) throw new Error(d.error || "Error");
+      if (d.user.role !== "alumno") throw new Error(lang === "es" ? "Esta es una cuenta de docente: entra en /docente" : "Teacher account: use /docente");
+      sfx.tap();
+      setPending({ username: d.user.username, name: d.user.name, level: d.user.level ?? null, course: d.user.course ?? "" });
+      setAlias(d.user.name);
+      setCourse(d.user.course ?? "");
+      setStep(2);
+    } catch (e) {
+      setLoginErr(e instanceof Error ? e.message : "Error");
+    }
+  }
   const [pick, setPick] = useState<CharId>("mateo");
   const valid = alias.trim().length >= 2 && course.trim().length >= 2;
 
@@ -72,6 +93,31 @@ export function Welcome() {
                   {t.continue}
                 </Button>
               </form>
+              <button className="link-btn account-link" onClick={() => setStep(3)}>
+                {lang === "es" ? "🎓 Tengo cuenta de mi colegio" : "🎓 I have a school account"}
+              </button>
+            </motion.div>
+          ) : step === 3 ? (
+            <motion.div key="s3" className="welcome-step" initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -30 }}>
+              <h1 className="serif">{lang === "es" ? "Entra con tu cuenta" : "Sign in"}</h1>
+              <p className="muted-line">{lang === "es" ? "Usuario y contraseña que te dio tu profe." : "Username and password from your teacher."}</p>
+              <form
+                className="welcome-form"
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  void doLogin();
+                }}
+              >
+                <input value={user} onChange={(e) => setUser(e.target.value)} placeholder={lang === "es" ? "Usuario" : "Username"} autoComplete="username" aria-label="Usuario" />
+                <input value={pass} onChange={(e) => setPass(e.target.value)} type="password" placeholder={lang === "es" ? "Contraseña" : "Password"} autoComplete="current-password" aria-label="Contraseña" />
+                {loginErr && <p className="error">{loginErr}</p>}
+                <Button type="submit" block disabled={!user || !pass}>
+                  {lang === "es" ? "Entrar" : "Sign in"}
+                </Button>
+              </form>
+              <button className="link-btn account-link" onClick={() => setStep(1)}>
+                {lang === "es" ? "← Entrar sin cuenta" : "← Continue without account"}
+              </button>
             </motion.div>
           ) : (
             <motion.div key="s2" className="welcome-step" initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -30 }}>
@@ -99,7 +145,8 @@ export function Welcome() {
                 onClick={() => {
                   sfx.reveal();
                   setAvatar(pick, "casual");
-                  setProfile(alias.slice(0, 16), course.slice(0, 12));
+                  if (pending) setAccount(pending);
+                  else setProfile(alias.slice(0, 16), course.slice(0, 12));
                 }}
               >
                 {t.start}

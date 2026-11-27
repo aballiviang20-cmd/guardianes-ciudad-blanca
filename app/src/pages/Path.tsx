@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from "motion/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { CharFace, CharOutfit } from "../components/Character";
 import { useCuentos } from "../useCuentos";
@@ -11,7 +11,7 @@ import { bouncy, snappy } from "../motion";
 import { useT } from "../i18n";
 import { sfx } from "../sfx";
 import { useStore } from "../store";
-import type { MonumentContent } from "../types";
+import type { MonumentContent , Difficulty } from "../types";
 import { useContent } from "../useContent";
 
 const ROW = 168;
@@ -45,6 +45,12 @@ function Trail({ count, done }: { count: number; done: number }) {
   );
 }
 
+const DIFF_LABEL: Record<Difficulty, { es: string; en: string }> = {
+  facil: { es: "Fácil", en: "Easy" },
+  medio: { es: "Medio", en: "Medium" },
+  dificil: { es: "Difícil", en: "Hard" },
+};
+
 export function PathPage() {
   const { t, lang } = useT();
   const content = useContent();
@@ -52,6 +58,18 @@ export function PathPage() {
   const avatar = useStore((s) => s.avatar);
   const cuentos = useCuentos();
   const [open, setOpen] = useState<MonumentContent | null>(null);
+  const difficulty = useStore((s) => s.difficulty);
+  const setDifficulty = useStore((s) => s.setDifficulty);
+  const account = useStore((s) => s.account);
+  const course = useStore((s) => s.profile?.course ?? "");
+  const [acts, setActs] = useState<{ id: string; monument_id: string; difficulty: Difficulty; note: string | null; due: string | null; created_by: string }[]>([]);
+  useEffect(() => {
+    if (!course) return;
+    fetch(`/api/activities?course=${encodeURIComponent(course)}`)
+      .then((r) => (r.ok ? r.json() : { activities: [] }))
+      .then((d) => setActs(d.activities ?? []))
+      .catch(() => {});
+  }, [course]);
   const navigate = useNavigate();
   const monuments = content?.monuments ?? [];
   const available = (m: MonumentContent) => m.questions.length > 0 || m.stories.length > 0;
@@ -75,6 +93,37 @@ export function PathPage() {
           <CharFace c={avatar.c} face={doneCount > 0 ? "alegre" : "pensativo"} size={72} anim="idle" />
         </button>
       </section>
+
+      {acts.length > 0 && (
+        <div className="acts">
+          {acts.slice(0, 2).map((a, i) => {
+            const mon = monuments.find((x) => x.id === a.monument_id);
+            const done = progress[a.monument_id]?.lesson;
+            return (
+              <motion.button
+                key={a.id}
+                className={`act-card ${done ? "done" : ""}`}
+                initial={{ opacity: 0, y: -10, scale: 0.97 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                transition={{ delay: 0.1 * i, type: "spring", stiffness: 300, damping: 22 }}
+                whileTap={{ scale: 0.97 }}
+                onClick={() => {
+                  setDifficulty(a.difficulty);
+                  navigate(`/reto/${a.monument_id}?dif=${a.difficulty}`);
+                }}
+              >
+                <span className="act-tag">{done ? (lang === "es" ? "¡Entregada!" : "Done!") : lang === "es" ? "Tarea del profe" : "Teacher task"}</span>
+                <b>{mon?.name[lang] ?? a.monument_id}</b>
+                <small>
+                  {DIFF_LABEL[a.difficulty][lang]} · {a.created_by}
+                  {a.due ? ` · ${lang === "es" ? "hasta el" : "due"} ${a.due.slice(8, 10)}/${a.due.slice(5, 7)}` : ""}
+                </small>
+                {a.note && <em>{a.note}</em>}
+              </motion.button>
+            );
+          })}
+        </div>
+      )}
 
       {content && monuments.every((m) => !available(m)) && <p className="empty">{t.noContent}</p>}
 
@@ -172,6 +221,21 @@ export function PathPage() {
                     {Icon.check(14)} {open.questions.length} {t.questions}
                   </span>
                 </div>
+                <div className="diff-pick" role="radiogroup" aria-label={lang === "es" ? "Dificultad" : "Difficulty"}>
+                  {(["facil", "medio", "dificil"] as Difficulty[]).map((d) => (
+                    <button key={d} role="radio" aria-checked={difficulty === d} className={`diff-${d} ${difficulty === d ? "on" : ""}`} onClick={() => setDifficulty(d)}>
+                      {difficulty === d && <motion.span layoutId="diff-pill" className="diff-pill" transition={{ type: "spring", stiffness: 420, damping: 30 }} />}
+                      <span>{DIFF_LABEL[d][lang]}</span>
+                    </button>
+                  ))}
+                </div>
+                {account?.level && (
+                  <p className="diff-hint">
+                    {lang === "es"
+                      ? `Recomendado para ${account.level} de secundaria: ${DIFF_LABEL[account.level === "4to" ? "facil" : "dificil"].es}`
+                      : `Recommended for grade ${account.level}: ${DIFF_LABEL[account.level === "4to" ? "facil" : "dificil"].en}`}
+                  </p>
+                )}
                 <div className="steps">
                   {cuentos?.[open.id] && (
                     <button className={`step-card ${progress[open.id]?.cuento ? "done" : "next"}`} onClick={() => navigate(`/cuento/${open.id}`)}>
