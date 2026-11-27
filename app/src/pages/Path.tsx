@@ -80,19 +80,21 @@ export function PathPage() {
 
   return (
     <StudentShell>
-      <section className="route-head">
-        <div>
-          <h1 className="serif">{t.routeTitle}</h1>
-          <div className="route-progress">
-            {monuments.map((m) => (
-              <span key={m.id} className={progress[m.id]?.lesson ? "on" : ""} />
-            ))}
+      <motion.section className="unit-banner" initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ type: "spring", stiffness: 260, damping: 24 }}>
+        <div className="unit-txt">
+          <span className="unit-eyebrow">{lang === "es" ? "Unidad 1 · Sucre" : "Unit 1 · Sucre"}</span>
+          <h1>{lang === "es" ? "Guardianes de la Ciudad Blanca" : "Guardians of the White City"}</h1>
+          <div className="unit-meter" aria-label={`${doneCount}/${monuments.length}`}>
+            <motion.i initial={{ width: 0 }} animate={{ width: `${monuments.length ? (doneCount / monuments.length) * 100 : 0}%` }} transition={{ duration: 0.9, ease: "easeOut" }} />
           </div>
+          <small>
+            {doneCount}/{monuments.length || 4} {lang === "es" ? "paradas" : "stops"} · {t.routeTitle}
+          </small>
         </div>
         <button className="avatar-btn" onClick={() => navigate("/perfil")} aria-label="Perfil">
           <CharFace c={avatar.c} face={doneCount > 0 ? "alegre" : "pensativo"} size={72} anim="idle" />
         </button>
-      </section>
+      </motion.section>
 
       {acts.length > 0 && (
         <div className="acts">
@@ -192,6 +194,15 @@ export function PathPage() {
             </motion.div>
           );
         })}
+      </div>
+
+      <div className="unit-next">
+        <span className="unit-next-lock">{Icon.lock(22)}</span>
+        <div>
+          <span className="unit-eyebrow">{lang === "es" ? "Unidad 2 · Próximamente" : "Unit 2 · Coming soon"}</span>
+          <b>{lang === "es" ? "Potosí, Ciudad de Plata" : "Potosí, City of Silver"}</b>
+          <small>{lang === "es" ? "Termina la Unidad 1 para desbloquearla" : "Finish Unit 1 to unlock it"}</small>
+        </div>
       </div>
 
       <AnimatePresence>

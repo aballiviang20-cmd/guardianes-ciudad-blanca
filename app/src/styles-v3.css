@@ -623,3 +623,39 @@
 .wl-levels button.on { border-color: var(--cielo); background: #eaf3fc; box-shadow: 0 3px 0 var(--cielo); }
 .wl-sticky { position: sticky; bottom: 0; padding: 12px 0 4px; background: linear-gradient(transparent, #fff 30%); }
 .wl .link-btn { display: block; margin: 0 auto; text-decoration: none; }
+
+/* ===================== Pulido profesional: ruta, reto y resultado ===================== */
+.unit-banner { display: flex; align-items: center; gap: 12px; margin: 4px 0 14px; padding: 16px 16px 16px 18px; border-radius: 20px; color: #fff; background: linear-gradient(135deg, #2e9e5b 0%, #23834a 100%); box-shadow: 0 5px 0 var(--verde-ok-dark), 0 12px 24px rgba(31, 122, 67, 0.18); }
+.unit-txt { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+.unit-eyebrow { font-family: var(--f-ui); font-weight: 900; font-size: 12px; letter-spacing: 1.2px; text-transform: uppercase; opacity: 0.85; }
+.unit-banner h1 { font-family: var(--f-ui); font-weight: 900; font-size: 21px; line-height: 1.15; color: #fff; }
+.unit-banner small { font-family: var(--f-ui); font-weight: 700; font-size: 13px; opacity: 0.9; }
+.unit-meter { position: relative; height: 10px; border-radius: 999px; background: rgba(255, 255, 255, 0.25); overflow: hidden; margin-top: 4px; }
+.unit-meter i { position: absolute; inset: 0 auto 0 0; border-radius: 999px; background: #ffd77a; box-shadow: inset 0 -2px 0 rgba(0, 0, 0, 0.12); }
+.unit-banner .avatar-btn { width: 74px; height: 74px; border: 3px solid rgba(255, 255, 255, 0.8); background: #fff; box-shadow: 0 4px 0 rgba(0, 0, 0, 0.18); flex: none; }
+.unit-next { display: flex; align-items: center; gap: 14px; margin: 18px 0 8px; padding: 16px; border-radius: 20px; border: 2px dashed var(--linea-dark); background: #faf7f2; color: var(--suave); }
+.unit-next b { display: block; font-family: var(--f-ui); font-size: 18px; color: var(--tinta); opacity: 0.75; }
+.unit-next small { font-weight: 700; }
+.unit-next-lock { width: 46px; height: 46px; border-radius: 50%; display: grid; place-items: center; background: #ece5da; color: #a79c8e; flex: none; }
+
+/* Años como etiquetas limpias en vez de números flotantes */
+.stop-year { font-family: var(--f-ui) !important; font-style: normal !important; font-weight: 900 !important; font-size: 15px !important; color: var(--tinta) !important; background: #fff; border: 2px solid var(--linea-dark); border-radius: 999px; padding: 2px 10px; box-shadow: 0 2px 0 var(--linea-dark); }
+.node-label { font-family: var(--f-ui); font-weight: 800; font-size: 13px; letter-spacing: 0.2px; }
+
+/* Reto: tipografía uniforme, opciones con más aire y feedback a todo el ancho */
+.lesson .question .serif, .lesson .fill-sentence, .lesson .question h2 { font-family: var(--f-ui) !important; font-weight: 800; letter-spacing: -0.2px; }
+.lesson .question-head h2, .lesson .question h2 { font-size: 23px; line-height: 1.25; }
+.option { transition: background-color 0.15s, border-color 0.15s, transform 0.08s; }
+.option:not(.ok):not(.bad):not(.dim):hover { background: #f7f4ef; }
+.option:active { transform: translateY(2px); }
+.lesson-top { padding: 14px 16px 6px; }
+.lesson-progress .bar, .lesson-progress > div { height: 16px; }
+.lesson-bottom { border-top: 2px solid var(--linea); background: #fff; }
+.feedback { border-radius: 0 !important; margin: -16px -18px 12px; padding: 18px 22px 6px !important; }
+.feedback-head h3 { font-family: var(--f-ui); font-weight: 900; font-size: 24px; }
+.hearts .heart.off { opacity: 0.25; filter: grayscale(1); }
+
+/* Resultado */
+.result h1 { font-family: var(--f-ui); font-weight: 900; color: var(--oro-dark); }
+.result-stat { border-width: 2px; box-shadow: 0 4px 0 rgba(0, 0, 0, 0.06); }
+.result-stat b { font-size: 26px; }
