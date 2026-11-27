@@ -22,7 +22,7 @@ export default defineConfig({
       workbox: {
         navigateFallback: "/index.html",
         navigateFallbackDenylist: [/^\/api\//],
-        globPatterns: ["**/*.{js,css,html,svg,png,webp,woff,woff2}"],
+        globPatterns: ["**/*.{js,css,html,svg,png,webp,woff,woff2}", "personajes/ojos.json"],
         // TensorFlow.js pesa más de 2 MB: se precachea igual para que el escaneo funcione offline.
         maximumFileSizeToCacheInBytes: 8 * 1024 * 1024,
         runtimeCaching: [
