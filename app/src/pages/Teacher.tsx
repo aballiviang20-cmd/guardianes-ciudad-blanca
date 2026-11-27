@@ -292,7 +292,8 @@ function Generate({ pin, onDone, initialMonument }: { pin: string; onDone: () =>
       setItems(j.items);
       setStages({ retrieve: "ok", draft: "ok", verify: "ok", judge: "ok" });
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Error");
+      const msg = e instanceof Error ? e.message : "Error";
+      setError(/ANTHROPIC_API_KEY/.test(msg) ? "La IA todavía no está conectada en este servidor. Pida al encargado técnico que configure la clave (server/.env) y vuelva a intentar." : msg);
       setStages((s) => Object.fromEntries(Object.entries(s).map(([k, v]) => [k, v === "run" ? "err" : v])));
     }
   }
