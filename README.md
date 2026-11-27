@@ -1,4 +1,4 @@
-# Guardianes de la Ciudad Blanca
+# Patrilingo · Guardianes de la Ciudad Blanca
 
 **Conoce. Colecciona. Protege.** App educativa gamificada sobre el patrimonio de Sucre para estudiantes de secundaria (13–17 años) y sus docentes de Ciencias Sociales.
 Hackathon Regional 2026 · Sede Sucre · Problemática 2.
@@ -8,6 +8,12 @@ Hackathon Regional 2026 · Sede Sucre · Problemática 2.
 | Desconocen las historias y acontecimientos | **Conoce:** historias cortas y retos de 2 minutos |
 | No se identifican ni valoran su legado | **Colecciona:** álbum de figuritas; la dorada se gana en el lugar |
 | No se involucran en su preservación | **Protege:** Misión guardián para reportar daños |
+
+## Publicarla e instalarla en celulares, tablets y PC
+
+1. `npm start` (app + API en el puerto 8787).
+2. `npm run publicar` → crea un enlace público **HTTPS** (localhost.run, sin cuenta ni descargas) que se abre desde cualquier dispositivo. El enlace gratuito cambia cada cierto tiempo y funciona mientras esta computadora esté encendida; para algo permanente, desplegar `npm start` en un servidor (Render, Railway, una VM) con `AUTH_SECRET` y `TEACHER_PIN` propios.
+3. **Instalar como app:** en Android, Chrome → menú ⋮ → *Instalar app* (Chrome genera la app instalada, como un APK); en iPhone/iPad, Safari → Compartir → *Agregar a inicio*; en PC, el ícono de instalar en la barra de direcciones de Chrome/Edge. Funciona sin internet una vez abierta.
 
 ## Usarla desde GitHub (sin instalar nada)
 

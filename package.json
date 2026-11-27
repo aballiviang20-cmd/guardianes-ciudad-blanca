@@ -9,7 +9,8 @@
     "start": "npm run build && npm start --prefix server",
     "test": "npm test --prefix server",
     "seed": "npm run seed --prefix server",
-    "eval": "npm run eval --prefix server"
+    "eval": "npm run eval --prefix server",
+    "publicar": "ssh -o ServerAliveInterval=30 -R 80:localhost:8787 nokey@localhost.run"
   },
   "devDependencies": {
     "concurrently": "^9.1.0"
