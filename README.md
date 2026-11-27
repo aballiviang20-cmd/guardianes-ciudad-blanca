@@ -16,12 +16,22 @@ Requisitos: Node 22.5 o superior (usa `node:sqlite`, sin dependencias nativas).
 ```bash
 npm run install:all          # instala raíz, server y app
 cp server/.env.example server/.env   # y completa ANTHROPIC_API_KEY
-npm run seed                 # contenido de prueba escrito a mano (sin IA)
+npm run seed                 # carga data/seed.json como PENDIENTE: un docente lo aprueba en /docente
 npm run dev                  # API en :8787 y app en :5173
 npm test                     # tests del verificador de cita, filtro de datos y XP
 ```
 
 Para la demo (un solo origen HTTPS, necesario para offline y cámara): `npm start` y exponer el puerto 8787 con un túnel HTTPS.
+
+## Evaluación (criterio B)
+
+```bash
+npm run eval                 # genera preguntas con RAG + cita y sin RAG (requiere ANTHROPIC_API_KEY)
+EVAL_ALT_MODEL=claude-haiku-5-5 npm run eval   # opcional: compara un segundo modelo
+```
+
+Luego dos personas etiquetan a ciegas en `/evidencia/etiquetar` (P3 y P4) y se pulsa **Recalcular** en `/evidencia`.
+Los minutos del docente y el clasificador se completan en `eval/manual.json`.
 
 ## Arquitectura
 
