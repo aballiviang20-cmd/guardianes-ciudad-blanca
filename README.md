@@ -33,6 +33,15 @@ EVAL_ALT_MODEL=claude-haiku-5-5 npm run eval   # opcional: compara un segundo mo
 Luego dos personas etiquetan a ciegas en `/evidencia/etiquetar` (P3 y P4) y se pulsa **Recalcular** en `/evidencia`.
 Los minutos del docente y el clasificador se completan en `eval/manual.json`.
 
+## Reconocimiento en el celular (Nivel 2)
+
+1. Abrir `/entrenar` (con el PIN docente) **por HTTPS o localhost** para que funcione la cámara.
+2. Elegir un monumento y **mantener presionado** apuntando a él (o a sus fotos), o **subir fotos**. Repetir con varios ángulos y luces. Agregar ejemplos de **Otro** (calles, otras fachadas).
+3. **Evaluar**: separa 1 de cada 5 ejemplos como prueba, muestra precisión y matriz de confusión.
+4. **Guardar modelo**: se guardan solo los vectores en `data/classifier/knn.json` (nunca fotos) y las métricas en `eval/manual.json`.
+
+En Escanear, el monumento se acepta con 4 de 5 vecinos de acuerdo (umbral 0,8) en 3 cuadros seguidos; si no, la app dice "No reconozco este lugar".
+
 ## Arquitectura
 
 ```

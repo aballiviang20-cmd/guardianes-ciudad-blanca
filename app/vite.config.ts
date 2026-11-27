@@ -23,12 +23,25 @@ export default defineConfig({
         navigateFallback: "/index.html",
         navigateFallbackDenylist: [/^\/api\//],
         globPatterns: ["**/*.{js,css,html,svg,png,woff,woff2}"],
+        // TensorFlow.js pesa más de 2 MB: se precachea igual para que el escaneo funcione offline.
+        maximumFileSizeToCacheInBytes: 8 * 1024 * 1024,
         runtimeCaching: [
           {
             // Contenido aprobado: red primero, y si no hay conexión, la última copia guardada.
             urlPattern: ({ url }) => url.pathname === "/api/lessons" || url.pathname === "/api/monuments",
             handler: "NetworkFirst",
             options: { cacheName: "api-contenido", networkTimeoutSeconds: 4 },
+          },
+          {
+            urlPattern: ({ url }) => url.pathname === "/api/classifier",
+            handler: "NetworkFirst",
+            options: { cacheName: "api-reconocimiento", networkTimeoutSeconds: 4 },
+          },
+          {
+            // Pesos de MobileNet (TF Hub / Kaggle / Google Storage): se guardan la primera vez para usarlos sin red.
+            urlPattern: ({ url }) => /(^|\.)(tfhub\.dev|kaggle\.com|kaggleusercontent\.com|storage\.googleapis\.com)$/.test(url.hostname),
+            handler: "CacheFirst",
+            options: { cacheName: "modelos", cacheableResponse: { statuses: [0, 200] }, expiration: { maxEntries: 40 } },
           },
           {
             urlPattern: ({ url }) => url.pathname === "/api/league",

@@ -22,4 +22,4 @@
 |---|---|---|---|
 | Generación de preguntas e historias | Claude (`CLAUDE_MODEL`) | Servidor | Chequeo de cita + juez + docente |
 | Juez de respaldo | Claude (`JUDGE_MODEL`) | Servidor | Medido contra etiquetado humano |
-| Reconocimiento de monumentos (Nivel 2) | MobileNet + KNN | Celular del alumno | Umbral + clase "otro" |
+| Reconocimiento de monumentos | MobileNet v2 (TensorFlow.js) + KNN entrenado por el equipo en /entrenar | Celular del alumno (offline tras la primera carga) | Umbral 0,8 en 3 cuadros, clase "otro", evaluación con ejemplos separados |

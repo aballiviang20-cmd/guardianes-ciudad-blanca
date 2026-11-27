@@ -12,6 +12,7 @@ import { ResultPage } from "./pages/Result";
 import { ScanPage } from "./pages/Scan";
 import { StoriesPage } from "./pages/Stories";
 import { TeacherPage } from "./pages/Teacher";
+import { TrainPage } from "./pages/Train";
 import { Welcome } from "./pages/Welcome";
 import { useStore } from "./store";
 
@@ -25,6 +26,7 @@ export function App() {
           <Route path="/docente" element={<TeacherPage />} />
           <Route path="/evidencia" element={<EvidencePage />} />
           <Route path="/evidencia/etiquetar" element={<LabelPage />} />
+          <Route path="/entrenar" element={<TrainPage />} />
           {!profile ? (
             <Route path="*" element={<Welcome />} />
           ) : (

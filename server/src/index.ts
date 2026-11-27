@@ -10,11 +10,13 @@ import { draft, GenerationError, itemsOfBatch, judgeBatch, rowToItem, verifyBatc
 import { redactPII } from "./pii";
 import { normalize } from "./verify";
 import { blindItems, computeResults, loadLabels, saveLabel } from "./eval/score";
-import { APP_DIST, EVAL_DIR } from "./paths";
+import { APP_DIST, DATA_DIR, EVAL_DIR } from "./paths";
 
 const app = express();
 app.use(cors());
-app.use(express.json({ limit: "1mb" }));
+const smallJson = express.json({ limit: "1mb" });
+// El modelo de reconocimiento (vectores) se sube a una ruta propia con límite mayor.
+app.use((req, res, next) => (req.path === "/api/teacher/classifier" ? next() : smallJson(req, res, next)));
 
 const TEACHER_PIN = process.env.TEACHER_PIN || "1825";
 
@@ -279,6 +281,37 @@ teacher.post("/eval/label", (req, res) => {
 
 teacher.post("/eval/score", (_req, res) => {
   res.json(computeResults());
+});
+
+// ---- Reconocimiento en el dispositivo: el servidor solo guarda los ejemplos (vectores), nunca fotos ----
+const CLASSIFIER_FILE = path.join(DATA_DIR, "classifier", "knn.json");
+
+teacher.post("/classifier", express.json({ limit: "40mb" }), (req, res) => {
+  const { examples, metrics } = req.body ?? {};
+  if (!Array.isArray(examples) || examples.some((e) => typeof e?.label !== "string" || !Array.isArray(e?.vec))) {
+    res.status(400).json({ error: "Formato inválido: se esperan ejemplos {label, vec}" });
+    return;
+  }
+  fs.mkdirSync(path.dirname(CLASSIFIER_FILE), { recursive: true });
+  // Se redondean los vectores para que el archivo pese menos sin afectar la clasificación.
+  const compact = examples.map((e: { label: string; vec: number[] }) => ({ label: e.label, vec: e.vec.map((x) => Math.round(x * 1e4) / 1e4) }));
+  fs.writeFileSync(CLASSIFIER_FILE, JSON.stringify({ savedAt: now(), model: "mobilenet_v2_100 + KNN", examples: compact }));
+  if (metrics) {
+    const manualPath = path.join(EVAL_DIR, "manual.json");
+    const manual = fs.existsSync(manualPath) ? JSON.parse(fs.readFileSync(manualPath, "utf8")) : {};
+    manual.classifier = metrics;
+    fs.mkdirSync(EVAL_DIR, { recursive: true });
+    fs.writeFileSync(manualPath, JSON.stringify(manual, null, 2));
+  }
+  res.json({ saved: compact.length });
+});
+
+app.get("/api/classifier", (_req, res) => {
+  if (!fs.existsSync(CLASSIFIER_FILE)) {
+    res.json({ available: false, examples: [] });
+    return;
+  }
+  res.json({ available: true, ...JSON.parse(fs.readFileSync(CLASSIFIER_FILE, "utf8")) });
 });
 
 app.use("/api/teacher", teacher);
