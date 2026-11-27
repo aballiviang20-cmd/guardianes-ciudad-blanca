@@ -5,8 +5,9 @@
 - _(Agregar cualquier otra herramienta que el equipo use: Cursor, Copilot, ChatGPT, etc.)_
 
 ## Ilustraciones
-- **Personajes (Orki, Mateo, Wara, Vale)**: hojas de personaje generadas por el equipo con **ChatGPT (generación de imágenes)** y dirigidas por el equipo (estilo, vestimentas bolivianas, banderas). Recortadas con un script propio (`sharp`), sin modificar el dibujo.
-- **Fondos** de `data/fondos/` (San Lázaro, Catedral, Casa de la Libertad, Sucre) y la **llama Kusi**: generados con **ChatGPT** usando como referencia de estilo la hoja de personaje del equipo; los prompts los escribió Claude Code operando el ChatGPT del equipo en su navegador, a pedido del equipo. Revisados por el equipo (fidelidad de los monumentos y banderas).
+- **Personajes Mateo y Wara**: hojas de personaje generadas por el equipo con **ChatGPT (generación de imágenes)** y dirigidas por el equipo (estilo, vestimentas bolivianas, banderas). Recortadas con un script propio (`sharp`), sin modificar el dibujo.
+- **Sofía (antes Vale), Orki, Kusi, Tata Julián, Juanita y Bruno**: hojas nuevas generadas con **ChatGPT** usando las hojas de Mateo y Vale como referencia, para que todo el elenco comparta el mismo estilo vectorial 2D. Los prompts los escribió Claude Code operando el ChatGPT del equipo en su navegador, a pedido del equipo; el equipo eligió los personajes (abuelo, cholita, deportista) y revisa vestimentas y banderas. Recorte automático con un script propio (máscara, dilatación, componentes conexos, quita etiquetas).
+- **Fondos** de `data/fondos/` (San Lázaro, Catedral, Casa de la Libertad, Sucre), redibujados en el mismo estilo vectorial 2D: generados con **ChatGPT** usando como referencia de estilo la hoja de personaje del equipo; los prompts los escribió Claude Code operando el ChatGPT del equipo en su navegador, a pedido del equipo. Revisados por el equipo (fidelidad de los monumentos y banderas).
 - Escenas SVG de respaldo e íconos: hechos en código por el equipo con ayuda de Claude Code.
 
 ## Diseñado y decidido por el equipo
