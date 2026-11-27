@@ -48,6 +48,18 @@ db.exec(`
   );
   CREATE INDEX IF NOT EXISTS idx_events_course ON events(course);
 
+  -- Actividades que el docente asigna a un curso (lugar + dificultad + fecha).
+  CREATE TABLE IF NOT EXISTS activities (
+    id          TEXT PRIMARY KEY,
+    course      TEXT NOT NULL,
+    monument_id TEXT NOT NULL,
+    difficulty  TEXT NOT NULL,
+    note        TEXT,
+    due         TEXT,
+    created_by  TEXT,
+    created_at  TEXT NOT NULL
+  );
+
   -- Reportes de la Misión guardián y errores de contenido.
   CREATE TABLE IF NOT EXISTS reports (
     id          TEXT PRIMARY KEY,

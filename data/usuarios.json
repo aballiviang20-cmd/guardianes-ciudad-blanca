@@ -1,0 +1,35 @@
+{
+  "_nota": "Cuentas de demostración. Contraseñas con scrypt+sal; las claves de prueba están en docs/CUENTAS_DEMO.md.",
+  "users": [
+    {
+      "username": "profe.vargas",
+      "name": "Prof. Ramiro Vargas",
+      "role": "docente",
+      "subject": "Ciencias Sociales",
+      "courses": [
+        "4TO-A",
+        "6TO-A"
+      ],
+      "salt": "e076cd7299f49ab73c523f964889fff8",
+      "hash": "79accc22398a825415d8c4f4547d8146e74c7a7df22ad04d1546072a907007e2"
+    },
+    {
+      "username": "camila.4to",
+      "name": "Camila",
+      "role": "alumno",
+      "course": "4TO-A",
+      "level": "4to",
+      "salt": "12f34f24050f904358dfb628e737008f",
+      "hash": "ba532b15d587486b186234d2ca3fc3d9b1a0024fd823c1cb17ed9d8c313d56e0"
+    },
+    {
+      "username": "lucia.6to",
+      "name": "Lucía",
+      "role": "alumno",
+      "course": "6TO-A",
+      "level": "6to",
+      "salt": "00820f9b7be58aa92a9d216f066b589f",
+      "hash": "035c432ba5396f206b36f23a20e6ad3d68f7b9bfff3ff02968e69714945659dc"
+    }
+  ]
+}

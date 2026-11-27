@@ -1,9 +1,11 @@
+import crypto from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
 import { randomUUID } from "node:crypto";
 import cors from "cors";
 import express, { type NextFunction, type Request, type Response } from "express";
 import { db, now } from "./db";
+import { login, verifyToken } from "./auth";
 import { addSource, fichasSummary, getFichas, loadFichas, loadMonuments, retrieve } from "./fichas";
 import { league, xpForEvent } from "./league";
 import { draft, GenerationError, itemsOfBatch, judgeBatch, rowToItem, verifyBatch, type ItemRow } from "./pipeline";
@@ -20,10 +22,11 @@ app.use((req, res, next) => (req.path === "/api/teacher/classifier" ? next() : s
 
 const TEACHER_PIN = process.env.TEACHER_PIN || "1825";
 
-/** Panel docente protegido con un PIN de demo (en producción: cuentas de docente). */
+/** Panel docente: cuenta de docente (usuario y contraseña → token firmado) o PIN de respaldo. */
 function requireTeacher(req: Request, res: Response, next: NextFunction) {
-  if (req.header("x-teacher-pin") !== TEACHER_PIN) {
-    res.status(401).json({ error: "PIN de docente incorrecto" });
+  const cred = req.header("x-teacher-pin");
+  if (cred !== TEACHER_PIN && verifyToken(cred)?.role !== "docente") {
+    res.status(401).json({ error: "Sesión de docente inválida" });
     return;
   }
   next();
@@ -35,6 +38,33 @@ const wrap =
     Promise.resolve(fn(req, res)).catch(next);
 
 // ---------------- Público (alumno) ----------------
+
+app.post("/api/auth/login", (req, res) => {
+  const { username, password } = req.body ?? {};
+  const r = login(String(username ?? ""), String(password ?? ""));
+  if (!r) {
+    res.status(401).json({ error: "Usuario o contraseña incorrectos" });
+    return;
+  }
+  res.json(r);
+});
+
+app.get("/api/auth/me", (req, res) => {
+  const u = verifyToken(req.header("x-teacher-pin") ?? req.header("x-token"));
+  if (!u) {
+    res.status(401).json({ error: "Sesión vencida" });
+    return;
+  }
+  res.json({ user: u });
+});
+
+/** Actividades vigentes de un curso (las ve el alumno en su ruta). */
+app.get("/api/activities", (req, res) => {
+  const course = String(req.query.course ?? "").toUpperCase();
+  const today = new Date().toISOString().slice(0, 10);
+  const rows = db.prepare("SELECT id, course, monument_id, difficulty, note, due, created_by, created_at FROM activities WHERE course = ? ORDER BY created_at DESC LIMIT 5").all(course) as { due: string | null }[];
+  res.json({ activities: rows.filter((r) => !r.due || r.due >= today) });
+});
 
 app.get("/api/health", (_req, res) => {
   res.json({ ok: true, ai: Boolean(process.env.ANTHROPIC_API_KEY), time: now() });
@@ -80,6 +110,18 @@ function citeFor(fragmentText: string | null, quote: string | null, sources: str
 }
 
 /** Lecciones: SOLO contenido aprobado por un docente. Lo que recibe el alumno nunca pasó sin revisión humana. */
+/**
+ * Dificultad de cada pregunta según el esfuerzo que pide: verdadero/falso = fácil; elegir = medio;
+ * ordenar en el tiempo o elegir entre años = difícil. (La IA también puede marcarla al generar.)
+ */
+function difficultyOf(p: Record<string, unknown>): "facil" | "medio" | "dificil" {
+  if (typeof p.difficulty === "string" && ["facil", "medio", "dificil"].includes(p.difficulty)) return p.difficulty as "facil";
+  if (p.type === "tf") return "facil";
+  if (p.type === "order") return "dificil";
+  const opts = Array.isArray(p.options_es) ? (p.options_es as string[]) : [];
+  return opts.some((o) => /\b1[5-9]\d\d\b/.test(o)) ? "dificil" : "medio";
+}
+
 app.get("/api/lessons", (_req, res) => {
   const rows = db
     .prepare("SELECT * FROM items WHERE status = 'approved' AND mode != 'norag' ORDER BY created_at")
@@ -93,6 +135,7 @@ app.get("/api/lessons", (_req, res) => {
       ...i.payload,
       fragmentId: i.fragmentId,
       cite: citeFor(i.fragmentText, i.evidenceQuote, sources),
+      difficulty: difficultyOf(i.payload as Record<string, unknown>),
     });
     return {
       ...m,
@@ -182,6 +225,39 @@ teacher.use(requireTeacher);
 teacher.post("/fichas/reload", (_req, res) => {
   const { fichas } = loadFichas();
   res.json({ fichas: [...fichas.values()].map((f) => ({ id: f.monumentId, fragments: f.fragments.length, draft: f.draft })) });
+});
+
+// ---- Actividades asignadas por el docente ----
+const DIFFS = ["facil", "medio", "dificil"];
+teacher.post("/activities", (req, res) => {
+  const { course, monumentId, difficulty, due, note } = req.body ?? {};
+  const c = String(course ?? "").toUpperCase().slice(0, 12);
+  if (!c || !loadMonuments().some((m) => m.id === monumentId) || !DIFFS.includes(String(difficulty))) {
+    res.status(400).json({ error: "Elija curso, lugar y dificultad" });
+    return;
+  }
+  const who = verifyToken(req.header("x-teacher-pin"))?.name ?? "Docente";
+  const id = crypto.randomUUID();
+  db.prepare("INSERT INTO activities (id, course, monument_id, difficulty, note, due, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)").run(
+    id, c, String(monumentId), String(difficulty), note ? String(note).slice(0, 200) : null, due ? String(due).slice(0, 10) : null, who, now());
+  res.json({ id });
+});
+
+teacher.get("/activities", (_req, res) => {
+  const acts = db.prepare("SELECT * FROM activities ORDER BY created_at DESC LIMIT 50").all() as { id: string; course: string; monument_id: string; difficulty: string; note: string | null; due: string | null; created_by: string; created_at: string }[];
+  const ev = db.prepare("SELECT alias, course, payload, received_at FROM events WHERE type = 'lesson_completed'").all() as { alias: string; course: string; payload: string; received_at: string }[];
+  res.json({
+    activities: acts.map((a) => {
+      const done = ev.filter((e) => e.course === a.course && e.received_at >= a.created_at && JSON.parse(e.payload).monumentId === a.monument_id);
+      const students = db.prepare("SELECT COUNT(DISTINCT alias) AS n FROM events WHERE course = ?").get(a.course) as { n: number };
+      return { ...a, completed: new Set(done.map((e) => e.alias)).size, students: students.n };
+    }),
+  });
+});
+
+teacher.post("/activities/:id/delete", (req, res) => {
+  db.prepare("DELETE FROM activities WHERE id = ?").run(String(req.params.id));
+  res.json({ ok: true });
 });
 
 // Resumen para el inicio del panel docente: números del curso, avance por lugar y actividad reciente
