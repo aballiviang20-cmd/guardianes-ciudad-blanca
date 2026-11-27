@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HistoryBol · Entrega</title>
+<style>
+  :root { --verde: #1f5c46; --ok: #2e9e5b; --terra: #c0532d; --tinta: #2b2622; --suave: #7b7168; --linea: #ece5da; }
+  body { margin: 0; font-family: "Segoe UI", system-ui, sans-serif; color: var(--tinta); background: #fbf8f3; }
+  main { max-width: 760px; margin: 0 auto; padding: 32px 20px 48px; }
+  h1 { color: var(--verde); font-size: 34px; margin: 0; }
+  .tag { color: var(--terra); font-weight: 800; letter-spacing: 1px; text-transform: uppercase; font-size: 13px; }
+  p { line-height: 1.5; }
+  .card { background: #fff; border: 2px solid var(--linea); border-radius: 16px; padding: 16px 18px; margin: 14px 0; }
+  .card h2 { margin: 0 0 8px; font-size: 19px; color: var(--verde); }
+  a { color: #2a5f92; font-weight: 700; }
+  code { background: #f4efe6; padding: 2px 6px; border-radius: 6px; }
+  li { margin: 6px 0; }
+  table { width: 100%; border-collapse: collapse; }
+  td, th { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--linea); }
+</style>
+</head>
+<body>
+<main>
+  <span class="tag">Hackathon Regional 2026 · Sede Sucre · Problemática 2</span>
+  <h1>proyecto-Pichones · HistoryBol</h1>
+  <p><b>Equipo Pichones:</b> Ballivián Goytia Augusto · Cepeda Muruchi Matius Franco · Picha Basilio Bryan Rodrigo</p>
+  <p>Una propuesta innovadora para mejorar la educación: los jóvenes <b>conocen, coleccionan y protegen</b> el patrimonio de Sucre jugando, con una IA que cita sus fuentes y un docente que aprueba todo.</p>
+
+  <div class="card">
+    <h2>Archivos de esta entrega</h2>
+    <ol>
+      <li><b>01_HistoryBol_video.mp4</b>: video de presentación (1:58, 1080p).</li>
+      <li><b>02_HistoryBol_documento.pdf</b>: documento del proyecto con capturas reales.</li>
+      <li><b>03_HistoryBol_guia_de_elaboracion.pdf</b>: cómo se construyó (herramientas, personajes, IA, video).</li>
+      <li><b>04_HistoryBol_documento_convocatoria.pdf</b>: planteamiento del problema, declaración transparente de IA y evidencia por criterio de la rúbrica.</li>
+      <li><b>Código</b>: botón verde <i>Code → Download ZIP</i> del repositorio (último commit de desarrollo: 14:26, antes del code freeze).</li>
+    </ol>
+  </div>
+
+  <div class="card">
+    <h2>Enlaces</h2>
+    <ul>
+      <li>Repositorio: <a href="https://github.com/aballiviang20-cmd/guardianes-ciudad-blanca">github.com/aballiviang20-cmd/guardianes-ciudad-blanca</a></li>
+      <li>Historial de commits con horas: <a href="https://github.com/aballiviang20-cmd/guardianes-ciudad-blanca/commits/main">ver commits</a></li>
+      <li>Abrir sin instalar nada (GitHub Codespaces): <a href="https://codespaces.new/aballiviang20-cmd/guardianes-ciudad-blanca">abrir en Codespaces</a></li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>Probarla en una computadora (3 pasos)</h2>
+    <ol>
+      <li>Descargar el código (<i>Code → Download ZIP</i>) y descomprimirlo (requiere Node 22 o superior).</li>
+      <li><code>npm run install:all</code> y luego <code>npm run seed</code>.</li>
+      <li><code>npm start</code> y abrir <code>http://localhost:8787</code>.</li>
+    </ol>
+    <table>
+      <tr><th>Pantalla</th><th>Dirección</th></tr>
+      <tr><td>App del estudiante</td><td><code>/</code> (apodo, curso y nivel)</td></tr>
+      <tr><td>Panel docente</td><td><code>/docente</code> (cuenta de prueba en <code>docs/CUENTAS_DEMO.md</code>)</td></tr>
+      <tr><td>Presentación y tutoriales</td><td><code>/conoce</code></td></tr>
+    </table>
+    <p>En el panel docente: <b>Revisar → Aprobar todas</b> publica el contenido base para los estudiantes. Crear lecciones nuevas con IA requiere la clave de la API en <code>server/.env</code>.</p>
+  </div>
+
+  <div class="card">
+    <h2>En números</h2>
+    <p>4 paradas (1538 → 1991) · 45 ítems verificados (33 preguntas + 12 historias) · 8 personajes bolivianos animados · 20 pruebas automáticas · funciona sin internet en celular, tablet y PC.</p>
+  </div>
+</main>
+</body>
+</html>

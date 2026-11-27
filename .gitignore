@@ -6,3 +6,6 @@ data/db/
 .DS_Store
 coverage/
 .claude/
+
+entrega/privado/
+entrega/*.zip

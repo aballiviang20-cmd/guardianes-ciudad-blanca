@@ -9,6 +9,21 @@ Hackathon Regional 2026 · Sede Sucre · Problemática 2.
 | No se identifican ni valoran su legado | **Colecciona:** álbum de figuritas; la dorada se gana en el lugar |
 | No se involucran en su preservación | **Protege:** Misión guardián para reportar daños |
 
+## Entrega final · proyecto-Pichones
+
+**Equipo Pichones:** Ballivián Goytia Augusto · Cepeda Muruchi Matius Franco · Picha Basilio Bryan Rodrigo
+
+| Entregable | Descarga |
+|---|---|
+| Video de presentación (1:58) | [01_HistoryBol_video.mp4](https://github.com/aballiviang20-cmd/guardianes-ciudad-blanca/raw/main/entrega/01_HistoryBol_video.mp4) |
+| Documento del proyecto | [02_HistoryBol_documento.pdf](https://github.com/aballiviang20-cmd/guardianes-ciudad-blanca/raw/main/entrega/02_HistoryBol_documento.pdf) |
+| Guía de elaboración | [03_HistoryBol_guia_de_elaboracion.pdf](https://github.com/aballiviang20-cmd/guardianes-ciudad-blanca/raw/main/entrega/03_HistoryBol_guia_de_elaboracion.pdf) |
+| Documento de la convocatoria (declaración de IA y rúbrica) | [04_HistoryBol_documento_convocatoria.pdf](https://github.com/aballiviang20-cmd/guardianes-ciudad-blanca/raw/main/entrega/04_HistoryBol_documento_convocatoria.pdf) |
+| Enlaces y guía rápida | [entrega/00_LEEME_enlaces.html](entrega/00_LEEME_enlaces.html) |
+| Código | Botón verde **Code → Download ZIP** |
+
+> El desarrollo terminó con el commit de las 14:26 (code freeze 14:30). La carpeta `entrega/` solo agrega documentos y el video; no cambia el código.
+
 ## Publicarla e instalarla en celulares, tablets y PC
 
 1. `npm start` (app + API en el puerto 8787).
