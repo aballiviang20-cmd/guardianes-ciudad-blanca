@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { teacherApi } from "../api";
 import { CharFace, CharPose } from "../components/Character";
 import { MonumentIcon } from "../components/MonumentIcon";
-import { Button } from "../components/ui";
+import { Button, CountUp } from "../components/ui";
 import type { LeagueCourse } from "../types";
 
 type Item = {
@@ -565,7 +565,6 @@ function Progress({ pin }: { pin: string }) {
 export function TeacherPage() {
   const [pin, setPin] = useState(() => sessionStorage.getItem("teacher-pin") ?? "");
   const [ok, setOk] = useState(false);
-  const [tab, setTab] = useState<TabKey>("home");
   const [err, setErr] = useState("");
 
   useEffect(() => {
@@ -606,104 +605,588 @@ export function TeacherPage() {
     );
   }
 
-  return <TeacherHome pin={pin} tab={tab} setTab={setTab} />;
+  return (
+    <TeacherShell
+      pin={pin}
+      onLogout={() => {
+        sessionStorage.removeItem("teacher-pin");
+        setPin("");
+        setOk(false);
+      }}
+    />
+  );
 }
 
+/* =====================================================================================
+ * Panel docente: menú lateral + secciones. Todo con lenguaje simple y un paso claro a la vez.
+ * ===================================================================================== */
 type TabKey = "home" | "up" | "gen" | "rev" | "prog" | "rep";
-const STEPS: { k: Exclude<TabKey, "home" | "rep">; n: number; title: string; desc: string; icon: string; tip: string }[] = [
-  { k: "up", n: 1, title: "Subir información", desc: "Pegue un texto de su libro o apunte", icon: "📚", tip: "Elija el lugar, diga de dónde sale el dato y pegue el texto. La IA solo usará lo que usted suba." },
-  { k: "gen", n: 2, title: "Crear lección con IA", desc: "La IA arma preguntas con su cita", icon: "✨", tip: "Elija un lugar y toque el botón. En unos segundos la IA propone preguntas, cada una con la frase exacta de donde salió." },
-  { k: "rev", n: 3, title: "Revisar y aprobar", desc: "Usted decide qué ven sus alumnos", icon: "✅", tip: "Lea cada pregunta: lo resaltado en amarillo es la cita de la fuente. Apruebe, edite o rechace. Nada llega a los alumnos sin su visto bueno." },
-  { k: "prog", n: 4, title: "Ver el progreso", desc: "Cómo va su curso y qué fallan más", icon: "📈", tip: "Aquí ve la liga de cursos y las preguntas que más se equivocan, para reforzarlas en clase." },
+
+const ICONS: Record<string, React.ReactNode> = {
+  home: (
+    <>
+      <path d="M3 10.5 12 3l9 7.5" />
+      <path d="M5 9.5V20h5v-6h4v6h5V9.5" />
+    </>
+  ),
+  up: (
+    <>
+      <path d="M4 5a2 2 0 0 1 2-2h13v15H6a2 2 0 0 0-2 2z" />
+      <path d="M4 20a2 2 0 0 0 2 1h13v-3" />
+      <path d="M11.5 7v7M8 10.5h7" />
+    </>
+  ),
+  gen: (
+    <>
+      <path d="M11 3l1.9 4.8L17.7 9.7l-4.8 1.9L11 16.4l-1.9-4.8L4.3 9.7l4.8-1.9z" />
+      <path d="M18.5 14.5l.8 2 2 .8-2 .8-.8 2-.8-2-2-.8 2-.8z" />
+    </>
+  ),
+  rev: (
+    <>
+      <rect x="3" y="3" width="18" height="18" rx="5" />
+      <path d="m8 12.2 2.8 2.8L16.5 9" />
+    </>
+  ),
+  prog: (
+    <>
+      <path d="M4 20V11M10 20V5M16 20v-6M2.5 20.5h19" />
+    </>
+  ),
+  rep: (
+    <>
+      <path d="M6 16v-5a6 6 0 0 1 12 0v5l1.8 2H4.2z" />
+      <path d="M10 21h4" />
+    </>
+  ),
+  qr: (
+    <>
+      <rect x="3" y="3" width="7" height="7" rx="1.5" />
+      <rect x="14" y="3" width="7" height="7" rx="1.5" />
+      <rect x="3" y="14" width="7" height="7" rx="1.5" />
+      <path d="M14 14h3v3M21 14v7h-4M14 18v3" />
+    </>
+  ),
+  cam: (
+    <>
+      <path d="M4 8h3l2-3h6l2 3h3v11H4z" />
+      <circle cx="12" cy="13" r="3.5" />
+    </>
+  ),
+  lab: (
+    <>
+      <path d="M9 3h6M10 3v6L4.6 18.6A1.6 1.6 0 0 0 6 21h12a1.6 1.6 0 0 0 1.4-2.4L14 9V3" />
+      <path d="M7.5 15h9" />
+    </>
+  ),
+  phone: (
+    <>
+      <rect x="7" y="2.5" width="10" height="19" rx="2.5" />
+      <path d="M11 18h2" />
+    </>
+  ),
+  out: (
+    <>
+      <path d="M15 4h4v16h-4" />
+      <path d="M10 8l-4 4 4 4M6 12h10" />
+    </>
+  ),
+  arrow: <path d="M5 12h14M13 6l6 6-6 6" />,
+};
+function Ico({ k, s = 22 }: { k: string; s?: number }) {
+  return (
+    <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      {ICONS[k]}
+    </svg>
+  );
+}
+
+const SECTIONS: { k: TabKey; label: string; title: string; sub: string }[] = [
+  { k: "home", label: "Inicio", title: "Inicio", sub: "Cómo va su curso y qué conviene hacer ahora." },
+  { k: "up", label: "Información", title: "Información para la IA", sub: "La IA solo escribe con lo que usted carga aquí. Pegue un texto confiable y listo." },
+  { k: "gen", label: "Crear lección", title: "Crear lección con IA", sub: "Elija un lugar y la IA propone preguntas, cada una con la frase exacta de donde salió." },
+  { k: "rev", label: "Revisar", title: "Revisar antes de publicar", sub: "Nada llega a sus alumnos sin su visto bueno. Revise una por una o apruebe todas." },
+  { k: "prog", label: "Mi curso", title: "Progreso del curso", sub: "Liga de cursos y las preguntas que más fallan, para reforzarlas en clase." },
+  { k: "rep", label: "Reportes", title: "Reportes de alumnos", sub: "Daños que vieron en un monumento o errores que encontraron en una pregunta." },
 ];
 
-function TeacherHome({ pin, tab, setTab }: { pin: string; tab: TabKey; setTab: (t: TabKey) => void }) {
-  const [genMonument, setGenMonument] = useState<string | undefined>();
-  const [pending, setPending] = useState(0);
-  const [reports, setReports] = useState(0);
+type Overview = {
+  kpis: { students: number; courses: number; xp: number; lessons: number; accuracy: number | null; published: number; pending: number; reportsNew: number };
+  places: (Place & { published: number; stories: number; pending: number; completions: number; avgStars: number | null })[];
+  recent: { ts: string; alias: string; course: string; type: string; monumentId: string | null; correct: number | null; total: number | null; stars: number | null }[];
+  league: LeagueCourse[];
+};
+
+function useOverview(pin: string, tab: TabKey) {
+  const [data, setData] = useState<Overview | null>(null);
   useEffect(() => {
     const api = teacherApi(pin);
-    api.get<{ items: Item[] }>("/items?status=pending").then((r) => setPending(r.items.length)).catch(() => {});
-    api.get<{ reports: Report[] }>("/reports").then((r) => setReports(r.reports.length)).catch(() => {});
+    let live = true;
+    const load = () => api.get<Overview>("/overview").then((d) => live && setData(d)).catch(() => {});
+    void load();
+    const iv = setInterval(load, 6000);
+    return () => {
+      live = false;
+      clearInterval(iv);
+    };
   }, [pin, tab]);
-  const step = STEPS.find((s) => s.k === tab);
+  return data;
+}
+
+function ago(ts: string) {
+  const s = Math.max(0, (Date.now() - new Date(ts).getTime()) / 1000);
+  if (s < 60) return "hace un momento";
+  if (s < 3600) return `hace ${Math.round(s / 60)} min`;
+  if (s < 86400) return `hace ${Math.round(s / 3600)} h`;
+  return new Date(ts).toLocaleDateString();
+}
+
+const EVENT_TEXT: Record<string, string> = {
+  lesson_completed: "terminó el reto de",
+  stories_completed: "leyó el cuento de",
+  golden_card: "ganó la figurita dorada de",
+  guardian_report: "reportó un daño en",
+};
+
+function Kpi({ icon, label, value, suffix = "", tone = "verde", delay = 0 }: { icon: string; label: string; value: number | null; suffix?: string; tone?: string; delay?: number }) {
+  return (
+    <motion.div className={`tp-kpi tone-${tone}`} initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay, type: "spring", stiffness: 260, damping: 22 }}>
+      <span className="tp-kpi-ico">
+        <Ico k={icon} s={20} />
+      </span>
+      <b>{value === null ? "—" : <CountUp to={value} />}{value === null ? "" : suffix}</b>
+      <small>{label}</small>
+    </motion.div>
+  );
+}
+
+function Dashboard({ data, go }: { data: Overview | null; go: (t: TabKey) => void }) {
+  if (!data) return <div className="tp-loading">Cargando…</div>;
+  const k = data.kpis;
+  const thin = data.places.filter((p) => p.published < 3);
+  const next =
+    k.pending > 0
+      ? { t: `Tiene ${k.pending} ${k.pending === 1 ? "pregunta" : "preguntas"} esperando su visto bueno`, d: "Revíselas en un minuto: cada una muestra la frase de la fuente.", cta: "Revisar ahora", to: "rev" as TabKey, pose: "frente" }
+      : thin.length > 0
+        ? { t: `${thin[0].name} tiene pocas preguntas`, d: "Cree una lección nueva: la IA la arma con sus fuentes en segundos.", cta: "Crear lección", to: "gen" as TabKey, pose: "sucre" }
+        : k.students === 0
+          ? { t: "Todo listo para sus alumnos", d: "Imprima los carteles QR o comparta el enlace de la app con su curso.", cta: "Ver carteles QR", to: null, pose: "bolivia" }
+          : { t: "¡Su curso está en marcha!", d: "Mire qué preguntas fallan más para reforzarlas en clase.", cta: "Ver mi curso", to: "prog" as TabKey, pose: "salta" };
+  const steps = [
+    { done: data.places.some((p) => p.fragments > 0), t: "Cargar información", to: "up" as TabKey },
+    { done: k.published + k.pending > 0, t: "Crear una lección con IA", to: "gen" as TabKey },
+    { done: k.published > 0 && k.pending === 0, t: "Revisar y publicar", to: "rev" as TabKey },
+    { done: k.students > 0, t: "Que el curso juegue", to: "prog" as TabKey },
+  ];
+  const doneN = steps.filter((s) => s.done).length;
+  return (
+    <div className="tp-dash">
+      <motion.section className="tp-next" initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ type: "spring", stiffness: 220, damping: 22 }}>
+        <div className="tp-next-txt">
+          <span className="tp-eyebrow">Próximo paso recomendado</span>
+          <h2>{next.t}</h2>
+          <p>{next.d}</p>
+          {next.to ? (
+            <Button onClick={() => go(next.to!)}>
+              {next.cta} <Ico k="arrow" s={18} />
+            </Button>
+          ) : (
+            <Link className="btn-link" to="/carteles">
+              <Button>
+                {next.cta} <Ico k="arrow" s={18} />
+              </Button>
+            </Link>
+          )}
+        </div>
+        <div className="tp-next-art">
+          <CharPose c="orki" pose={next.pose as "sucre"} size={150} anim="idle" />
+        </div>
+      </motion.section>
+
+      <div className="tp-kpis">
+        <Kpi icon="phone" label="Alumnos activos" value={k.students} delay={0.05} />
+        <Kpi icon="rev" label="Retos completados" value={k.lessons} tone="azul" delay={0.1} />
+        <Kpi icon="prog" label="Aciertos" value={k.accuracy} suffix="%" tone="oro" delay={0.15} />
+        <Kpi icon="gen" label="Preguntas publicadas" value={k.published} tone="terra" delay={0.2} />
+        <Kpi icon="rep" label="Reportes nuevos" value={k.reportsNew} tone="rojo" delay={0.25} />
+      </div>
+
+      <div className="tp-cols">
+        <section className="tp-panel">
+          <header>
+            <h3>Preparar una clase</h3>
+            <span className="tp-pill">
+              {doneN} de 4
+            </span>
+          </header>
+          <div className="tp-meter">
+            <motion.span initial={{ width: 0 }} animate={{ width: `${(doneN / 4) * 100}%` }} transition={{ duration: 0.9, ease: "easeOut" }} />
+          </div>
+          <ol className="tp-check">
+            {steps.map((s, i) => (
+              <li key={s.t} className={s.done ? "done" : ""}>
+                <button onClick={() => go(s.to)}>
+                  <span className="tp-check-dot">{s.done ? <Ico k="rev" s={18} /> : i + 1}</span>
+                  <span>{s.t}</span>
+                  <Ico k="arrow" s={16} />
+                </button>
+              </li>
+            ))}
+          </ol>
+        </section>
+
+        <section className="tp-panel">
+          <header>
+            <h3>Avance por lugar</h3>
+            <button className="tp-link" onClick={() => go("gen")}>
+              Crear más
+            </button>
+          </header>
+          <div className="tp-places">
+            {data.places.map((p, i) => (
+              <div key={p.id} className="tp-place" style={{ ["--accent" as string]: p.color }}>
+                <span className="tp-place-ico">
+                  <MonumentIcon id={p.id} size={22} />
+                </span>
+                <div className="tp-place-body">
+                  <div className="tp-place-top">
+                    <b>{p.name}</b>
+                    <small>
+                      {p.published} preguntas · {p.completions} {p.completions === 1 ? "alumno" : "alumnos"}
+                      {p.avgStars ? ` · ★ ${p.avgStars}` : ""}
+                    </small>
+                  </div>
+                  <div className="tp-bar">
+                    <motion.span initial={{ width: 0 }} animate={{ width: `${Math.min(100, (p.published / 8) * 100)}%` }} transition={{ delay: 0.1 * i, duration: 0.8, ease: "easeOut" }} />
+                  </div>
+                </div>
+                {p.pending > 0 && (
+                  <button className="tp-mini-badge" onClick={() => go("rev")}>
+                    {p.pending} por revisar
+                  </button>
+                )}
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section className="tp-panel tp-feed">
+          <header>
+            <h3>
+              <span className="tp-live" /> Actividad en vivo
+            </h3>
+          </header>
+          {data.recent.length === 0 ? (
+            <div className="tp-empty">
+              <CharFace c="kusi" face="pensativo" size={64} anim="idle" />
+              <p>Cuando sus alumnos jueguen, aquí verá lo que hacen al instante.</p>
+            </div>
+          ) : (
+            <ul>
+              <AnimatePresence initial={false}>
+                {data.recent.map((r) => (
+                  <motion.li key={`${r.ts}-${r.alias}-${r.type}`} layout initial={{ opacity: 0, x: -14 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0 }}>
+                    <span className="tp-avatar">{r.alias.slice(0, 1).toUpperCase()}</span>
+                    <p>
+                      <b>{r.alias}</b> <small>({r.course})</small> {EVENT_TEXT[r.type] ?? r.type} <b>{data.places.find((p) => p.id === r.monumentId)?.name ?? "la app"}</b>
+                      {r.type === "lesson_completed" && r.total ? (
+                        <span className="tp-score">
+                          {" "}
+                          · {r.correct}/{r.total} {"★".repeat(Number(r.stars) || 0)}
+                        </span>
+                      ) : null}
+                      <small className="tp-ago">{ago(r.ts)}</small>
+                    </p>
+                  </motion.li>
+                ))}
+              </AnimatePresence>
+            </ul>
+          )}
+        </section>
+
+        <section className="tp-panel">
+          <header>
+            <h3>Liga de cursos</h3>
+            <button className="tp-link" onClick={() => go("prog")}>
+              Ver todo
+            </button>
+          </header>
+          {data.league.length === 0 ? (
+            <p className="tp-muted">Todavía no hay cursos jugando.</p>
+          ) : (
+            <ol className="tp-league">
+              {data.league.map((c, i) => (
+                <li key={c.course}>
+                  <span className={`tp-rank r${i + 1}`}>{i + 1}</span>
+                  <b>{c.course}</b>
+                  <span className="tp-bar">
+                    <motion.span initial={{ width: 0 }} animate={{ width: `${(c.xp / Math.max(1, data.league[0].xp)) * 100}%` }} transition={{ duration: 0.8 }} />
+                  </span>
+                  <small>{c.xp} XP</small>
+                </li>
+              ))}
+            </ol>
+          )}
+        </section>
+      </div>
+    </div>
+  );
+}
+
+/** Vista previa: la pregunta tal como la ve el alumno en su celular. */
+function StudentPreview({ item }: { item: Item }) {
+  const p = item.payload as Record<string, string | string[] | number>;
+  const isQ = item.kind === "question";
+  const options = (p.options_es as string[]) ?? [];
+  return (
+    <div className="tp-phone">
+      <div className="tp-phone-notch" />
+      <div className="tp-phone-screen">
+        {isQ ? (
+          <>
+            <span className="tp-phone-kicker">{p.type === "order" ? "Ordena" : p.type === "fill" ? "Completa" : "Elige la respuesta"}</span>
+            <h4>{p.prompt_es as string}</h4>
+            <div className="tp-phone-opts">
+              {options.map((o, i) => (
+                <span key={i} className={p.type !== "order" && i === p.answer ? "ok" : ""}>
+                  {p.type === "order" ? `${i + 1}. ` : ""}
+                  {o}
+                  {p.type !== "order" && i === p.answer && <Ico k="rev" s={16} />}
+                </span>
+              ))}
+            </div>
+            <p className="tp-phone-expl">💡 {p.explanation_es as string}</p>
+          </>
+        ) : (
+          <>
+            <span className="tp-phone-kicker">Historia</span>
+            <h4>{p.title_es as string}</h4>
+            <p className="tp-phone-story">{p.text_es as string}</p>
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function ReviewDeck({ pin, go }: { pin: string; go: (t: TabKey) => void }) {
+  const api = teacherApi(pin);
+  const [items, setItems] = useState<Item[] | null>(null);
+  const [i, setI] = useState(0);
+  const [dir, setDir] = useState<1 | -1>(1);
+  const [editing, setEditing] = useState(false);
+  const [draft, setDraft] = useState<Record<string, string>>({});
+  const [confirmAll, setConfirmAll] = useState(false);
+  const [done, setDone] = useState({ ok: 0, no: 0 });
+  useEffect(() => {
+    api.get<{ items: Item[] }>("/items?status=pending").then((r) => setItems(r.items)).catch(() => setItems([]));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  const cur = items?.[Math.min(i, (items?.length ?? 1) - 1)];
+
+  async function decide(ok: boolean) {
+    if (!cur) return;
+    setDir(ok ? 1 : -1);
+    if (ok) await api.post(`/items/${cur.id}/approve`, { reviewer: "docente", payload: editing ? draft : undefined });
+    else await api.post(`/items/${cur.id}/reject`, { reviewer: "docente" });
+    setDone((d) => ({ ok: d.ok + (ok ? 1 : 0), no: d.no + (ok ? 0 : 1) }));
+    setEditing(false);
+    setItems((xs) => (xs ?? []).filter((x) => x.id !== cur.id));
+  }
+  async function approveAll() {
+    for (const it of items ?? []) await api.post(`/items/${it.id}/approve`, { reviewer: "docente" });
+    setDone((d) => ({ ...d, ok: d.ok + (items?.length ?? 0) }));
+    setItems([]);
+    setConfirmAll(false);
+  }
+  function startEdit() {
+    if (!cur) return;
+    const p = cur.payload as Record<string, string>;
+    setDraft(cur.kind === "question" ? { prompt_es: p.prompt_es, explanation_es: p.explanation_es } : { title_es: p.title_es, text_es: p.text_es });
+    setEditing(true);
+  }
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (editing || !cur || (e.target as HTMLElement).tagName === "TEXTAREA") return;
+      if (e.key === "a" || e.key === "A") void decide(true);
+      if (e.key === "r" || e.key === "R") void decide(false);
+      if (e.key === "e" || e.key === "E") startEdit();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  });
+
+  if (!items) return <div className="tp-loading">Cargando…</div>;
+  if (!cur)
+    return (
+      <motion.div className="tp-allset" initial={{ scale: 0.92, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ type: "spring", stiffness: 240, damping: 18 }}>
+        <CharPose c="orki" pose="salta" size={150} anim="jump" pulse={1} />
+        <h3>¡Todo revisado!</h3>
+        <p>
+          {done.ok + done.no > 0 ? `Aprobó ${done.ok} y rechazó ${done.no}. ` : ""}Lo aprobado ya aparece en la app de sus alumnos.
+        </p>
+        <Button onClick={() => go("gen")}>
+          Crear más preguntas <Ico k="arrow" s={18} />
+        </Button>
+      </motion.div>
+    );
+  const total = items.length + done.ok + done.no;
+  const pos = done.ok + done.no + 1;
+  return (
+    <div className="tp-review">
+      <div className="tp-review-bar">
+        <span>
+          Pregunta <b>{pos}</b> de <b>{total}</b>
+        </span>
+        <div className="tp-dots">
+          {Array.from({ length: total }, (_, k) => (
+            <span key={k} className={k < pos - 1 ? "past" : k === pos - 1 ? "now" : ""} />
+          ))}
+        </div>
+        {items.length > 1 &&
+          (confirmAll ? (
+            <span className="tp-confirm">
+              ¿Publicar las {items.length}?
+              <Button variant="success" onClick={approveAll}>
+                Sí, aprobar
+              </Button>
+              <Button variant="secondary" onClick={() => setConfirmAll(false)}>
+                No
+              </Button>
+            </span>
+          ) : (
+            <button className="tp-link" onClick={() => setConfirmAll(true)}>
+              Aprobar todas ({items.length})
+            </button>
+          ))}
+      </div>
+      <AnimatePresence mode="popLayout" custom={dir} initial={false}>
+        <motion.div
+          key={cur.id}
+          className="tp-review-card"
+          custom={dir}
+          initial={{ opacity: 0, x: 40, rotate: 1.5 }}
+          animate={{ opacity: 1, x: 0, rotate: 0 }}
+          exit={{ opacity: 0, x: dir * 260, rotate: dir * 8, transition: { duration: 0.35 } }}
+          transition={{ type: "spring", stiffness: 260, damping: 26 }}
+        >
+          <div className="tp-review-left">
+            <span className="tp-eyebrow">Así lo verá su alumno</span>
+            {editing ? (
+              <div className="tp-edit">
+                {Object.keys(draft).map((key) => (
+                  <label key={key}>
+                    {key.startsWith("prompt") ? "Pregunta" : key.startsWith("explanation") ? "Explicación" : key.startsWith("title") ? "Título" : "Texto"}
+                    <textarea value={draft[key]} onChange={(e) => setDraft({ ...draft, [key]: e.target.value })} rows={key.startsWith("text") ? 5 : 3} />
+                  </label>
+                ))}
+              </div>
+            ) : (
+              <StudentPreview item={cur} />
+            )}
+          </div>
+          <div className="tp-review-right">
+            <span className="tp-eyebrow">¿De dónde salió?</span>
+            <div className="tp-source">
+              <span className="tp-source-tag">
+                <MonumentIcon id={cur.monumentId} size={16} /> Fuente {cur.fragmentId}
+              </span>
+              <p>
+                <Highlight text={cur.fragmentText} quote={cur.evidenceQuote} />
+              </p>
+              <small>Lo resaltado es la frase exacta que respalda la respuesta.</small>
+            </div>
+            {cur.judgeReason && (
+              <div className="tp-judge">
+                <b>Segunda opinión (IA):</b> {cur.judgeReason}
+              </div>
+            )}
+            <div className="tp-actions">
+              <Button variant="success" onClick={() => decide(true)}>
+                ✓ {editing ? "Guardar y aprobar" : "Aprobar"}
+              </Button>
+              {!editing ? (
+                <Button variant="secondary" onClick={startEdit}>
+                  ✎ Editar
+                </Button>
+              ) : (
+                <Button variant="secondary" onClick={() => setEditing(false)}>
+                  Cancelar edición
+                </Button>
+              )}
+              <Button variant="danger" onClick={() => decide(false)}>
+                ✕ Rechazar
+              </Button>
+            </div>
+            <p className="tp-keys">
+              Atajos: <kbd>A</kbd> aprobar · <kbd>E</kbd> editar · <kbd>R</kbd> rechazar
+            </p>
+          </div>
+        </motion.div>
+      </AnimatePresence>
+    </div>
+  );
+}
+
+function TeacherShell({ pin, onLogout }: { pin: string; onLogout: () => void }) {
+  const [tab, setTab] = useState<TabKey>("home");
+  const [genMonument, setGenMonument] = useState<string | undefined>();
+  const data = useOverview(pin, tab);
+  const sec = SECTIONS.find((s) => s.k === tab)!;
+  const badge = (k: TabKey) => (k === "rev" ? data?.kpis.pending : k === "rep" ? data?.kpis.reportsNew : 0) || 0;
+  const hour = new Date().getHours();
+  const hello = hour < 12 ? "Buenos días" : hour < 19 ? "Buenas tardes" : "Buenas noches";
 
   return (
-    <div className="teacher">
-      <header className="teacher-head">
-        <button className="t-home-btn" onClick={() => setTab("home")}>
-          <h1>Panel docente</h1>
-          <p>Solo lo que usted aprueba llega a sus estudiantes.</p>
-        </button>
-        <nav className="t-stepper" aria-label="Pasos">
-          {STEPS.map((s, i) => (
-            <button key={s.k} className={`t-stepbtn ${tab === s.k ? "on" : ""}`} onClick={() => setTab(s.k)}>
-              {tab === s.k && <motion.span layoutId="t-step-pill" className="t-step-pill" transition={{ type: "spring", stiffness: 400, damping: 32 }} />}
-              <span className="t-stepnum">{s.n}</span>
-              <span className="t-steplabel">{s.title}</span>
-              {s.k === "rev" && pending > 0 && <span className="t-badge">{pending}</span>}
-              {i < STEPS.length - 1 && <span className="t-arrow" aria-hidden>›</span>}
+    <div className="tp">
+      <aside className="tp-side">
+        <div className="tp-brand">
+          <CharFace c="orki" face="alegre" size={44} anim="idle" />
+          <div>
+            <b>Guardianes</b>
+            <small>Panel docente</small>
+          </div>
+        </div>
+        <nav className="tp-nav">
+          {SECTIONS.map((s) => (
+            <button key={s.k} className={tab === s.k ? "on" : ""} onClick={() => setTab(s.k)}>
+              {tab === s.k && <motion.span layoutId="tp-nav-pill" className="tp-nav-pill" transition={{ type: "spring", stiffness: 420, damping: 34 }} />}
+              <Ico k={s.k} />
+              <span>{s.label}</span>
+              {badge(s.k) > 0 && <em>{badge(s.k)}</em>}
             </button>
           ))}
         </nav>
-      </header>
+        <div className="tp-side-tools">
+          <small>Herramientas</small>
+          <Link to="/carteles">
+            <Ico k="qr" s={18} /> Carteles QR
+          </Link>
+          <Link to="/entrenar">
+            <Ico k="cam" s={18} /> Enseñar a la cámara
+          </Link>
+          <Link to="/evidencia">
+            <Ico k="lab" s={18} /> Evidencia de la IA
+          </Link>
+          <Link to="/">
+            <Ico k="phone" s={18} /> App del alumno
+          </Link>
+          <button onClick={onLogout}>
+            <Ico k="out" s={18} /> Salir
+          </button>
+        </div>
+      </aside>
 
-      {/* sin salida animada: el paso nuevo aparece al instante aunque el navegador esté en segundo plano */}
-      <>
-        <motion.div key={tab} initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.25 }}>
-          {tab === "home" && (
-            <>
-              <Guide>
-                <b>¡Hola, profe!</b> Preparar una lección le toma unos 3 minutos. Siga los 4 pasos en orden; yo le voy explicando cada uno.
-              </Guide>
-              <div className="t-home-grid">
-                {STEPS.map((s, i) => (
-                  <motion.button
-                    key={s.k}
-                    className="t-card"
-                    onClick={() => setTab(s.k)}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.08 * i, type: "spring", stiffness: 260, damping: 22 }}
-                    whileHover={{ y: -4 }}
-                    whileTap={{ scale: 0.97 }}
-                  >
-                    <span className="t-card-n">Paso {s.n}</span>
-                    <motion.span className="t-card-icon" animate={{ rotate: [0, -8, 8, 0] }} transition={{ duration: 2.4, repeat: Infinity, repeatDelay: 1.5 + i * 0.6 }}>
-                      {s.icon}
-                    </motion.span>
-                    <b>{s.title}</b>
-                    <small>{s.desc}</small>
-                    {s.k === "rev" && pending > 0 && <span className="t-badge big">{pending} por revisar</span>}
-                    <span className="t-go">Empezar →</span>
-                  </motion.button>
-                ))}
-              </div>
-              <h3 className="t-more">Más herramientas</h3>
-              <div className="t-tools">
-                <button className="t-tool" onClick={() => setTab("rep")}>
-                  🛎️ Reportes de alumnos {reports > 0 && <span className="t-badge">{reports}</span>}
-                </button>
-                <Link className="t-tool" to="/carteles">
-                  🖨️ Imprimir carteles QR
-                </Link>
-                <Link className="t-tool" to="/entrenar">
-                  📷 Enseñar a la cámara
-                </Link>
-                <Link className="t-tool" to="/evidencia">
-                  📊 Evidencia de la IA
-                </Link>
-              </div>
-            </>
-          )}
-          {step && (
-            <Guide face={step.k === "rev" ? "pensativo" : "alegre"}>
-              <b>
-                Paso {step.n} de 4 · {step.title}.
-              </b>{" "}
-              {step.tip}
-            </Guide>
-          )}
+      <main className="tp-main">
+        <header className="tp-head">
+          <div>
+            <span className="tp-hello">{tab === "home" ? `${hello}, profe` : "Panel docente"}</span>
+            <h1>{sec.title}</h1>
+            <p>{sec.sub}</p>
+          </div>
+        </header>
+        <motion.div key={tab} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.28 }}>
+          {tab === "home" && <Dashboard data={data} go={setTab} />}
           {tab === "up" && (
             <Upload
               pin={pin}
@@ -714,28 +1197,11 @@ function TeacherHome({ pin, tab, setTab }: { pin: string; tab: TabKey; setTab: (
             />
           )}
           {tab === "gen" && <Generate key={genMonument} pin={pin} initialMonument={genMonument} onDone={() => setTab("rev")} />}
-          {tab === "rev" && <Review pin={pin} />}
+          {tab === "rev" && <ReviewDeck pin={pin} go={setTab} />}
           {tab === "prog" && <Progress pin={pin} />}
-          {tab === "rep" && (
-            <>
-              <Guide face="pensativo">Aquí llegan los avisos de sus alumnos: daños que vieron en un monumento o errores en una pregunta.</Guide>
-              <Reports pin={pin} />
-            </>
-          )}
-          {step && (
-            <div className="t-nav">
-              <Button variant="secondary" onClick={() => setTab(step.n === 1 ? "home" : STEPS[step.n - 2].k)}>
-                ← {step.n === 1 ? "Inicio" : "Paso anterior"}
-              </Button>
-              {step.n < 4 ? (
-                <Button onClick={() => setTab(STEPS[step.n].k)}>Siguiente paso: {STEPS[step.n].title} →</Button>
-              ) : (
-                <Button onClick={() => setTab("home")}>Volver al inicio</Button>
-              )}
-            </div>
-          )}
+          {tab === "rep" && <Reports pin={pin} />}
         </motion.div>
-      </>
+      </main>
     </div>
   );
 }

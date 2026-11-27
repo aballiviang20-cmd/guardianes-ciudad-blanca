@@ -5,7 +5,7 @@ import cors from "cors";
 import express, { type NextFunction, type Request, type Response } from "express";
 import { db, now } from "./db";
 import { addSource, fichasSummary, getFichas, loadFichas, loadMonuments, retrieve } from "./fichas";
-import { league } from "./league";
+import { league, xpForEvent } from "./league";
 import { draft, GenerationError, itemsOfBatch, judgeBatch, rowToItem, verifyBatch, type ItemRow } from "./pipeline";
 import { redactPII } from "./pii";
 import { normalize } from "./verify";
@@ -182,6 +182,49 @@ teacher.use(requireTeacher);
 teacher.post("/fichas/reload", (_req, res) => {
   const { fichas } = loadFichas();
   res.json({ fichas: [...fichas.values()].map((f) => ({ id: f.monumentId, fragments: f.fragments.length, draft: f.draft })) });
+});
+
+// Resumen para el inicio del panel docente: números del curso, avance por lugar y actividad reciente
+teacher.get("/overview", (_req, res) => {
+  type Ev = { alias: string; course: string; type: string; payload: string; ts: string };
+  const ev = db.prepare("SELECT alias, course, type, payload, ts FROM events ORDER BY ts DESC").all() as Ev[];
+  const parsed = ev.map((e) => ({ ...e, p: JSON.parse(e.payload) as Record<string, unknown> }));
+  const lessons = parsed.filter((e) => e.type === "lesson_completed");
+  const correct = lessons.reduce((a, e) => a + (Number(e.p.correct) || 0), 0);
+  const total = lessons.reduce((a, e) => a + (Number(e.p.total) || 0), 0);
+  const items = db.prepare("SELECT monument_id, kind, status FROM items WHERE mode != 'norag'").all() as { monument_id: string; kind: string; status: string }[];
+  const reportsNew = (db.prepare("SELECT COUNT(*) AS n FROM reports WHERE status = 'nuevo'").get() as { n: number }).n;
+  const places = fichasSummary().map((pl) => {
+    const mine = items.filter((i) => i.monument_id === pl.id);
+    const done = lessons.filter((l) => l.p.monumentId === pl.id);
+    const stars = done.map((l) => Number(l.p.stars) || 0);
+    return {
+      ...pl,
+      published: mine.filter((i) => i.status === "approved" && i.kind === "question").length,
+      stories: mine.filter((i) => i.status === "approved" && i.kind === "story").length,
+      pending: mine.filter((i) => i.status === "pending").length,
+      completions: new Set(done.map((l) => `${l.course}|${l.alias}`)).size,
+      avgStars: stars.length ? Math.round((stars.reduce((a, b) => a + b, 0) / stars.length) * 10) / 10 : null,
+    };
+  });
+  res.json({
+    kpis: {
+      students: new Set(parsed.map((e) => `${e.course}|${e.alias}`)).size,
+      courses: new Set(parsed.map((e) => e.course)).size,
+      xp: parsed.reduce((a, e) => a + xpForEvent(e.type, e.p), 0),
+      lessons: lessons.length,
+      accuracy: total ? Math.round((correct / total) * 100) : null,
+      published: items.filter((i) => i.status === "approved" && i.kind === "question").length,
+      pending: items.filter((i) => i.status === "pending").length,
+      reportsNew,
+    },
+    places,
+    recent: parsed
+      .filter((e) => e.type !== "answer")
+      .slice(0, 14)
+      .map((e) => ({ ts: e.ts, alias: e.alias, course: e.course, type: e.type, monumentId: e.p.monumentId ?? null, correct: e.p.correct ?? null, total: e.p.total ?? null, stars: e.p.stars ?? null })),
+    league: league().slice(0, 5),
+  });
 });
 
 // Lo que la IA conoce de cada lugar y subida de información nueva del docente
