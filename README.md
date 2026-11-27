@@ -9,6 +9,26 @@ Hackathon Regional 2026 · Sede Sucre · Problemática 2.
 | No se identifican ni valoran su legado | **Colecciona:** álbum de figuritas; la dorada se gana en el lugar |
 | No se involucran en su preservación | **Protege:** Misión guardián para reportar daños |
 
+## Cómo abrir HistoryBol (para el jurado)
+
+[![Abrir en GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/aballiviang20-cmd/guardianes-ciudad-blanca)
+
+| Opción | Cómo |
+|---|---|
+| **1. En el navegador, sin instalar nada** | Botón de arriba: [Abrir en GitHub Codespaces](https://codespaces.new/aballiviang20-cmd/guardianes-ciudad-blanca) (se necesita una cuenta gratuita de GitHub). La primera vez tarda unos minutos: se instala, se prepara y se abre sola en el puerto 8787. |
+| **2. En una computadora** | Requiere Node.js 22 o superior. Descargar el [ZIP de la app](https://github.com/aballiviang20-cmd/guardianes-ciudad-blanca/raw/main/entrega/05_HistoryBol_codigo_fuente.zip) o usar **Code → Download ZIP**. Después: `npm run install:all` → `npm run seed` → `npm start` → abrir http://localhost:8787 |
+| **3. Enlace en vivo (temporal)** | https://rtorp-181-115-130-30.run.pinggy-free.link: activo solo durante la presentación del 27/11/2026. Si aparece un aviso de Pinggy, tocar *Continue*. |
+
+| Pantalla | Dirección | Acceso |
+|---|---|---|
+| App del estudiante | `/` | Sin contraseña: apodo, curso y nivel |
+| Panel docente | `/docente` | Usuario **`profe.vargas`** · contraseña **`Sucre1538`** |
+| Presentación y tutoriales | `/conoce` | Libre |
+
+- **Primer paso en una instalación nueva:** entrar al panel docente y tocar **Revisar → Aprobar todas**. Así se publica el contenido base para los estudiantes.
+- **Celular o tablet:** no hace falta un APK. Abrir la dirección en Chrome y tocar **⋮ → Instalar app**: queda como un ícono más y funciona sin internet.
+- Para crear lecciones nuevas con IA hace falta una clave de la API de Claude en `server/.env`. Todo lo demás funciona sin clave.
+
 ## Entrega final · proyecto-Pichones
 
 **Equipo Pichones:** Ballivián Goytia Augusto · Cepeda Muruchi Matius Franco · Picha Basilio Bryan Rodrigo
@@ -20,7 +40,9 @@ Hackathon Regional 2026 · Sede Sucre · Problemática 2.
 | Guía de elaboración | [03_HistoryBol_guia_de_elaboracion.pdf](https://github.com/aballiviang20-cmd/guardianes-ciudad-blanca/raw/main/entrega/03_HistoryBol_guia_de_elaboracion.pdf) |
 | Documento de la convocatoria (declaración de IA y rúbrica) | [04_HistoryBol_documento_convocatoria.pdf](https://github.com/aballiviang20-cmd/guardianes-ciudad-blanca/raw/main/entrega/04_HistoryBol_documento_convocatoria.pdf) |
 | Enlaces y guía rápida | [entrega/00_LEEME_enlaces.html](entrega/00_LEEME_enlaces.html) |
-| Código | Botón verde **Code → Download ZIP** |
+| App completa (código, 55 MB) | [05_HistoryBol_codigo_fuente.zip](https://github.com/aballiviang20-cmd/guardianes-ciudad-blanca/raw/main/entrega/05_HistoryBol_codigo_fuente.zip) o botón verde **Code → Download ZIP** |
+| Capturas de pantalla | [docs/capturas/](docs/capturas) |
+| Cuentas de prueba | [docs/CUENTAS_DEMO.md](docs/CUENTAS_DEMO.md) |
 
 ### English version
 
