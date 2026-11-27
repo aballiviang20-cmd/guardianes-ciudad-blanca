@@ -651,7 +651,7 @@
 .lesson-top { padding: 14px 16px 6px; }
 .lesson-progress .bar, .lesson-progress > div { height: 16px; }
 .lesson-bottom { border-top: 2px solid var(--linea); background: #fff; }
-.feedback { border-radius: 0 !important; margin: -16px -18px 12px; padding: 18px 22px 6px !important; }
+.feedback { border-radius: 18px !important; }
 .feedback-head h3 { font-family: var(--f-ui); font-weight: 900; font-size: 24px; }
 .hearts .heart.off { opacity: 0.25; filter: grayscale(1); }
 
