@@ -1,0 +1,4 @@
+#!/bin/sh
+# Sube cada commit al repositorio oficial apenas se crea, para que el historial
+# en GitHub sea continuo (requisito de la Hackathon). Corre en segundo plano.
+( git push origin HEAD --quiet >/dev/null 2>&1 || echo "[post-commit] No se pudo subir: revisa la conexión y corre git push" >&2 ) &

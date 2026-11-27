@@ -1,0 +1,40 @@
+# Bitácora de desarrollo
+
+Registro del proceso durante la Hackathon Regional 2026 (sede Sucre). Cada commit se sube a GitHub
+automáticamente al crearse (`.githooks/post-commit`), así el historial del repositorio oficial es continuo
+y con hora real. Zona horaria: Bolivia (UTC-4).
+
+## Cómo verlo
+- Historial con horas: pestaña **Commits** del repositorio en GitHub.
+- En la terminal: `git log --date=format:"%H:%M" --format="%ad %h %s"`
+
+## Hitos
+| Hora | Qué se hizo | Quién decidió / hizo |
+|---|---|---|
+| 10:00 | Plan de acción y alcance (problemática 2), arquitectura en 3 capas | Equipo + Claude Code |
+| 10:16 | Estructura del repo, backend Express + SQLite, verificador de cita | Claude Code, revisado por el equipo |
+| 10:25 | PWA del alumno: ruta, historias, retos, álbum, liga, misión guardián | Claude Code |
+| 10:52 | Fichas de San Lázaro, Catedral y Sucre con las fuentes del equipo | Documentos del equipo; redacción de fichas con Claude Code |
+| 10:55 | Evaluación con RAG vs sin RAG y etiquetado a ciegas | Claude Code; el etiquetado lo hace el equipo |
+| 11:08 | Reconocimiento de monumentos en el celular (MobileNet + KNN) | Claude Code |
+| 11:34 | Personajes del equipo, cómics de clase invertida, vidas, estrellas, sonidos andinos, QR | Personajes del equipo (ChatGPT); integración con Claude Code |
+| 11:45 | Fondos de los 4 lugares y llama Kusi | Generados con ChatGPT a pedido del equipo |
+| 11:56 | Modo offline completo y avatar en la ruta | Claude Code |
+
+## Historial de commits (generado desde git)
+- 10:16 · chore: estructura del proyecto, plan, declaración de IA y fichas de prueba
+- 10:16 · feat(server): API Express con SQLite, fichas con BM25 y pipeline de IA en 3 capas
+- 10:25 · feat(app): PWA del alumno con ruta gamificada, historias, retos, álbum, liga y misión guardián
+- 10:28 · fix(app): barajar opciones de opción múltiple, centrar mascota y acortar barra de historias
+- 10:29 · fix(app): pestaña activa visible en el panel docente
+- 10:52 · feat(contenido): fichas de San Lázaro, Catedral y Sucre con fuentes del equipo; ruta en el tiempo 1538-1991
+- 10:52 · feat(app): rediseño visual y de movimiento
+- 10:55 · feat(eval): evaluación con RAG vs sin RAG, etiquetado humano a ciegas y métricas
+- 10:56 · docs: fuentes por parada, discrepancia de fechas, documentos descartados y pasos de evaluación
+- 10:56 · chore: versionar eval/results.json (es evidencia para el jurado)
+- 11:08 · feat(vision): reconocimiento de monumentos en el celular con MobileNet + KNN
+- 11:34 · feat: personajes del equipo, cuentos tipo cómic, vidas, estrellas, sonidos andinos y QR
+- 11:35 · chore: personajes del equipo en todas las pantallas y declaración de ilustraciones hechas con ChatGPT
+- 11:50 · feat(arte): fondos ilustrados de San Lázaro, Catedral, Casa de la Libertad y Sucre generados con ChatGPT en el estilo de los personajes
+- 11:53 · feat(personajes): Kusi, la llama con aguayo, como quinto guardián; aparece en la portada y en los cuentos
+- 11:56 · feat(app): personajes y fondos disponibles sin conexión y avatar esperando en la parada actual
