@@ -48,7 +48,7 @@ export function ProfilePage() {
               setAvatar(c);
             }}
           >
-            <CharFace c={c} face={avatar.c === c ? "alegre" : "pensativo"} size={64} anim={avatar.c === c ? "pop" : "none"} />
+            <CharFace c={c} face={avatar.c === c ? "alegre" : "pensativo"} size={64} anim={avatar.c === c ? "pop" : "idle"} />
             <b>{CHARACTERS[c].name}</b>
           </motion.button>
         ))}

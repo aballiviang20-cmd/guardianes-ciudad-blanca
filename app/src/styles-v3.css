@@ -1,5 +1,6 @@
 /* ===================== Personajes ===================== */
 .sprite { position: relative; display: block; flex: none; }
+.sprite-alive { position: absolute; inset: 0; display: block; z-index: 1; }
 .sprite-img { position: absolute; inset: 0; z-index: 1; width: 100%; height: 100%; object-fit: contain; object-position: center bottom; user-select: none; -webkit-user-drag: none; filter: drop-shadow(0 3px 0 rgba(0, 0, 0, 0.08)); }
 .sprite-shadow { position: absolute; bottom: -2px; left: 22%; right: 22%; height: 10px; border-radius: 50%; background: #2b2622; opacity: 0.2; }
 .scene-photo { position: relative; width: 100%; height: 100%; overflow: hidden; }

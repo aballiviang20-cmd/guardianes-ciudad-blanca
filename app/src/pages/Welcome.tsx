@@ -88,7 +88,7 @@ export function Welcome() {
                       setPick(c);
                     }}
                   >
-                    <CharPose c={c} pose="frente" size={96} anim={pick === c ? "jump" : "none"} pulse={pick === c ? 1 : 0} />
+                    <CharPose c={c} pose="frente" size={96} anim={pick === c ? "jump" : "idle"} pulse={pick === c ? 1 : 0} />
                     <b>{CHARACTERS[c].name}</b>
                     <small>{CHARACTERS[c].tagline[lang]}</small>
                   </motion.button>
