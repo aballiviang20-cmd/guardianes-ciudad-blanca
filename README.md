@@ -1,4 +1,4 @@
-# Patrilingo · Guardianes de la Ciudad Blanca
+# HistoryBol · Guardianes de la Ciudad Blanca
 
 **Conoce. Colecciona. Protege.** App educativa gamificada sobre el patrimonio de Sucre para estudiantes de secundaria (13–17 años) y sus docentes de Ciencias Sociales.
 Hackathon Regional 2026 · Sede Sucre · Problemática 2.
@@ -22,7 +22,7 @@ Hackathon Regional 2026 · Sede Sucre · Problemática 2.
 1. Toque el botón: GitHub crea el entorno, instala, compila, carga el contenido y abre la app en el puerto 8787.
 2. **Página pública con tutoriales:** `/conoce` (tipo Duolingo; tutoriales de 2 min narrados por Orki).
 3. **Docente:** `/docente` → usuario `profe.vargas` (ver contraseña en [docs/CUENTAS_DEMO.md](docs/CUENTAS_DEMO.md)) → *Revisar* → *Aprobar todas* para publicar el contenido base.
-4. **Alumnas de prueba:** en la bienvenida, «Tengo cuenta de mi colegio» → `camila.4to` (4to, empieza en Fácil) o `lucia.6to` (6to, empieza en Difícil).
+4. **Alumno:** «Empezar» → apodo, código de curso y nivel (4to empieza en Fácil, 6to en Difícil) → elegir guardián. Sin usuario ni contraseña.
 
 Funciona en celular, tablet y computadora (PWA instalable, offline una vez abierta).
 

@@ -9,5 +9,5 @@ Solo para la demo de la hackatón (datos ficticios). Las contraseñas se guardan
 | Alumna 6to de secundaria | `lucia.6to` | `guardiana6` | Lucía · 6TO-A · empieza en dificultad Difícil |
 
 - Docente: entrar en `/docente` con usuario y contraseña (el PIN `TEACHER_PIN` queda como respaldo).
-- Alumnas: en la pantalla de bienvenida, «Tengo cuenta de mi colegio».
+- Alumnos: entran sin usuario ni contraseña (apodo, curso y nivel). Las cuentas de alumnas quedan en el servidor solo para pruebas de la API.
 - Para producción: cambiar estas cuentas y definir `AUTH_SECRET` en `server/.env`.

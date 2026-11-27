@@ -3,7 +3,7 @@ import type { Lang } from "./types";
 
 const dict = {
   es: {
-    appName: "Patrilingo",
+    appName: "HistoryBol",
     motto: ["Conoce.", "Colecciona.", "Protege."],
     aliasPh: "Tu apodo (no tu nombre real)",
     coursePh: "Código de curso · 4TO-A",
@@ -64,7 +64,7 @@ const dict = {
     accuracy: "Aciertos",
   },
   en: {
-    appName: "Patrilingo",
+    appName: "HistoryBol",
     motto: ["Discover.", "Collect.", "Protect."],
     aliasPh: "Your nickname (not your real name)",
     coursePh: "Class code · 4TO-A",
