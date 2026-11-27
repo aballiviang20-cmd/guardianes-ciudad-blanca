@@ -8,6 +8,7 @@ import { getFichas, loadFichas, loadMonuments, retrieve } from "./fichas";
 import { league } from "./league";
 import { draft, GenerationError, itemsOfBatch, judgeBatch, rowToItem, verifyBatch, type ItemRow } from "./pipeline";
 import { redactPII } from "./pii";
+import { normalize } from "./verify";
 import { APP_DIST, EVAL_DIR } from "./paths";
 
 const app = express();
@@ -53,6 +54,28 @@ app.get("/api/monuments", (_req, res) => {
   );
 });
 
+/** "[A] García Quintanilla, Julio. 1963. Historia..." -> "García Quintanilla (1963)". */
+function shortCite(source: string): string {
+  const s = source.replace(/^\[[A-Z]\]\s*/, "");
+  const m = s.match(/^([^,.(«]+?)\s*[,.].*?\b(1[5-9]\d\d|20\d\d)\b/);
+  return m ? `${m[1].trim()} (${m[2]})` : s.split(" (")[0].slice(0, 60);
+}
+
+/** Cita corta de las fuentes marcadas ([A], [B]...) en el fragmento que respalda el ítem. */
+function citeFor(fragmentText: string | null, quote: string | null, sources: string[]): string {
+  if (!fragmentText) return "";
+  // Cada oración de la ficha termina con sus marcas de fuente: se cita solo la oración que contiene la cita.
+  const sentences = fragmentText.match(/[^[]+?(?:\s*\[[A-Z]\])+/g) ?? [fragmentText];
+  const q = quote ? normalize(quote).replace(/[.,;:]+$/, "") : "";
+  const target = (q && sentences.find((s) => normalize(s).includes(q))) || fragmentText;
+  const marks = [...new Set([...target.matchAll(/\[([A-Z])\]/g)].map((x) => x[1]))];
+  return marks
+    .map((k) => sources.find((s) => s.startsWith(`[${k}]`)))
+    .filter((s): s is string => Boolean(s))
+    .map(shortCite)
+    .join(" · ");
+}
+
 /** Lecciones: SOLO contenido aprobado por un docente. Lo que recibe el alumno nunca pasó sin revisión humana. */
 app.get("/api/lessons", (_req, res) => {
   const rows = db
@@ -60,12 +83,19 @@ app.get("/api/lessons", (_req, res) => {
     .all() as ItemRow[];
   const { fichas } = getFichas();
   const monuments = loadMonuments().map((m) => {
+    const sources = fichas.get(m.id)?.sources ?? [];
     const items = rows.filter((r) => r.monument_id === m.id).map(rowToItem);
+    const view = (i: ReturnType<typeof rowToItem>) => ({
+      id: i.id,
+      ...i.payload,
+      fragmentId: i.fragmentId,
+      cite: citeFor(i.fragmentText, i.evidenceQuote, sources),
+    });
     return {
       ...m,
-      sources: fichas.get(m.id)?.sources ?? [],
-      stories: items.filter((i) => i.kind === "story").map((i) => ({ id: i.id, ...i.payload, fragmentId: i.fragmentId })),
-      questions: items.filter((i) => i.kind === "question").map((i) => ({ id: i.id, ...i.payload, fragmentId: i.fragmentId })),
+      sources: sources.map(shortCite),
+      stories: items.filter((i) => i.kind === "story").map(view),
+      questions: items.filter((i) => i.kind === "question").map(view),
     };
   });
   res.json({ updatedAt: now(), monuments });

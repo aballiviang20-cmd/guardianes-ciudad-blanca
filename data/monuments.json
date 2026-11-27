@@ -1,26 +1,34 @@
 [
   {
-    "id": "casa-libertad",
+    "id": "san-lazaro",
     "order": 1,
-    "name": { "es": "Casa de la Libertad", "en": "House of Freedom" },
-    "color": "#C0532D"
+    "year": 1538,
+    "name": { "es": "San Lázaro", "en": "San Lázaro Church" },
+    "tagline": { "es": "El primer templo de La Plata", "en": "La Plata's first church" },
+    "color": "#B3622E"
   },
   {
     "id": "catedral",
     "order": 2,
+    "year": 1552,
     "name": { "es": "Catedral Metropolitana", "en": "Metropolitan Cathedral" },
+    "tagline": { "es": "El mayor monumento religioso de Charcas", "en": "The greatest religious monument of Charcas" },
     "color": "#1F5C46"
   },
   {
-    "id": "san-felipe-neri",
+    "id": "casa-libertad",
     "order": 3,
-    "name": { "es": "San Felipe Neri", "en": "San Felipe Neri" },
-    "color": "#2D6CA8"
+    "year": 1825,
+    "name": { "es": "Casa de la Libertad", "en": "House of Freedom" },
+    "tagline": { "es": "Donde nació Bolivia", "en": "Where Bolivia was born" },
+    "color": "#C0532D"
   },
   {
-    "id": "recoleta",
+    "id": "sucre",
     "order": 4,
-    "name": { "es": "La Recoleta", "en": "La Recoleta" },
-    "color": "#8A5A2B"
+    "year": 1991,
+    "name": { "es": "Sucre, ciudad patrimonio", "en": "Sucre, heritage city" },
+    "tagline": { "es": "Lo que el mundo reconoce en tu ciudad", "en": "What the world recognizes in your city" },
+    "color": "#2D6CA8"
   }
 ]
