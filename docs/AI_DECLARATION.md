@@ -7,6 +7,8 @@
 ## Ilustraciones
 - **Todo el elenco (Mateo, Wara, Sofía —antes Vale—, Orki, Kusi, Tata Julián, Juanita y Bruno)**: hojas generadas con **ChatGPT** a partir de las hojas originales del equipo (Mateo, Wara, Vale, Orki, Kusi) y con Sofía y Bruno como referencia de estilo, con tonos de piel diversos pedidos por el equipo, para que todo el elenco comparta el mismo estilo vectorial 2D. Los prompts los escribió Claude Code operando el ChatGPT del equipo en su navegador, a pedido del equipo; el equipo eligió los personajes (abuelo, cholita, deportista) y revisa vestimentas y banderas. Recorte automático con un script propio (máscara, dilatación, componentes conexos, quita etiquetas).
 - **Fondos** de `data/fondos/` (San Lázaro, Catedral, Casa de la Libertad, Sucre), redibujados en el mismo estilo vectorial 2D: generados con **ChatGPT** usando como referencia de estilo la hoja de personaje del equipo; los prompts los escribió Claude Code operando el ChatGPT del equipo en su navegador, a pedido del equipo. Revisados por el equipo (fidelidad de los monumentos y banderas).
+- **Tutoriales de /conoce**: guiones y animaciones escritos con Claude Code; la voz es la síntesis de voz del navegador (Web Speech API), no una voz clonada ni grabada.
+- **Cuentas de demostración**: personas ficticias creadas por el equipo para la demo (ver docs/CUENTAS_DEMO.md).
 - Escenas SVG de respaldo e íconos: hechos en código por el equipo con ayuda de Claude Code.
 
 ## Diseñado y decidido por el equipo

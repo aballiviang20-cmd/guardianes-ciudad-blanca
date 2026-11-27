@@ -24,6 +24,7 @@ y con hora real. Zona horaria: Bolivia (UTC-4).
 | 12:35 | Mateo y Wara redibujados con la misma calidad; diversidad de tonos de piel (Mateo, Wara, Juanita, Tata Julián); personajes animados todo el tiempo | Pedido del equipo; hojas con ChatGPT; integración con Claude Code |
 | 12:45 | Animación suave con parpadeo real (detección automática de ojos) y gestos; panel docente paso a paso con subida de información nueva por lugar | Pedido del equipo; implementación con Claude Code; el equipo prueba el flujo docente |
 | 12:53 | Panel docente rehecho como tablero: menú lateral, próximo paso recomendado, indicadores del curso, avance por lugar, actividad en vivo y revisión una por una con vista previa del celular del alumno | Pedido del equipo; implementación con Claude Code |
+| 13:36 | Cuentas con usuario y contraseña (docente de Sociales 4TO/6TO y dos alumnas), niveles y dificultad, actividades asignadas, IA adaptada al curso, página /conoce con tutoriales narrados por Orki, Codespaces | Pedido del equipo; implementación con Claude Code |
 
 ## Historial de commits (generado desde git)
 - 10:16 · chore: estructura del proyecto, plan, declaración de IA y fichas de prueba
