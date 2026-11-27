@@ -257,6 +257,8 @@ function Generate({ pin, onDone, initialMonument }: { pin: string; onDone: () =>
   const [topic, setTopic] = useState("");
   const [nQ, setNQ] = useState(3);
   const [nS, setNS] = useState(1);
+  const [level, setLevel] = useState<"4to" | "6to">("4to");
+  const [genDiff, setGenDiff] = useState<"facil" | "medio" | "dificil">("facil");
   const [stages, setStages] = useState<Record<string, StageState>>({});
   const [fragments, setFragments] = useState<Fragment[]>([]);
   const [items, setItems] = useState<Item[]>([]);
@@ -280,7 +282,7 @@ function Generate({ pin, onDone, initialMonument }: { pin: string; onDone: () =>
       setStages({ retrieve: "ok", draft: "run" });
       const d = await api.post<{ batchId: string; items: Item[]; latencyMs: number; usage: { input_tokens: number; output_tokens: number } }>(
         "/generate/draft",
-        { monumentId, fragmentIds: r.fragments.map((f) => f.id), nQuestions: nQ, nStories: nS },
+        { monumentId, fragmentIds: r.fragments.map((f) => f.id), nQuestions: nQ, nStories: nS, level, difficulty: genDiff },
       );
       setItems(d.items);
       setMeta({ latencyMs: d.latencyMs, usage: d.usage });
@@ -312,6 +314,37 @@ function Generate({ pin, onDone, initialMonument }: { pin: string; onDone: () =>
               {m.fichaDraft && " · borrador"}
             </button>
           ))}
+        </div>
+        <div className="gen-adapt">
+          <div>
+            <small>Para qué curso</small>
+            <div className="tp-seg">
+              {(["4to", "6to"] as const).map((l) => (
+                <button
+                  key={l}
+                  className={level === l ? "on" : ""}
+                  onClick={() => {
+                    setLevel(l);
+                    setGenDiff(l === "4to" ? "facil" : "dificil");
+                  }}
+                >
+                  {l} de secundaria
+                  <small>{l === "4to" ? "frases cortas, relato breve" : "vocabulario histórico, causa y efecto"}</small>
+                </button>
+              ))}
+            </div>
+          </div>
+          <div>
+            <small>Dificultad</small>
+            <div className="diff-pick">
+              {(["facil", "medio", "dificil"] as const).map((d) => (
+                <button key={d} className={`diff-${d} ${genDiff === d ? "on" : ""}`} onClick={() => setGenDiff(d)}>
+                  {genDiff === d && <motion.span layoutId="g-diff-pill" className="diff-pill" />}
+                  <span>{d === "facil" ? "Fácil" : d === "medio" ? "Medio" : "Difícil"}</span>
+                </button>
+              ))}
+            </div>
+          </div>
         </div>
         <div className="gen-row">
           <label>

@@ -330,7 +330,7 @@ teacher.post("/generate/retrieve", (req, res) => {
 teacher.post(
   "/generate/draft",
   wrap(async (req, res) => {
-    const { monumentId, fragmentIds, nQuestions = 3, nStories = 1, mode = "rag" } = req.body ?? {};
+    const { monumentId, fragmentIds, nQuestions = 3, nStories = 1, mode = "rag", level, difficulty } = req.body ?? {};
     const ficha = getFichas().fichas.get(String(monumentId));
     const fragments = (ficha?.fragments ?? []).filter((f) => !Array.isArray(fragmentIds) || fragmentIds.includes(f.id));
     if (mode === "rag" && fragments.length === 0) {
@@ -343,6 +343,8 @@ teacher.post(
       nQuestions: Math.min(Number(nQuestions) || 3, 8),
       nStories: Math.min(Number(nStories) || 1, 4),
       mode: mode === "norag" ? "norag" : "rag",
+      level: level === "4to" || level === "6to" ? level : undefined,
+      difficulty: ["facil", "medio", "dificil"].includes(difficulty) ? difficulty : undefined,
     });
     res.json(result);
   }),

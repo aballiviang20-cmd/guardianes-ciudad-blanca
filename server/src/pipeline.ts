@@ -144,13 +144,27 @@ export async function draft(opts: {
   nQuestions: number;
   nStories: number;
   mode: "rag" | "norag";
+  level?: "4to" | "6to";
+  difficulty?: "facil" | "medio" | "dificil";
 }) {
   const ficha = getFichas().fichas.get(opts.monumentId);
   const name = ficha?.title ?? opts.monumentId;
-  const userPrompt =
+  // Adaptación al curso: vocabulario, tipo de pregunta y largo del relato según nivel y dificultad.
+  const LEVEL = {
+    "4to": "Curso: 4to de secundaria (14-15 años). Oraciones cortas, vocabulario cotidiano; explica cualquier palabra técnica. Historias de máximo 3 oraciones.",
+    "6to": "Curso: 6to de secundaria (16-17 años). Puedes usar vocabulario histórico (cabildo, audiencia, barroco) y pedir relaciones de causa y consecuencia. Historias de 4 a 5 oraciones.",
+  } as const;
+  const DIFF = {
+    facil: "Dificultad FÁCIL: prioriza verdadero/falso y opción múltiple con distractores claramente distintos.",
+    medio: "Dificultad MEDIA: mezcla opción múltiple, verdadero/falso y alguna de ordenar.",
+    dificil: "Dificultad DIFÍCIL: prioriza ordenar hechos en el tiempo y opción múltiple con distractores cercanos (años o lugares parecidos), siempre respaldados por la cita.",
+  } as const;
+  const adapt = [opts.level ? LEVEL[opts.level] : "", opts.difficulty ? DIFF[opts.difficulty] : ""].filter(Boolean).join(" ");
+  const userPromptBase =
     opts.mode === "rag"
       ? `Monumento: ${name}\nFragmentos disponibles:\n${fragmentsBlock(opts.fragments)}\n\nGenera ${opts.nQuestions} preguntas (mezcla de tipos) y ${opts.nStories} historias.`
       : `Monumento: ${name} (Sucre, Bolivia). No tienes fragmentos: usa tu conocimiento general. En evidence_quote escribe la frase en la que te basas y en fragment_id escribe "ninguno".\n\nGenera ${opts.nQuestions} preguntas (mezcla de tipos) y ${opts.nStories} historias.`;
+  const userPrompt = adapt ? `${userPromptBase}\n\n${adapt}` : userPromptBase;
 
   const started = Date.now();
   let parsed: z.infer<typeof DraftSchema> | null;
