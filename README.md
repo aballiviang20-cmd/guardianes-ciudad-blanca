@@ -12,7 +12,7 @@ Hackathon Regional 2026 · Sede Sucre · Problemática 2.
 ## Publicarla e instalarla en celulares, tablets y PC
 
 1. `npm start` (app + API en el puerto 8787).
-2. `npm run publicar` → crea un enlace público **HTTPS** (localhost.run, sin cuenta ni descargas) que se abre desde cualquier dispositivo. El enlace gratuito cambia cada cierto tiempo y funciona mientras esta computadora esté encendida; para algo permanente, desplegar `npm start` en un servidor (Render, Railway, una VM) con `AUTH_SECRET` y `TEACHER_PIN` propios.
+2. `npm run publicar` → crea un enlace público **HTTPS** (Pinggy por SSH, sin cuenta ni descargas; dura 60 min y la primera vez muestra un aviso: tocar *Continuar*). Alternativa: `npm run publicar:alt` (localhost.run). Los enlaces gratuitos cambian y funcionan mientras esta computadora esté encendida; en la misma red Wi-Fi también sirve `http://IP-de-la-PC:8787`. Para algo permanente, desplegar `npm start` en un servidor (Render, Railway, una VM) con `AUTH_SECRET` y `TEACHER_PIN` propios.
 3. **Instalar como app:** en Android, Chrome → menú ⋮ → *Instalar app* (Chrome genera la app instalada, como un APK); en iPhone/iPad, Safari → Compartir → *Agregar a inicio*; en PC, el ícono de instalar en la barra de direcciones de Chrome/Edge. Funciona sin internet una vez abierta.
 
 ## Usarla desde GitHub (sin instalar nada)
