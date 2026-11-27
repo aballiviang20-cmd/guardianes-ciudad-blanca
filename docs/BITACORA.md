@@ -25,7 +25,7 @@ y con hora real. Zona horaria: Bolivia (UTC-4).
 | 12:45 | Animación suave con parpadeo real (detección automática de ojos) y gestos; panel docente paso a paso con subida de información nueva por lugar | Pedido del equipo; implementación con Claude Code; el equipo prueba el flujo docente |
 | 12:53 | Panel docente rehecho como tablero: menú lateral, próximo paso recomendado, indicadores del curso, avance por lugar, actividad en vivo y revisión una por una con vista previa del celular del alumno | Pedido del equipo; implementación con Claude Code |
 | 13:36 | Cuentas con usuario y contraseña (docente de Sociales 4TO/6TO y dos alumnas), niveles y dificultad, actividades asignadas, IA adaptada al curso, página /conoce con tutoriales narrados por Orki, Codespaces | Pedido del equipo; implementación con Claude Code |
-| 13:44 | Nuevo nombre Patrilingo; inicio de sesión y registro de alumnos estilo Duolingo; enlace público HTTPS (localhost.run) e instalación como app | Pedido del equipo; implementación con Claude Code |
+| 13:44 | Nuevo nombre Patrilingo; inicio de sesión y registro de alumnos; enlace público HTTPS (localhost.run) e instalación como app | Pedido del equipo; implementación con Claude Code |
 | 13:56 | Documento de entrega en PDF con capturas reales y tutorial | Claude Code, revisado por el equipo |
 | 14:05 | Nombre final HistoryBol; los alumnos entran sin usuario ni contraseña; enlace público con Pinggy | Pedido del equipo |
 

@@ -31,5 +31,5 @@ UNESCO 2003 quedan como referencia para el roadmap (protección ante desastres, 
 | Tipografías Baloo 2, Fraunces, Nunito | Fontsource / Google Fonts | SIL Open Font License |
 
 ## Software
-Patrones de experiencia gamificada inspirados en react-duolingo (MIT) y en la animación de fichas de duolingo-view-move.
-No se usa código ni arte de Duolingo.
+Diseño de interacción propio del equipo (retos cortos, vidas, rachas y ruta por niveles), basado en principios de aprendizaje gamificado.
+

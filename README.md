@@ -20,7 +20,7 @@ Hackathon Regional 2026 · Sede Sucre · Problemática 2.
 [![Abrir en GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/aballiviang20-cmd/guardianes-ciudad-blanca)
 
 1. Toque el botón: GitHub crea el entorno, instala, compila, carga el contenido y abre la app en el puerto 8787.
-2. **Página pública con tutoriales:** `/conoce` (tipo Duolingo; tutoriales de 2 min narrados por Orki).
+2. **Página pública con tutoriales:** `/conoce` (presentación con tutoriales de 2 min narrados por Orki).
 3. **Docente:** `/docente` → usuario `profe.vargas` (ver contraseña en [docs/CUENTAS_DEMO.md](docs/CUENTAS_DEMO.md)) → *Revisar* → *Aprobar todas* para publicar el contenido base.
 4. **Alumno:** «Empezar» → apodo, código de curso y nivel (4to empieza en Fácil, 6to en Difícil) → elegir guardián. Sin usuario ni contraseña.
 
@@ -91,6 +91,6 @@ Detalles y decisiones: [docs/ARQUITECTURA.md](docs/ARQUITECTURA.md). Uso de IA: 
 ## Créditos
 
 Patrones de experiencia gamificada (ruta de lecciones, barra de progreso, retroalimentación) inspirados en
-[react-duolingo](https://github.com/bryanjenningz/react-duolingo) (MIT). No se usa su código ni ningún recurso gráfico de Duolingo: la identidad visual y la mascota son propias.
+Diseño de interacción propio del equipo, basado en principios de aprendizaje gamificado.
 
 Licencia: MIT.

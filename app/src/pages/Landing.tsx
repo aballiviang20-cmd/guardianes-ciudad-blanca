@@ -7,7 +7,7 @@ import { MonumentIcon } from "../components/MonumentIcon";
 import { Button } from "../components/ui";
 
 /* ------------------------------------------------------------------------------------------
- * Página pública tipo Duolingo: qué es, cómo se usa (dos tutoriales animados narrados por Orki
+ * Página pública: qué es, cómo se usa (dos tutoriales animados narrados por Orki
  * con voz del navegador y subtítulos), en qué dispositivos funciona y quiénes son los guardianes.
  * ------------------------------------------------------------------------------------------ */
 
@@ -452,7 +452,7 @@ function TutorialPlayer({ title, scenes, teacher }: { title: string; scenes: Sce
   );
 }
 
-/* ---------- Motion graphics estilo Duolingo: franjas, filas alternadas y cierre con Orki guiñando ---------- */
+/* ---------- Motion graphics: franjas, filas alternadas y cierre con Orki guiñando ---------- */
 const BAND = ["1538 · San Lázaro", "1552 · Catedral", "1809 · Primer Grito", "1825 · Casa de la Libertad", "1991 · Patrimonio de la Humanidad", "Cal Orck'o", "Tarabuco", "Cueca chuquisaqueña"];
 
 function Marquee() {

@@ -417,7 +417,7 @@
 .tp-act-top small { color: var(--suave); font-weight: 700; }
 @media (max-width: 900px) { .tp-me { display: none; } }
 
-/* ===================== Página pública (tipo Duolingo) ===================== */
+/* ===================== Página pública (presentación) ===================== */
 .ld { background: #fff; color: var(--tinta); min-height: 100vh; overflow-x: hidden; }
 .ld-nav { position: sticky; top: 0; z-index: 30; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px clamp(16px, 4vw, 48px); background: rgba(255, 255, 255, 0.92); backdrop-filter: blur(8px); border-bottom: 2px solid var(--linea); }
 .ld-logo { display: flex; align-items: center; gap: 8px; text-decoration: none; }
@@ -591,7 +591,7 @@
 .gen-adapt > div > small { display: block; font-family: var(--f-ui); font-weight: 800; color: var(--suave); margin-bottom: 4px; }
 @media (max-width: 760px) { .gen-adapt { grid-template-columns: 1fr; } }
 
-/* ===================== Entrada del alumno (estilo Duolingo) ===================== */
+/* ===================== Entrada del alumno (entrada simple) ===================== */
 .wl { display: flex; flex-direction: column; min-height: 100vh; background: #fff; }
 .wl-hero { position: relative; height: 210px; overflow: hidden; transition: height 0.35s ease; flex: none; }
 .wl-hero.big { height: 300px; }
@@ -660,7 +660,7 @@
 .result-stat { border-width: 2px; box-shadow: 0 4px 0 rgba(0, 0, 0, 0.06); }
 .result-stat b { font-size: 26px; }
 
-/* ===================== Página: motion graphics estilo Duolingo ===================== */
+/* ===================== Página: motion graphics ===================== */
 .ld-word { display: inline-block; }
 .ld-band { overflow: hidden; background: var(--verde-ok); color: #fff; padding: 14px 0; border-top: 3px solid var(--verde-ok-dark); border-bottom: 3px solid var(--verde-ok-dark); transform: rotate(-1.2deg); margin: 10px -10px; }
 .ld-band-track { display: flex; width: max-content; gap: 36px; font-family: var(--f-ui); font-weight: 900; font-size: 20px; white-space: nowrap; }

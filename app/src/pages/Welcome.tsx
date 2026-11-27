@@ -11,7 +11,7 @@ const PARADE: CharId[] = ["mateo", "sofia", "orki", "juanita", "wara", "kusi", "
 type Step = "home" | "start" | "pick";
 
 /**
- * Entrada del alumno al estilo Duolingo, sin usuario ni contraseña: apodo, curso y nivel,
+ * Entrada del alumno, simple y sin usuario ni contraseña: apodo, curso y nivel,
  * y luego elige su guardián. El nivel ajusta la dificultad inicial (4to Fácil, 6to Difícil).
  */
 export function Welcome() {
