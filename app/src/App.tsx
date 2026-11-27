@@ -8,6 +8,7 @@ import { ProfilePage } from "./pages/Profile";
 import { EvidencePage } from "./pages/Evidence";
 import { GuardianPage } from "./pages/Guardian";
 import { LabelPage } from "./pages/Label";
+import { LandingPage } from "./pages/Landing";
 import { LeaguePage } from "./pages/League";
 import { LessonPage } from "./pages/Lesson";
 import { PathPage } from "./pages/Path";
@@ -27,6 +28,7 @@ export function App() {
       <motion.div key={profile ? location.pathname : "welcome"} variants={pageVariants} initial="initial" animate="animate" exit="exit">
         <Routes location={location}>
           <Route path="/docente" element={<TeacherPage />} />
+          <Route path="/conoce" element={<LandingPage />} />
           <Route path="/evidencia" element={<EvidencePage />} />
           <Route path="/evidencia/etiquetar" element={<LabelPage />} />
           <Route path="/entrenar" element={<TrainPage />} />
