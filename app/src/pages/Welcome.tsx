@@ -45,8 +45,10 @@ export function Welcome() {
     setBusy(true);
     try {
       const body = kind === "login" ? { username: user, password: pass } : { username: user, password: pass, name, course, level };
-      const r = await fetch(`/api/auth/${kind}`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(body) });
-      const d = await r.json();
+      const r = await fetch(`/api/auth/${kind}`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(body) }).catch(() => null);
+      // sin servidor (sin internet o enlace caído) la respuesta no es JSON: mensaje claro en vez de un error técnico
+      const d = r ? await r.json().catch(() => null) : null;
+      if (!r || !d) throw new Error(es ? "No hay conexión con el servidor. Revisa tu internet o pide a tu profe el enlace actualizado." : "Can't reach the server. Check your connection or ask your teacher for the current link.");
       if (!r.ok) throw new Error(d.error || "Error");
       if (d.user.role !== "alumno") throw new Error(es ? "Es una cuenta de docente: entre por el panel docente." : "Teacher account: use the teacher panel.");
       sfx.reveal();

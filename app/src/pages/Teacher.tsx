@@ -866,7 +866,8 @@ export function TeacherPage() {
                 setErr("");
                 fetch("/api/auth/login", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ username: user, password: pass }) })
                   .then(async (r) => {
-                    const d = await r.json();
+                    const d = await r.json().catch(() => null);
+                    if (!d) throw new Error("No hay conexión con el servidor. Revise internet o use el enlace actualizado.");
                     if (!r.ok) throw new Error(d.error || "Error");
                     if (d.user.role !== "docente") throw new Error("Esta cuenta es de alumno: entre desde la app del alumno.");
                     sessionStorage.setItem("teacher-pin", d.token);
@@ -874,7 +875,7 @@ export function TeacherPage() {
                     setPin(d.token);
                     setOk(true);
                   })
-                  .catch((e2) => setErr(e2 instanceof Error ? e2.message : "Error"));
+                  .catch((e2) => setErr(e2 instanceof Error && !/Failed to fetch/.test(e2.message) ? e2.message : "No hay conexión con el servidor. Revise internet o use el enlace actualizado."));
               }}
             >
               <label>
