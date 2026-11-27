@@ -1,7 +1,8 @@
 import { motion } from "motion/react";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { api } from "../api";
+import { api, teacherApi } from "../api";
+import { Button } from "../components/ui";
 
 type MethodRow = { method: string; n: number; correct: number; incorrect: number; doubtful: number; accuracy: number };
 type Results = {
@@ -32,7 +33,11 @@ export function EvidencePage() {
       <header>
         <h1>Evidencia</h1>
         <p>Resultados medidos con el pipeline real y etiquetado humano a ciegas. Generado por <code>npm run eval</code>.</p>
-        <Link to="/docente">← Panel docente</Link>
+        <div className="row-gap">
+          <Link to="/docente">← Panel docente</Link>
+          <Link to="/evidencia/etiquetar">Etiquetar a ciegas</Link>
+          <Button variant="secondary" onClick={() => teacherApi(sessionStorage.getItem("teacher-pin") ?? "").post("/eval/score").then((x) => setR({ available: true, ...(x as object) })).catch(() => alert("Entra primero al panel docente con el PIN"))}>Recalcular</Button>
+        </div>
       </header>
       {!r && <p>Cargando…</p>}
       {r && !r.available && (

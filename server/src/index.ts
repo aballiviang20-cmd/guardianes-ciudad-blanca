@@ -9,6 +9,7 @@ import { league } from "./league";
 import { draft, GenerationError, itemsOfBatch, judgeBatch, rowToItem, verifyBatch, type ItemRow } from "./pipeline";
 import { redactPII } from "./pii";
 import { normalize } from "./verify";
+import { blindItems, computeResults, loadLabels, saveLabel } from "./eval/score";
 import { APP_DIST, EVAL_DIR } from "./paths";
 
 const app = express();
@@ -254,6 +255,30 @@ teacher.get("/stats", (_req, res) => {
     return { questionId: w.questionId, fails: w.n, prompt: row ? JSON.parse(row.payload).prompt_es : "(eliminada)" };
   });
   res.json({ byStatus, mostFailed, league: league() });
+});
+
+// ---- Evaluación: etiquetado a ciegas y cálculo de métricas ----
+teacher.get("/eval/blind", (req, res) => {
+  const who = String(req.query.who || "p3").toLowerCase().replace(/[^a-z0-9]/g, "").slice(0, 8);
+  const labels = loadLabels(who);
+  const { fichas } = getFichas();
+  const items = blindItems().map((i) => ({ ...i, label: labels[i.id] ?? null }));
+  const fichaText = Object.fromEntries([...fichas.values()].map((f) => [f.monumentId, f.fragments.map((x) => x.text).join(" ")]));
+  res.json({ who, items, fichas: fichaText });
+});
+
+teacher.post("/eval/label", (req, res) => {
+  const { who, id, label } = req.body ?? {};
+  if (!["correcta", "incorrecta", "dudosa"].includes(label)) {
+    res.status(400).json({ error: "Etiqueta inválida" });
+    return;
+  }
+  saveLabel(String(who).toLowerCase().replace(/[^a-z0-9]/g, "").slice(0, 8), String(id), label);
+  res.json({ ok: true });
+});
+
+teacher.post("/eval/score", (_req, res) => {
+  res.json(computeResults());
 });
 
 app.use("/api/teacher", teacher);

@@ -4,6 +4,7 @@ import { pageVariants } from "./motion";
 import { AlbumPage } from "./pages/Album";
 import { EvidencePage } from "./pages/Evidence";
 import { GuardianPage } from "./pages/Guardian";
+import { LabelPage } from "./pages/Label";
 import { LeaguePage } from "./pages/League";
 import { LessonPage } from "./pages/Lesson";
 import { PathPage } from "./pages/Path";
@@ -23,6 +24,7 @@ export function App() {
         <Routes location={location}>
           <Route path="/docente" element={<TeacherPage />} />
           <Route path="/evidencia" element={<EvidencePage />} />
+          <Route path="/evidencia/etiquetar" element={<LabelPage />} />
           {!profile ? (
             <Route path="*" element={<Welcome />} />
           ) : (

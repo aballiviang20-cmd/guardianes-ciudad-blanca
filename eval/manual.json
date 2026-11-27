@@ -1,0 +1,9 @@
+{
+  "teacher": {
+    "manualMinPerQuestion": null,
+    "assistedMinPerQuestion": null,
+    "note": "Completar con los minutos medidos en la llamada con el docente (a mano vs revisando lo generado)."
+  },
+  "classifier": null,
+  "notes": []
+}

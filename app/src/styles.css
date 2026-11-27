@@ -490,3 +490,12 @@ code { background: #f3ece2; padding: 1px 6px; border-radius: 6px; font-size: 0.9
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
 }
+
+/* ---------- etiquetado ---------- */
+.row-gap { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+.label-start { display: grid; gap: 14px; justify-items: start; }
+.label-head { display: flex; gap: 16px; align-items: center; margin-bottom: 16px; }
+.label-grid { display: grid; grid-template-columns: 1.2fr 1fr; gap: 14px; }
+.label-buttons { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 6px; }
+.ficha-ref p { color: var(--suave); font-weight: 600; line-height: 1.5; }
+@media (max-width: 760px) { .label-grid { grid-template-columns: 1fr; } }

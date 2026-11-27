@@ -7,5 +7,5 @@ const here = path.dirname(fileURLToPath(import.meta.url));
 export const ROOT_DIR = path.resolve(here, "..", "..");
 export const DATA_DIR = path.join(ROOT_DIR, "data");
 export const FICHAS_DIR = path.join(DATA_DIR, "fichas");
-export const EVAL_DIR = path.join(ROOT_DIR, "eval");
+export const EVAL_DIR = process.env.EVAL_DIR || path.join(ROOT_DIR, "eval");
 export const APP_DIST = path.join(ROOT_DIR, "app", "dist");
