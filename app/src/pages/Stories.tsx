@@ -32,7 +32,7 @@ export function StoriesPage() {
       <div className="story-bars">
         {stories.map((s, j) => (
           <span key={s.id} className="story-bar">
-            <motion.span className="story-bar-fill" initial={false} animate={{ width: j < i ? "100%" : j === i ? "100%" : "0%" }} transition={{ duration: j === i ? 5 : 0.2, ease: "linear" }} />
+            <motion.span className="story-bar-fill" initial={false} animate={{ width: j < i ? "100%" : j === i ? "100%" : "0%" }} transition={{ duration: 0.4, ease: "easeOut" }} />
           </span>
         ))}
       </div>

@@ -126,7 +126,7 @@ a { color: var(--cielo); font-weight: 800; }
 
 /* ---------- bienvenida ---------- */
 .welcome-hero { position: relative; }
-.welcome-mascot { position: absolute; bottom: -38px; left: 50%; transform: translateX(-50%); }
+.welcome-mascot { position: absolute; bottom: -38px; left: 0; right: 0; display: flex; justify-content: center; pointer-events: none; }
 .welcome-body { padding: 48px 22px 28px; display: flex; flex-direction: column; gap: 12px; text-align: center; }
 .welcome-body h1 { font-size: 28px; font-weight: 900; color: var(--verde); }
 .motto { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; }

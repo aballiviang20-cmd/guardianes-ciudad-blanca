@@ -43,6 +43,12 @@ export function LessonPage() {
 
   const q = questions[idx];
   const options = useMemo(() => (q ? pickList(q, "options", lang) : []), [q, lang]);
+  // Opción múltiple: se baraja el orden en pantalla (la correcta no queda siempre en "A").
+  const display = useMemo(() => {
+    const idxs = options.map((_, i) => i);
+    return q?.type === "mcq" ? shuffled(idxs) : idxs;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [q?.id, options.length]);
 
   useEffect(() => {
     setSelected(null);
@@ -146,21 +152,22 @@ export function LessonPage() {
             </>
           ) : (
             <div className={`options ${q.type === "tf" ? "tf" : ""}`}>
-              {options.map((opt, i) => {
+              {display.map((i, pos) => {
+                const opt = options[i];
                 const state =
                   result === null ? (selected === i ? "selected" : "") : i === q.answer ? "ok" : selected === i ? "bad" : "dim";
                 return (
                   <motion.button
-                    key={opt}
+                    key={`${q.id}-${i}`}
                     className={`option ${state}`}
                     disabled={result !== null}
                     onClick={() => setSelected(i)}
                     whileTap={{ scale: 0.97, y: 2 }}
                     initial={{ opacity: 0, y: 16 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.08 * i }}
+                    transition={{ delay: 0.08 * pos }}
                   >
-                    {q.type !== "tf" && <span className="option-key">{String.fromCharCode(65 + i)}</span>}
+                    {q.type !== "tf" && <span className="option-key">{String.fromCharCode(65 + pos)}</span>}
                     {opt}
                   </motion.button>
                 );
