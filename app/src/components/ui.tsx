@@ -128,6 +128,46 @@ export const Icon = {
       <path d="M5 12.5l4.5 4.5L19 7.5" />
     </svg>
   ),
+  sound: (s = 22) => (
+    <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor" />
+      <path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12" />
+    </svg>
+  ),
+  mute: (s = 22) => (
+    <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor" />
+      <path d="M17 9l5 6M22 9l-5 6" />
+    </svg>
+  ),
+  cloudOff: (s = 18) => (
+    <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" aria-hidden>
+      <path d="M7 18h10a4 4 0 0 0 .7-7.9A6 6 0 0 0 6.3 9.6 4.2 4.2 0 0 0 7 18z" />
+      <path d="M3 3l18 18" />
+    </svg>
+  ),
+  clock: (s = 16) => (
+    <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" aria-hidden>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M12 7v5l3 2" />
+    </svg>
+  ),
+  book: (s = 15) => (
+    <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinejoin="round" aria-hidden>
+      <path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z" />
+      <path d="M4 19V5M8 7h7" />
+    </svg>
+  ),
+  flag: (s = 15) => (
+    <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinejoin="round" aria-hidden>
+      <path d="M5 21V4M5 4h11l-2 4 2 4H5" />
+    </svg>
+  ),
+  chevron: (s = 22) => (
+    <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <path d="M9 5l7 7-7 7" />
+    </svg>
+  ),
   star: (s = 26) => (
     <svg width={s} height={s} viewBox="0 0 24 24" aria-hidden>
       <path d="M12 2.5l2.9 6 6.6.8-4.9 4.6 1.3 6.6L12 17.3l-5.9 3.2 1.3-6.6L2.5 9.3l6.6-.8z" fill="currentColor" />

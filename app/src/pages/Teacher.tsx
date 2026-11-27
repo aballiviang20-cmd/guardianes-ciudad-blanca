@@ -81,8 +81,8 @@ function ItemCard({ item, actions }: { item: Item; actions?: React.ReactNode }) 
               </li>
             ))}
           </ol>
-          <p className="item-expl">💬 {p.explanation_es as string}</p>
-          {p.juvenil_es && <p className="item-expl juv">🧢 {p.juvenil_es as string}</p>}
+          <p className="item-expl">{p.explanation_es as string}</p>
+          {p.juvenil_es && <p className="item-expl juv">Juvenil · {p.juvenil_es as string}</p>}
         </>
       ) : (
         <>
@@ -96,11 +96,11 @@ function ItemCard({ item, actions }: { item: Item; actions?: React.ReactNode }) 
         <p>{(isQ ? p.explanation_en : p.text_en) as string}</p>
       </details>
       <div className="evidence">
-        <span className="evidence-label">📚 {item.fragmentId}</span>
+        <span className="evidence-label">Fuente · {item.fragmentId}</span>
         <p>
           <Highlight text={item.fragmentText} quote={item.evidenceQuote} />
         </p>
-        {item.judgeReason && <p className="judge">⚖️ Juez: {item.judgeReason}</p>}
+        {item.judgeReason && <p className="judge">Juez: {item.judgeReason}</p>}
       </div>
       {actions && <footer>{actions}</footer>}
     </motion.article>
@@ -200,9 +200,9 @@ function Generate({ pin, onDone }: { pin: string; onDone: () => void }) {
           </label>
         </div>
         <Button onClick={run} disabled={running}>
-          {running ? "Generando…" : "✨ Generar con IA"}
+          {running ? "Generando…" : "Generar con IA"}
         </Button>
-        {error && <p className="error">⚠ {error}</p>}
+        {error && <p className="error">{error}</p>}
       </div>
 
       <div className="stages">
@@ -235,7 +235,7 @@ function Generate({ pin, onDone }: { pin: string; onDone: () => void }) {
 
       {meta && (
         <p className="gen-meta">
-          ⏱ {(meta.latencyMs / 1000).toFixed(1)} s · {meta.usage.input_tokens} tokens entrada · {meta.usage.output_tokens} salida · {pending} pendientes · {rejected} rechazados
+          {(meta.latencyMs / 1000).toFixed(1)} s · {meta.usage.input_tokens} tokens entrada · {meta.usage.output_tokens} salida · {pending} pendientes · {rejected} rechazados
         </p>
       )}
 
@@ -302,7 +302,7 @@ function Review({ pin }: { pin: string }) {
                   </div>
                 ) : null}
                 <Button variant="success" onClick={() => approve(it)}>
-                  ✓ Aprobar{editing === it.id ? " cambios" : ""}
+                  Aprobar{editing === it.id ? " cambios" : ""}
                 </Button>
                 <Button
                   variant="secondary"
@@ -316,10 +316,10 @@ function Review({ pin }: { pin: string }) {
                     );
                   }}
                 >
-                  ✎ Editar
+                  Editar
                 </Button>
                 <Button variant="danger" onClick={() => reject(it)}>
-                  ✕ Rechazar
+                  Rechazar
                 </Button>
               </>
             }
@@ -345,7 +345,7 @@ function Reports({ pin }: { pin: string }) {
       <AnimatePresence>
         {reports.map((r) => (
           <motion.div key={r.id} layout className={`report ${r.kind}`} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}>
-            <span className="badge">{r.kind === "dano" ? `🛡 ${r.damage_type}` : "⚑ Error de contenido"}</span>
+            <span className="badge">{r.kind === "dano" ? `Daño · ${r.damage_type}` : "Error de contenido"}</span>
             <b>{r.course}</b> · {r.monument_id} · <small>{new Date(r.created_at).toLocaleTimeString()}</small>
             <p>{r.text}</p>
           </motion.div>
@@ -376,7 +376,7 @@ function Progress({ pin }: { pin: string }) {
         {stats.mostFailed.length === 0 && <p>Sin datos aún.</p>}
         {stats.mostFailed.map((f) => (
           <p key={f.questionId}>
-            ✕ {f.fails} · {f.prompt}
+            {f.fails} fallos · · {f.prompt}
           </p>
         ))}
       </div>
@@ -437,10 +437,10 @@ export function TeacherPage() {
   }
 
   const tabs = [
-    { k: "gen", label: "✨ Generar" },
-    { k: "rev", label: "✓ Revisar" },
-    { k: "rep", label: "🛡 Reportes" },
-    { k: "prog", label: "📊 Progreso" },
+    { k: "gen", label: "Generar" },
+    { k: "rev", label: "Revisar" },
+    { k: "rep", label: "Reportes" },
+    { k: "prog", label: "Progreso" },
   ] as const;
 
   return (
@@ -448,7 +448,7 @@ export function TeacherPage() {
       <header className="teacher-head">
         <div>
           <h1>Panel docente</h1>
-          <p>La IA redacta borradores con cita obligatoria. Solo lo que usted aprueba llega a sus estudiantes.</p>
+          <p>Solo lo que usted aprueba llega a sus estudiantes.</p>
         </div>
         <nav className="tabs">
           {tabs.map((t) => (
@@ -458,7 +458,7 @@ export function TeacherPage() {
             </button>
           ))}
           <Link to="/evidencia" className="tab-link">
-            📈 Evidencia
+            Evidencia
           </Link>
         </nav>
       </header>

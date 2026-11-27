@@ -36,6 +36,29 @@ export function MonumentIcon({ id, size = 40 }: { id: string; size?: number }) {
           <path d="M28 56v-9a4 4 0 0 1 8 0v9M4 56h56" />
         </svg>
       );
+    case "san-lazaro":
+      return (
+        <svg {...common} aria-hidden>
+          <path d="M14 56V30l10-6 10 6v26" fill="#fff" />
+          <path d="M17 24h14v-6a7 7 0 0 0-14 0z" fill="#fff" />
+          <path d="M24 11V6M21.5 8.5h5" />
+          <path d="M20 20v-2M28 20v-2" />
+          <path d="M34 34h22v22H34" fill="#fff" />
+          <path d="M32 34l12-6 14 6" />
+          <path d="M19 56v-9a5 5 0 0 1 10 0v9" />
+          <path d="M8 56h52" />
+        </svg>
+      );
+    case "sucre":
+      return (
+        <svg {...common} aria-hidden>
+          <path d="M4 40c8-10 16-12 24-6s16 4 32-6" />
+          <path d="M8 56V44h12v12M24 56V40h12v16M40 56V46h14v10" fill="#fff" />
+          <path d="M6 44l8-5 8 5M22 40l8-6 8 6M38 46l9-5 9 5" />
+          <path d="M30 34V22M27 25h6" />
+          <path d="M4 56h56" />
+        </svg>
+      );
     case "recoleta":
       return (
         <svg {...common} aria-hidden>

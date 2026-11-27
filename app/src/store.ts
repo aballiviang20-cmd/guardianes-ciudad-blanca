@@ -23,6 +23,7 @@ type State = {
   profile: { alias: string; course: string } | null;
   lang: Lang;
   juvenil: boolean;
+  muted: boolean;
   xp: number;
   streak: { count: number; lastDay: string | null };
   progress: Record<string, Progress>;
@@ -33,6 +34,7 @@ type State = {
   logout: () => void;
   setLang: (l: Lang) => void;
   toggleJuvenil: () => void;
+  toggleMute: () => void;
   setContent: (c: LessonsResponse) => void;
   track: (type: string, payload?: Record<string, unknown>) => void;
   completeStories: (monumentId: string) => void;
@@ -51,6 +53,7 @@ export const useStore = create<State>()(
       profile: null,
       lang: "es",
       juvenil: false,
+      muted: false,
       xp: 0,
       streak: { count: 0, lastDay: null },
       progress: {},
@@ -61,6 +64,7 @@ export const useStore = create<State>()(
       logout: () => set({ profile: null, xp: 0, progress: {}, streak: { count: 0, lastDay: null } }),
       setLang: (lang) => set({ lang }),
       toggleJuvenil: () => set({ juvenil: !get().juvenil }),
+      toggleMute: () => set({ muted: !get().muted }),
       setContent: (content) => set({ content }),
       track: (type, payload = {}) => {
         const p = get().profile;

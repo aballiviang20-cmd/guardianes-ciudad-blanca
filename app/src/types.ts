@@ -12,6 +12,7 @@ export type Question = {
   explanation_en: string;
   juvenil_es: string;
   fragmentId?: string | null;
+  cite?: string;
 };
 
 export type Story = {
@@ -21,11 +22,14 @@ export type Story = {
   text_es: string;
   text_en: string;
   fragmentId?: string | null;
+  cite?: string;
 };
 
 export type MonumentContent = {
   id: string;
   order: number;
+  year?: number;
+  tagline?: { es: string; en: string };
   name: { es: string; en: string };
   color: string;
   sources: string[];

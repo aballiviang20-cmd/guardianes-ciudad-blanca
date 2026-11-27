@@ -1,11 +1,14 @@
 import { AnimatePresence, motion } from "motion/react";
 import { useState } from "react";
 import { flushQueue } from "../api";
+import { Burst } from "../components/Burst";
 import { Mascot } from "../components/Mascot";
 import { MonumentIcon } from "../components/MonumentIcon";
 import { StudentShell } from "../components/Shell";
 import { Button, Icon } from "../components/ui";
+import { bouncy } from "../motion";
 import { useT } from "../i18n";
+import { sfx } from "../sfx";
 import { useStore } from "../store";
 import { useContent } from "../useContent";
 
@@ -24,6 +27,7 @@ export function GuardianPage() {
     if (!monumentId || !damage) return;
     addReport({ kind: "dano", monumentId, damageType: damage, text: text.trim() || t.damages[damage] });
     void flushQueue();
+    sfx.complete();
     setSent(true);
   };
 
@@ -31,13 +35,14 @@ export function GuardianPage() {
     <StudentShell>
       <AnimatePresence mode="wait">
         {sent ? (
-          <motion.section key="ok" className="guardian-done" initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ opacity: 0 }}>
-            <motion.span className="shield-big" initial={{ rotate: -30, scale: 0 }} animate={{ rotate: 0, scale: 1 }} transition={{ type: "spring", stiffness: 140 }}>
-              {Icon.shield(90)}
+          <motion.section key="ok" className="guardian-done" initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ opacity: 0 }}>
+            <motion.span className="shield-big" initial={{ rotate: -25, scale: 0 }} animate={{ rotate: 0, scale: 1 }} transition={bouncy}>
+              {Icon.shield(96)}
+              <Burst count={16} radius={110} />
             </motion.span>
-            <h2>{t.sentTitle}</h2>
-            <p>{t.sentBody}</p>
-            <Mascot mood="happy" size={100} />
+            <h1 className="serif">{t.sentTitle}</h1>
+            <p className="xp-chip">{t.sentBody}</p>
+            <Mascot mood="happy" size={96} pulse={1} />
             <Button
               variant="secondary"
               onClick={() => {
@@ -51,33 +56,32 @@ export function GuardianPage() {
           </motion.section>
         ) : (
           <motion.section key="form" className="guardian" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-            <div className="page-head guardian-head">
-              <span className="shield-icon">{Icon.shield(44)}</span>
+            <div className="guardian-head">
+              <span className="shield-icon">{Icon.shield(40)}</span>
               <div>
-                <h2>{t.guardianTitle}</h2>
+                <h1 className="serif">{t.guardianTitle}</h1>
                 <p>{t.guardianLead}</p>
               </div>
             </div>
             <h4>{t.which}</h4>
             <div className="chips">
               {(content?.monuments ?? []).map((m) => (
-                <button key={m.id} className={`chip-btn ${monumentId === m.id ? "on" : ""}`} onClick={() => setMonumentId(m.id)} style={{ ["--accent" as string]: m.color }}>
-                  <MonumentIcon id={m.id} size={22} /> {m.name[lang]}
-                </button>
+                <motion.button key={m.id} whileTap={{ scale: 0.94 }} className={`chip-btn ${monumentId === m.id ? "on" : ""}`} onClick={() => setMonumentId(m.id)} style={{ ["--accent" as string]: m.color }}>
+                  <MonumentIcon id={m.id} size={20} /> {m.name[lang]}
+                </motion.button>
               ))}
             </div>
             <h4>{t.damage}</h4>
             <div className="chips">
               {DAMAGES.map((d) => (
-                <button key={d} className={`chip-btn ${damage === d ? "on" : ""}`} onClick={() => setDamage(d)}>
+                <motion.button key={d} whileTap={{ scale: 0.94 }} className={`chip-btn ${damage === d ? "on" : ""}`} onClick={() => setDamage(d)}>
                   {t.damages[d]}
-                </button>
+                </motion.button>
               ))}
             </div>
-            <h4>{t.describe}</h4>
-            <textarea value={text} onChange={(e) => setText(e.target.value.slice(0, 200))} rows={3} />
+            <textarea value={text} onChange={(e) => setText(e.target.value.slice(0, 200))} rows={3} placeholder={t.describePh} />
             <div className="textarea-meta">
-              <small>🔒 {t.privacy}</small>
+              <span />
               <small>{text.length}/200</small>
             </div>
             <Button block disabled={!monumentId || !damage} onClick={submit}>

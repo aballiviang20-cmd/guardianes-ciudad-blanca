@@ -30,7 +30,7 @@ export function EvidencePage() {
   return (
     <div className="evidence-page">
       <header>
-        <h1>📈 Evidencia</h1>
+        <h1>Evidencia</h1>
         <p>Resultados medidos con el pipeline real y etiquetado humano a ciegas. Generado por <code>npm run eval</code>.</p>
         <Link to="/docente">← Panel docente</Link>
       </header>

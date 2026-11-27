@@ -1,6 +1,7 @@
 import { motion } from "motion/react";
 import { Figurita } from "../components/Figurita";
 import { StudentShell } from "../components/Shell";
+import { bouncy } from "../motion";
 import { pick, useT } from "../i18n";
 import { useStore } from "../store";
 import { useContent } from "../useContent";
@@ -15,22 +16,23 @@ export function AlbumPage() {
 
   return (
     <StudentShell>
-      <section className="page-head">
-        <h2>{t.album}</h2>
-        <p>{t.albumLead}</p>
-        <div className="album-count">
-          <motion.div className="album-count-fill" initial={{ width: 0 }} animate={{ width: `${total ? (have / total) * 100 : 0}%` }} transition={{ type: "spring", stiffness: 80 }} />
-          <span>
-            {have}/{total}
-          </span>
-        </div>
+      <section className="page-head row">
+        <h1 className="serif">{t.album}</h1>
+        <span className="count-pill">
+          {have}
+          <small>/{total}</small>
+        </span>
       </section>
+      <div className="album-count">
+        <motion.div className="album-count-fill" initial={{ width: 0 }} animate={{ width: `${total ? (have / total) * 100 : 0}%` }} transition={{ type: "spring", stiffness: 60, damping: 16 }} />
+      </div>
       <div className="album-grid">
         {monuments.map((m, i) => (
-          <motion.div key={m.id} className="album-pair" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.08 }}>
+          <motion.div key={m.id} className="album-pair" initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ ...bouncy, delay: i * 0.08 }}>
             <Figurita
               monumentId={m.id}
               name={m.name[lang]}
+              year={m.year}
               color={m.color}
               unlocked={!!progress[m.id]?.lesson}
               lockedLabel={t.lockedLesson}
@@ -40,6 +42,7 @@ export function AlbumPage() {
             <Figurita
               monumentId={m.id}
               name={m.name[lang]}
+              year={m.year}
               color={m.color}
               golden
               unlocked={!!progress[m.id]?.golden}

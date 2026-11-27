@@ -46,7 +46,7 @@ export function ScanPage() {
         ))}
       </div>
       {error && <p className="error">{error}</p>}
-      <p className="scan-lead">🔒 {t.scanLead}</p>
+      <p className="scan-lead">{t.scanLead}</p>
       <div className="scan-status">
         <Mascot size={70} />
         <p>Modelo de reconocimiento: pendiente de entrenamiento con las fotos del equipo.</p>

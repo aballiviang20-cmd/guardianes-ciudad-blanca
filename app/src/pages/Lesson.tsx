@@ -1,12 +1,15 @@
-import confetti from "canvas-confetti";
-import { AnimatePresence, motion, Reorder } from "motion/react";
+import { AnimatePresence, LayoutGroup, motion, Reorder } from "motion/react";
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { flushQueue } from "../api";
+import { Burst, DrawCheck } from "../components/Burst";
 import { Mascot } from "../components/Mascot";
 import { Button, Icon, ProgressBar } from "../components/ui";
+import { bouncy, snappy } from "../motion";
 import { pick, pickList, useT } from "../i18n";
+import { sfx } from "../sfx";
 import { useStore } from "../store";
+import type { Question } from "../types";
 import { useMonument } from "../useContent";
 
 const ORDER_SECONDS = 30;
@@ -14,11 +17,60 @@ const ORDER_SECONDS = 30;
 function shuffled<T>(arr: T[]): T[] {
   if (arr.length < 2) return [...arr];
   let out = [...arr];
-  // Baraja hasta que NO quede en el orden correcto.
   for (let tries = 0; tries < 10 && out.every((v, i) => v === arr[i]); tries++) {
     out = [...arr].sort(() => Math.random() - 0.5);
   }
   return out;
+}
+
+const isFill = (q: Question, prompt: string) => q.type === "mcq" && prompt.includes("___");
+
+/** "Completa la frase": las fichas vuelan del banco al hueco (layoutId) y vuelven al tocarlas. */
+function FillIn({ prompt, options, display, selected, onSelect, locked, result, answer, qid }: {
+  prompt: string; options: string[]; display: number[]; selected: number | null; onSelect: (i: number | null) => void;
+  locked: boolean; result: boolean | null; answer: number; qid: string;
+}) {
+  const [before, after] = prompt.split("___");
+  return (
+    <LayoutGroup id={qid}>
+      <div className="fill-sentence">
+        <span>{before}</span>
+        <span className={`slot ${result === true ? "ok" : result === false ? "bad" : ""}`}>
+          {selected !== null ? (
+            <motion.button layoutId={`tile-${selected}`} className="tile in-slot" onClick={() => !locked && onSelect(null)} transition={snappy}>
+              {options[selected]}
+            </motion.button>
+          ) : (
+            <span className="slot-empty" />
+          )}
+        </span>
+        <span>{after}</span>
+      </div>
+      {result === false && <p className="fill-answer">{options[answer]}</p>}
+      <div className="tile-bank">
+        {display.map((i) => (
+          <span key={i} className="tile-ghost">
+            {selected !== i && (
+              <motion.button
+                layoutId={`tile-${i}`}
+                className="tile"
+                disabled={locked}
+                onClick={() => {
+                  sfx.tap();
+                  onSelect(i);
+                }}
+                whileTap={{ scale: 0.94 }}
+                transition={snappy}
+              >
+                {options[i]}
+              </motion.button>
+            )}
+            <span className="tile-shadow">{options[i]}</span>
+          </span>
+        ))}
+      </div>
+    </LayoutGroup>
+  );
 }
 
 export function LessonPage() {
@@ -38,12 +90,13 @@ export function LessonPage() {
   const [order, setOrder] = useState<string[]>([]);
   const [result, setResult] = useState<boolean | null>(null);
   const [correctCount, setCorrectCount] = useState(0);
+  const [combo, setCombo] = useState(0);
+  const [pulse, setPulse] = useState(0);
   const [reported, setReported] = useState(false);
   const [timeLeft, setTimeLeft] = useState(ORDER_SECONDS);
 
   const q = questions[idx];
   const options = useMemo(() => (q ? pickList(q, "options", lang) : []), [q, lang]);
-  // Opción múltiple: se baraja el orden en pantalla (la correcta no queda siempre en "A").
   const display = useMemo(() => {
     const idxs = options.map((_, i) => i);
     return q?.type === "mcq" ? shuffled(idxs) : idxs;
@@ -58,7 +111,6 @@ export function LessonPage() {
     if (q?.type === "order") setOrder(shuffled(options));
   }, [q, options]);
 
-  // Contrarreloj para las preguntas de ordenar.
   useEffect(() => {
     if (q?.type !== "order" || result !== null) return;
     if (timeLeft <= 0) {
@@ -71,14 +123,25 @@ export function LessonPage() {
   }, [timeLeft, q, result]);
 
   if (!m || !q) return null;
+  const prompt = pick(q, "prompt", lang);
+  const fill = isFill(q, prompt);
 
   function check() {
     if (!q) return;
     const ok = q.type === "order" ? order.join("|") === options.join("|") : selected === q.answer;
     setResult(ok);
+    setPulse((p) => p + 1);
     if (ok) {
       setCorrectCount((c) => c + 1);
-      void confetti({ particleCount: 50, spread: 60, origin: { y: 0.75 }, colors: ["#C0532D", "#E5A823", "#2E9E5B", "#3B82C4"] });
+      setCombo((c) => {
+        const n = c + 1;
+        if (n >= 3) setTimeout(() => sfx.combo(), 180);
+        return n;
+      });
+      sfx.correct();
+    } else {
+      setCombo(0);
+      sfx.wrong();
     }
     track("answer", { questionId: q.id, correct: ok ? 1 : 0 });
   }
@@ -104,6 +167,7 @@ export function LessonPage() {
   const canCheck = q.type === "order" || selected !== null;
   const explanation = juvenil && lang === "es" && q.juvenil_es ? q.juvenil_es : pick(q, "explanation", lang);
   const correctText = q.type === "order" ? options.join(" → ") : options[q.answer];
+  const hint = q.type === "order" ? t.orderHint : q.type === "tf" ? t.tfHint : fill ? t.fillHint : t.pickHint;
 
   return (
     <div className="phone lesson">
@@ -111,41 +175,59 @@ export function LessonPage() {
         <button className="close-btn" onClick={() => navigate("/")} aria-label={t.back}>
           {Icon.close()}
         </button>
-        <ProgressBar value={(idx + (result !== null ? 1 : 0)) / questions.length} />
+        <div className={`lesson-progress ${combo >= 3 ? "on-fire" : ""}`}>
+          <ProgressBar value={(idx + (result !== null ? 1 : 0)) / questions.length} color={combo >= 3 ? "var(--oro)" : "var(--verde-ok)"} />
+        </div>
+        <AnimatePresence>
+          {combo >= 2 && (
+            <motion.span key={combo} className="combo" initial={{ scale: 0, rotate: -20 }} animate={{ scale: 1, rotate: 0 }} exit={{ scale: 0 }} transition={bouncy}>
+              {Icon.flame(18)} x{combo}
+            </motion.span>
+          )}
+        </AnimatePresence>
       </div>
 
       <AnimatePresence mode="wait">
         <motion.section
           key={q.id}
           className="question"
-          initial={{ opacity: 0, x: 80 }}
-          animate={result === false ? { opacity: 1, x: [0, -12, 12, -8, 8, 0] } : { opacity: 1, x: 0 }}
-          exit={{ opacity: 0, x: -80 }}
-          transition={{ duration: 0.35 }}
+          initial={{ opacity: 0, x: 60 }}
+          animate={result === false ? { opacity: 1, x: [0, -14, 12, -8, 6, 0] } : { opacity: 1, x: 0 }}
+          exit={{ opacity: 0, x: -60 }}
+          transition={{ duration: 0.32 }}
         >
+          <span className="q-hint">
+            {q.type === "order" && Icon.clock(15)} {hint}
+          </span>
           <div className="question-head">
-            <Mascot size={78} mood={result === true ? "happy" : result === false ? "sad" : "idle"} />
-            <div className="speech">
-              <span className="q-type">{q.type === "order" ? "⏱️ " + t.orderHint : q.type === "tf" ? "¿V o F?" : t.challenge}</span>
-              <h2>{pick(q, "prompt", lang)}</h2>
-            </div>
+            <Mascot size={92} mood={result === true ? "happy" : result === false ? "sad" : "idle"} pulse={pulse} />
+            {!fill && (
+              <motion.div className="speech" initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ ...bouncy, delay: 0.1 }}>
+                <h2>{prompt}</h2>
+              </motion.div>
+            )}
           </div>
 
-          {q.type === "order" ? (
+          {fill ? (
+            <FillIn prompt={prompt} options={options} display={display} selected={selected} onSelect={setSelected} locked={result !== null} result={result} answer={q.answer} qid={q.id} />
+          ) : q.type === "order" ? (
             <>
               <div className="timer">
                 <ProgressBar value={timeLeft / ORDER_SECONDS} color={timeLeft <= 8 ? "var(--rojo)" : "var(--oro)"} />
-                <span>
+                <motion.b key={timeLeft} initial={{ scale: timeLeft <= 8 ? 1.4 : 1 }} animate={{ scale: 1 }}>
                   {timeLeft}
-                  {t.timeLeft}
-                </span>
+                </motion.b>
               </div>
               <Reorder.Group axis="y" values={order} onReorder={result === null ? setOrder : () => {}} className="order-list">
                 {order.map((item, i) => (
-                  <Reorder.Item key={item} value={item} className={`order-item ${result !== null ? (result ? "ok" : "bad") : ""}`} whileDrag={{ scale: 1.04, boxShadow: "0 10px 24px rgba(0,0,0,.18)" }}>
+                  <Reorder.Item key={item} value={item} className={`order-item ${result !== null ? (result ? "ok" : "bad") : ""}`} whileDrag={{ scale: 1.05, rotate: -1.5, boxShadow: "0 14px 28px rgba(0,0,0,.18)" }}>
                     <span className="order-num">{i + 1}</span>
-                    {item}
-                    <span className="grip">⋮⋮</span>
+                    <span className="order-text">{item}</span>
+                    <span className="grip" aria-hidden>
+                      <i />
+                      <i />
+                      <i />
+                    </span>
                   </Reorder.Item>
                 ))}
               </Reorder.Group>
@@ -154,21 +236,23 @@ export function LessonPage() {
             <div className={`options ${q.type === "tf" ? "tf" : ""}`}>
               {display.map((i, pos) => {
                 const opt = options[i];
-                const state =
-                  result === null ? (selected === i ? "selected" : "") : i === q.answer ? "ok" : selected === i ? "bad" : "dim";
+                const state = result === null ? (selected === i ? "selected" : "") : i === q.answer ? "ok" : selected === i ? "bad" : "dim";
                 return (
                   <motion.button
                     key={`${q.id}-${i}`}
                     className={`option ${state}`}
                     disabled={result !== null}
-                    onClick={() => setSelected(i)}
-                    whileTap={{ scale: 0.97, y: 2 }}
-                    initial={{ opacity: 0, y: 16 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.08 * pos }}
+                    onClick={() => {
+                      sfx.tap();
+                      setSelected(i);
+                    }}
+                    whileTap={{ scale: 0.96, y: 3 }}
+                    initial={{ opacity: 0, y: 18 }}
+                    animate={state === "ok" ? { opacity: 1, y: 0, scale: [1, 1.05, 1] } : { opacity: 1, y: 0 }}
+                    transition={{ ...snappy, delay: result === null ? 0.06 * pos : 0 }}
                   >
-                    {q.type !== "tf" && <span className="option-key">{String.fromCharCode(65 + pos)}</span>}
-                    {opt}
+                    {q.type !== "tf" && <span className="option-key">{pos + 1}</span>}
+                    <span>{opt}</span>
                   </motion.button>
                 );
               })}
@@ -179,23 +263,18 @@ export function LessonPage() {
 
       <AnimatePresence>
         {result !== null && (
-          <motion.div
-            className={`feedback ${result ? "ok" : "bad"}`}
-            initial={{ y: 260 }}
-            animate={{ y: 0 }}
-            exit={{ y: 260 }}
-            transition={{ type: "spring", stiffness: 260, damping: 24 }}
-          >
+          <motion.div className={`feedback ${result ? "ok" : "bad"}`} initial={{ y: "100%" }} animate={{ y: 0 }} exit={{ y: "100%" }} transition={{ type: "spring", stiffness: 320, damping: 30 }}>
             <div className="feedback-head">
-              <motion.span className="feedback-icon" initial={{ scale: 0, rotate: -90 }} animate={{ scale: 1, rotate: 0 }} transition={{ type: "spring", delay: 0.1 }}>
-                {result ? Icon.check(28) : Icon.close(28)}
+              <motion.span className="feedback-icon" initial={{ scale: 0 }} animate={{ scale: 1 }} transition={bouncy}>
+                <DrawCheck ok={result} />
+                {result && <Burst key={pulse} seed={pulse} />}
               </motion.span>
               <h3>{result ? t.correct : t.incorrect}</h3>
-              {lang === "es" && (
-                <label className="switch">
-                  <input type="checkbox" checked={juvenil} onChange={toggleJuvenil} />
-                  <span>{t.juvenil}</span>
-                </label>
+              {lang === "es" && q.juvenil_es && (
+                <button className={`toggle ${juvenil ? "on" : ""}`} onClick={toggleJuvenil} aria-pressed={juvenil}>
+                  <span className="toggle-knob" />
+                  {t.juvenil}
+                </button>
               )}
             </div>
             {!result && (
@@ -210,10 +289,10 @@ export function LessonPage() {
             </AnimatePresence>
             <div className="feedback-meta">
               <span className="chip">
-                📚 {t.source}: {m.sources.length ? m.sources[0] : q.fragmentId}
+                {Icon.book()} {q.cite || m.sources[0] || q.fragmentId}
               </span>
               <button className="link" onClick={reportError} disabled={reported}>
-                {reported ? t.reportSent : `⚑ ${t.reportError}`}
+                {Icon.flag()} {reported ? t.reportSent : t.reportError}
               </button>
             </div>
             <Button variant={result ? "success" : "danger"} block onClick={next}>
