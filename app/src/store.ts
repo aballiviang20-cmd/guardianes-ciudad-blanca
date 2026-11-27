@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import type { CharId, Outfit } from "./characters";
+import { safeChar, type CharId, type Outfit } from "./characters";
 import type { Lang, LessonsResponse } from "./types";
 
 export type Progress = { stories: boolean; cuento?: boolean; lesson: boolean; best: number; golden: boolean; stars?: number };
@@ -114,6 +114,15 @@ export const useStore = create<State>()(
       dequeueEvents: (ids) => set({ queue: get().queue.filter((e) => !ids.includes(e.eventId)) }),
       dequeueReports: (ids) => set({ reports: get().reports.filter((r) => !ids.includes(r.id)) }),
     }),
-    { name: "guardianes-v1" },
+    {
+      name: "guardianes-v1",
+      version: 2,
+      // v2: Vale pasó a ser Sofía y se sumaron personajes; un avatar guardado inválido se corrige.
+      migrate: (persisted) => {
+        const s = (persisted ?? {}) as Partial<State>;
+        if (s.avatar) s.avatar = { c: safeChar(s.avatar.c), outfit: s.avatar.outfit ?? "casual" };
+        return s as State;
+      },
+    },
   ),
 );

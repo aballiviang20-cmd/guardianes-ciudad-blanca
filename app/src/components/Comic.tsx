@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useState } from "react";
-import { CHARACTERS, type CharId, type Face, type Pose } from "../characters";
+import { CHARACTERS, safeChar, type CharId, type Face, type Pose } from "../characters";
 import { CharFace, CharPose } from "./Character";
 import { Scene } from "./Scene";
 import { Button, Icon } from "./ui";
@@ -48,7 +48,7 @@ export function ComicReader({ id, cuento, lang, onClose, onFinish, finishLabel }
   const p = cuento.panels[i];
   const last = i === cuento.panels.length - 1;
   const fromLeft = p.who !== "orki";
-  const char = CHARACTERS[p.who];
+  const char = CHARACTERS[safeChar(p.who)];
 
   useEffect(() => {
     setTyped(false);

@@ -42,7 +42,7 @@
         "text_en": "Ha! And the name? Work began on December 17, the day the Resurrection of Lazarus was remembered."
       },
       {
-        "who": "vale",
+        "who": "sofia",
         "face": "sorprendido",
         "sfx": "¡DEBATE!",
         "text_es": "¿Y es cierto que ahí se reunían las autoridades?",
@@ -67,6 +67,12 @@
         "text_en": "Probably a waka: a sacred place, perhaps Yampara. Your city's places have layers of history."
       },
       {
+        "who": "julian",
+        "face": "pensativo",
+        "text_es": "Por eso digo yo: cada piedra de esta ciudad guarda una historia. Hay que saber escucharla.",
+        "text_en": "That is what I always say: every stone in this city keeps a story. You just have to listen."
+      },
+      {
         "who": "orki",
         "pose": "salta",
         "sfx": "¡A JUGAR!",
@@ -86,10 +92,16 @@
         "text_en": "This is the Metropolitan Cathedral: the greatest religious monument of Charcas."
       },
       {
-        "who": "vale",
+        "who": "sofia",
         "face": "alegre",
         "text_es": "¡La de la plaza! Siempre me saco fotos ahí.",
         "text_en": "The one on the square! I always take photos there."
+      },
+      {
+        "who": "juanita",
+        "face": "alegre",
+        "text_es": "¡Yo paso por la plaza todos los días camino al mercado!",
+        "text_en": "I cross the square every day on my way to the market!"
       },
       {
         "who": "orki",
@@ -172,7 +184,7 @@
         "text_en": "And before that came a cry: on May 25, 1809, Chuquisaca rose up. Bolivia calls it the First Cry for Freedom."
       },
       {
-        "who": "vale",
+        "who": "sofia",
         "face": "sorprendido",
         "text_es": "Y yo pasando por ahí todos los días sin saberlo…",
         "text_en": "And I walk past it every day without knowing…"
@@ -183,6 +195,13 @@
         "sfx": "¡VIVA!",
         "text_es": "¡Entonces el 6 de agosto es el cumpleaños de todos!",
         "text_en": "So August 6 is everybody's birthday!"
+      },
+      {
+        "who": "bruno",
+        "pose": "bolivia",
+        "sfx": "¡VAMOS!",
+        "text_es": "¡Y para el 6 de agosto el barrio entero sale a desfilar!",
+        "text_en": "And on August 6 the whole neighborhood marches in the parade!"
       },
       {
         "who": "orki",
@@ -228,7 +247,7 @@
         "text_en": "Exactly! Heritage is closely tied to identity."
       },
       {
-        "who": "vale",
+        "who": "sofia",
         "face": "sorprendido",
         "text_es": "¿Y cuántos patrimonios así tiene Bolivia?",
         "text_en": "And how many like that does Bolivia have?"
@@ -256,6 +275,24 @@
         "face": "pensativo",
         "text_es": "O sea que cuidar la ciudad también puede ser un trabajo…",
         "text_en": "So taking care of the city can also be a job…"
+      },
+      {
+        "who": "juanita",
+        "face": "chistoso",
+        "text_es": "Cuidar también es no rayar las paredes, ¿ya? Que el blanco es nuestro orgullo.",
+        "text_en": "Taking care also means no graffiti on the walls, okay? That white is our pride."
+      },
+      {
+        "who": "julian",
+        "face": "alegre",
+        "text_es": "Y preguntar a los abuelos: nosotros también somos memoria de la ciudad.",
+        "text_en": "And ask your grandparents: we are also the memory of the city."
+      },
+      {
+        "who": "bruno",
+        "face": "alegre",
+        "text_es": "¡Cuidar la ciudad es trabajo en equipo!",
+        "text_en": "Taking care of the city is teamwork!"
       },
       {
         "who": "orki",

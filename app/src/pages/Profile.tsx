@@ -1,5 +1,5 @@
 import { motion } from "motion/react";
-import { CHARACTERS, OUTFITS, outfitImg, type CharId, type Outfit } from "../characters";
+import { CHARACTERS, OUTFITS, outfitImg, safeChar, type CharId, type Outfit } from "../characters";
 import { CharFace, CharOutfit } from "../components/Character";
 import { StudentShell } from "../components/Shell";
 import { Icon } from "../components/ui";
@@ -17,7 +17,7 @@ export function ProfilePage() {
   const profile = useStore((s) => s.profile);
   const progress = useStore((s) => s.progress);
   const stars = Object.values(progress).reduce((n, p) => n + (p.stars ?? 0), 0);
-  const ch = CHARACTERS[avatar.c];
+  const ch = CHARACTERS[safeChar(avatar.c)];
 
   return (
     <StudentShell>
