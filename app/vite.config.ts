@@ -1,0 +1,44 @@
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+import { VitePWA } from "vite-plugin-pwa";
+
+export default defineConfig({
+  plugins: [
+    react(),
+    VitePWA({
+      registerType: "autoUpdate",
+      includeAssets: ["icon.svg"],
+      manifest: {
+        name: "Guardianes de la Ciudad Blanca",
+        short_name: "Guardianes",
+        description: "Conoce, colecciona y protege el patrimonio de Sucre.",
+        theme_color: "#C0532D",
+        background_color: "#FBF8F3",
+        display: "standalone",
+        start_url: "/",
+        lang: "es",
+        icons: [{ src: "icon.svg", sizes: "any", type: "image/svg+xml", purpose: "any" }],
+      },
+      workbox: {
+        navigateFallback: "/index.html",
+        navigateFallbackDenylist: [/^\/api\//],
+        globPatterns: ["**/*.{js,css,html,svg,png,woff,woff2}"],
+        runtimeCaching: [
+          {
+            // Contenido aprobado: red primero, y si no hay conexión, la última copia guardada.
+            urlPattern: ({ url }) => url.pathname === "/api/lessons" || url.pathname === "/api/monuments",
+            handler: "NetworkFirst",
+            options: { cacheName: "api-contenido", networkTimeoutSeconds: 4 },
+          },
+          {
+            urlPattern: ({ url }) => url.pathname === "/api/league",
+            handler: "NetworkFirst",
+            options: { cacheName: "api-liga", networkTimeoutSeconds: 3 },
+          },
+        ],
+      },
+    }),
+  ],
+  server: { proxy: { "/api": "http://localhost:8787" } },
+  preview: { proxy: { "/api": "http://localhost:8787" } },
+});
