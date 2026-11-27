@@ -122,3 +122,9 @@
   .evidence-page { padding: 0; }
   .posters { grid-template-columns: 1fr 1fr; }
 }
+
+/* Avatar esperando junto a la parada actual (del lado contrario al año) */
+.stop-avatar { position: absolute; top: -6px; pointer-events: none; }
+.stop.left .stop-avatar { right: 96px; }
+.stop.right .stop-avatar { left: 96px; }
+.stop.left .stop-year { left: 104px; }

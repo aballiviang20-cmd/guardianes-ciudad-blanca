@@ -1,7 +1,7 @@
 import { AnimatePresence, motion } from "motion/react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { CharFace } from "../components/Character";
+import { CharFace, CharOutfit } from "../components/Character";
 import { useCuentos } from "../useCuentos";
 import { MonumentIcon } from "../components/MonumentIcon";
 import { Scene } from "../components/Scene";
@@ -95,6 +95,16 @@ export function PathPage() {
               transition={{ ...bouncy, delay: 0.1 + i * 0.12 }}
             >
               {m.year && <span className="stop-year serif">{m.year}</span>}
+              {isCurrent && (
+                <motion.div
+                  className="stop-avatar"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ ...bouncy, delay: 0.6 }}
+                >
+                  <CharOutfit c={avatar.c} outfit={avatar.outfit} size={84} anim="idle" />
+                </motion.div>
+              )}
               {isCurrent && (
                 <motion.span className="bubble" animate={{ y: [0, -6, 0] }} transition={{ duration: 1.4, repeat: Infinity, ease: "easeInOut" }}>
                   {t.startHere}

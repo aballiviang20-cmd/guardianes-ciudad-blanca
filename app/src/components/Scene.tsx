@@ -8,7 +8,17 @@ function useFondo(id: string) {
   const [map, setMap] = useState(fondosCache);
   useEffect(() => {
     if (fondosCache) return;
-    fondosReq ??= fetch("/api/fondos").then((r) => r.json()).catch(() => ({}));
+    fondosReq ??= fetch("/api/fondos")
+      .then((r) => r.json())
+      .then((m: Record<string, string>) => {
+        // Precarga todos los fondos: el service worker los guarda y quedan disponibles sin conexión.
+        Object.values(m).forEach((src) => {
+          const i = new Image();
+          i.src = src;
+        });
+        return m;
+      })
+      .catch(() => ({}));
     void fondosReq.then((m) => {
       fondosCache = m;
       setMap(m);

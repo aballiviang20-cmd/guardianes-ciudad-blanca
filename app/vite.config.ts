@@ -22,7 +22,7 @@ export default defineConfig({
       workbox: {
         navigateFallback: "/index.html",
         navigateFallbackDenylist: [/^\/api\//],
-        globPatterns: ["**/*.{js,css,html,svg,png,woff,woff2}"],
+        globPatterns: ["**/*.{js,css,html,svg,png,webp,woff,woff2}"],
         // TensorFlow.js pesa más de 2 MB: se precachea igual para que el escaneo funcione offline.
         maximumFileSizeToCacheInBytes: 8 * 1024 * 1024,
         runtimeCaching: [
@@ -42,6 +42,12 @@ export default defineConfig({
             urlPattern: ({ url }) => /(^|\.)(tfhub\.dev|kaggle\.com|kaggleusercontent\.com|storage\.googleapis\.com)$/.test(url.hostname),
             handler: "CacheFirst",
             options: { cacheName: "modelos", cacheableResponse: { statuses: [0, 200] }, expiration: { maxEntries: 40 } },
+          },
+          {
+            // Fondos ilustrados (data/fondos) y lista de fondos: se guardan para verse sin conexión.
+            urlPattern: ({ url }) => url.pathname.startsWith("/fondos/") || url.pathname === "/api/fondos" || url.pathname === "/api/cuentos",
+            handler: "StaleWhileRevalidate",
+            options: { cacheName: "arte-y-cuentos", cacheableResponse: { statuses: [0, 200] } },
           },
           {
             urlPattern: ({ url }) => url.pathname === "/api/league",
